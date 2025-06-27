@@ -25,14 +25,18 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #00ff2f;
+  margin-bottom: 20px;
 }
 
-@keyframes App-logo-spin {
+.Title {
+  color:chocolate;
+}
+/* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */
