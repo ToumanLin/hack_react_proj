@@ -1,14 +1,13 @@
-
 import React from 'react';
 
-const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
+const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
   if (!selectedLimb) {
     return <div style={{ padding: '10px' }}>Select a limb to edit properties.</div>;
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const parsedValue = parseInt(value, 10);
+    const parsedValue = parseFloat(value);
 
     if (name.startsWith('sheetIndex')) {
         const index = parseInt(name.split('[')[1].replace(']', ''), 10);
@@ -18,8 +17,15 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
         return;
     }
 
-    if (name === 'rotation' || name === 'depth') {
+    if (name === 'rotation' || name === 'scale' || name === 'depth') { // Make depth editable again
         onUpdate({ ...selectedLimb, [name]: parsedValue });
+        return;
+    }
+
+    if (name.startsWith('selected')) {
+        const attachmentType = name.replace('selected', '').toLowerCase();
+        const selectedAttachment = headAttachments[attachmentType].find(att => att.id === value); 
+        onUpdate({ ...selectedLimb, [name]: selectedAttachment });
         return;
     }
 
@@ -40,6 +46,7 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
           name="position.x"
           value={selectedLimb.position.x}
           onChange={handleChange}
+          // readOnly // Remove read-only
         />
       </div>
       <div>
@@ -49,24 +56,7 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
           name="position.y"
           value={selectedLimb.position.y}
           onChange={handleChange}
-        />
-      </div>
-      <div>
-        <label>Width:</label>
-        <input
-          type="number"
-          name="size.width"
-          value={selectedLimb.size.width}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <label>Height:</label>
-        <input
-          type="number"
-          name="size.height"
-          value={selectedLimb.size.height}
-          onChange={handleChange}
+          // readOnly // Remove read-only
         />
       </div>
       <div>
@@ -74,6 +64,7 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
         <input
           type="number"
           name="depth"
+          step="0.0001" 
           value={selectedLimb.depth}
           onChange={handleChange}
         />
@@ -87,7 +78,17 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
           onChange={handleChange}
         />
       </div>
-      {selectedLimb.name.includes('Head') && (
+      <div>
+        <label>Scale:</label>
+        <input
+          type="number"
+          name="scale"
+          step="0.1"
+          value={selectedLimb.scale}
+          onChange={handleChange}
+        />
+      </div>
+      {(selectedLimb.name.includes('Head') || selectedLimb.type === 'Hair' || selectedLimb.type === 'Beard' || selectedLimb.type === 'FaceAttachment') && selectedLimb.sheetIndex && (
         <>
             <div>
                 <label>Sheet Index X:</label>
@@ -109,6 +110,43 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
             </div>
         </>
       )}
+            {selectedLimb.name.includes('Head') && (
+                <>
+                    {headAttachments.hair.length > 0 && (
+                        <div>
+                            <label>Hair:</label>
+                            <select name="selectedHair" onChange={handleChange} value={selectedLimb.selectedHair ? selectedLimb.selectedHair.id : ''}> 
+                                <option value="">None</option>
+                                {headAttachments.hair.map(hair => (
+                                    <option key={hair.id} value={hair.id}>{hair.name}</option> 
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    {headAttachments.beard.length > 0 && (
+                        <div>
+                            <label>Beard:</label>
+                            <select name="selectedBeard" onChange={handleChange} value={selectedLimb.selectedBeard ? selectedLimb.selectedBeard.id : ''}> 
+                                <option value="">None</option>
+                                {headAttachments.beard.map(beard => (
+                                    <option key={beard.id} value={beard.id}>{beard.name}</option> 
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    {headAttachments.faceAttachment.length > 0 && (
+                        <div>
+                            <label>Face Attachment:</label>
+                            <select name="selectedFaceAttachment" onChange={handleChange} value={selectedLimb.selectedFaceAttachment ? selectedLimb.selectedFaceAttachment.id : ''}> 
+                                <option value="">None</option>
+                                {headAttachments.faceAttachment.map(att => (
+                                    <option key={att.id} value={att.id}>{att.name}</option> 
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                </>
+            )}
     </div>
   );
 };
