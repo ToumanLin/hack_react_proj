@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import xml2js from 'xml2js';
 import Draggable from 'react-draggable';
@@ -31,6 +32,9 @@ const Editor = () => {
         const ragdoll = ragdollResult.Ragdoll;
         const character = characterResult.Character;
         const gender = 'female';
+
+        // Get Ragdoll.LimbScale
+        const ragdollLimbScale = parseFloat(ragdoll.$.LimbScale || 1);
 
         const parsedLimbs = {};
         ragdoll.limb.forEach(limb => {
@@ -134,8 +138,14 @@ const Editor = () => {
                     limbGraph[parentLimbId].forEach(({ joint, childId }) => {
                         if (!visited.has(childId)) {
                             const childLimb = parsedLimbs[childId];
-                            const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-                            const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+                            let limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
+                            let limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+
+                            // Apply Ragdoll.LimbScale to anchors
+                            limb1Anchor[0] *= ragdollLimbScale;
+                            limb1Anchor[1] *= ragdollLimbScale;
+                            limb2Anchor[0] *= ragdollLimbScale;
+                            limb2Anchor[1] *= ragdollLimbScale;
 
                             // Invert Y-coordinates for anchors to match web coordinate system
                             limb1Anchor[1] = -limb1Anchor[1];
