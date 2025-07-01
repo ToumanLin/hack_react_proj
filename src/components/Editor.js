@@ -14,7 +14,7 @@ const Editor = () => {
   const [headAttachments, setHeadAttachments] = useState({
     hair: [],
     beard: [],
-    faceAttachment: [],
+    faceattachment: [],
   });
 
   const panelRef = useRef(null);
@@ -86,24 +86,32 @@ const Editor = () => {
           });
 
         // Process Head Attachments from Human.xml
-        const newHeadAttachments = { hair: [], beard: [], faceAttachment: [] };
+        const newHeadAttachments = { hair: [], beard: [], faceattachment: [] };
         if (character.HeadAttachments && character.HeadAttachments.Wearable) {
             const wearables = Array.isArray(character.HeadAttachments.Wearable) 
                 ? character.HeadAttachments.Wearable 
                 : [character.HeadAttachments.Wearable];
 
             wearables.forEach((wearable) => {
-                const type = wearable.$.type ? wearable.$.type.toLowerCase() : ''; 
-                if (newHeadAttachments.hasOwnProperty(type)) { 
-                    const sprite = wearable.sprite; 
+                const type = wearable.$.type ? wearable.$.type.toLowerCase() : '';
+                const tags = wearable.$.tags ? wearable.$.tags.split(',') : [];
+
+                // If tags exist, check if the current gender is included in the tags
+                // If no tags, it's gender-neutral, so include it.
+                if (tags.length > 0 && !tags.includes(gender)) {
+                    return; // Skip this wearable if it's not for the current gender
+                }
+
+                if (newHeadAttachments.hasOwnProperty(type)) {
+                    const sprite = wearable.sprite;
                     if (sprite) {
                         const attachmentData = {
-                            id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`, 
+                            id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
                             name: sprite.$.name,
                             texture: sprite.$.texture.replace('Content/Characters/Human/', '/assets/'),
                             sheetIndex: sprite.$.sheetindex.split(',').map(Number),
                             type: wearable.$.type,
-                            baseSize: [128, 128], 
+                            baseSize: [128, 128],
                         };
                         newHeadAttachments[type].push(attachmentData);
                     }
@@ -115,9 +123,9 @@ const Editor = () => {
         // Set default selected attachments for the head
         const headLimb = Object.values(parsedLimbs).find(l => l.name.includes('Head'));
         if (headLimb) {
-            if (newHeadAttachments.hair.length > 0) headLimb.selectedHair = newHeadAttachments.hair[0];
-            if (newHeadAttachments.beard.length > 0) headLimb.selectedBeard = newHeadAttachments.beard[0];
-            if (newHeadAttachments.faceAttachment.length > 0) headLimb.selectedFaceAttachment = newHeadAttachments.faceAttachment[0];
+            headLimb.selectedHair = newHeadAttachments.hair.length > 0 ? newHeadAttachments.hair[0] : null;
+            headLimb.selectedBeard = newHeadAttachments.beard.length > 0 ? newHeadAttachments.beard[0] : null;
+            headLimb.selectedFaceAttachment = newHeadAttachments.faceattachment.length > 0 ? newHeadAttachments.faceattachment[0] : null;
         }
 
         // --- Ragdoll Pose Calculation (Initial Pose) ---

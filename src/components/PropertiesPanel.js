@@ -134,12 +134,12 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
                             </select>
                         </div>
                     )}
-                    {headAttachments.faceAttachment.length > 0 && (
+                    {headAttachments.faceattachment.length > 0 && (
                         <div style={{ marginBottom: '10px' }}>
                             <label style={{ display: 'block', marginBottom: '5px' }}>Face Attachment:</label>
                             <select name="selectedFaceAttachment" onChange={handleChange} value={selectedLimb.selectedFaceAttachment ? selectedLimb.selectedFaceAttachment.id : ''}> 
                                 <option value="">None</option>
-                                {headAttachments.faceAttachment.map(att => (
+                                {headAttachments.faceattachment.map(att => (
                                     <option key={att.id} value={att.id}>{att.name}</option> 
                                 ))}
                             </select>
