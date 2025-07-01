@@ -4,6 +4,7 @@ import Draggable from 'react-draggable';
 import Limb from './Limb';
 import PropertiesPanel from './PropertiesPanel';
 import JointsPanel from './JointsPanel';
+import GenderPanel from './GenderPanel';
 
 const Editor = () => {
   const [limbs, setLimbs] = useState([]);
@@ -20,9 +21,12 @@ const Editor = () => {
   const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
   const jointsPanelRef = useRef(null);
   const [jointsPanelPosition, setJointsPanelPosition] = useState({ x: 0, y: 0 });
+  const [gender, setGender] = useState('female');
+  const genderPanelRef = useRef(null);
+  const [genderPanelPosition, setGenderPanelPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const parseXMLAndCalculatePose = async () => {
+    const parseXMLAndCalculatePose = async (gender) => {
       try {
         const ragdollResponse = await fetch('/assets/HumanDefaultRagdoll.xml');
         const ragdollXmlText = await ragdollResponse.text();
@@ -35,7 +39,6 @@ const Editor = () => {
 
         const ragdoll = ragdollResult.Ragdoll;
         const character = characterResult.Character;
-        const gender = 'female';
 
         // Get Ragdoll.LimbScale
         const limbScale = parseFloat(ragdoll.$.LimbScale || 1);
@@ -186,8 +189,8 @@ const Editor = () => {
       }
     };
 
-    parseXMLAndCalculatePose();
-  }, []); 
+    parseXMLAndCalculatePose(gender);
+  }, [gender]); 
 
   const handleUpdateLimb = (updatedLimb) => {
     let finalLimb = { ...updatedLimb };
@@ -209,6 +212,10 @@ const Editor = () => {
 
   const handleSelectLimb = (limb) => {
     setSelectedLimb(limb);
+  };
+
+  const handleGenderChange = (newGender) => {
+    setGender(newGender);
   };
 
   const handleConstruct = (joint) => {
@@ -266,6 +273,15 @@ const Editor = () => {
       >
         <div ref={jointsPanelRef} style={{ position: 'absolute', left: 0, top: 0, zIndex: 1000, backgroundColor: '#2D2D2D' }}>
           <JointsPanel joints={joints} onConstruct={handleConstruct} />
+        </div>
+      </Draggable>
+      <Draggable
+        nodeRef={genderPanelRef}
+        position={genderPanelPosition}
+        onStop={(e, data) => setGenderPanelPosition({ x: data.x, y: data.y })}
+      >
+        <div ref={genderPanelRef} style={{ position: 'absolute', left: 0, top: '150px', zIndex: 1000, backgroundColor: '#2D2D2D' }}>
+          <GenderPanel onGenderChange={handleGenderChange} currentGender={gender} />
         </div>
       </Draggable>
     </div>
