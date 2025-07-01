@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import xml2js from 'xml2js';
 import Draggable from 'react-draggable';
@@ -10,6 +9,7 @@ const Editor = () => {
   const [limbs, setLimbs] = useState([]);
   const [joints, setJoints] = useState([]);
   const [selectedLimb, setSelectedLimb] = useState(null);
+  const [ragdollLimbScale, setRagdollLimbScale] = useState(1);
   const [headAttachments, setHeadAttachments] = useState({
     hair: [],
     beard: [],
@@ -38,7 +38,8 @@ const Editor = () => {
         const gender = 'female';
 
         // Get Ragdoll.LimbScale
-        const ragdollLimbScale = parseFloat(ragdoll.$.LimbScale || 1);
+        const limbScale = parseFloat(ragdoll.$.LimbScale || 1);
+        setRagdollLimbScale(limbScale);
 
         const parsedLimbs = {};
         ragdoll.limb.forEach(limb => {
@@ -131,7 +132,7 @@ const Editor = () => {
         const rootLimb = Object.values(parsedLimbs).find(l => l.type === 'Torso');
         if (rootLimb) {
             calculatedLimbPositions[rootLimb.id] = {
-                position: { x: 300, y: 500 },
+                position: { x: 500, y: 500 },
                 rotation: rootLimb.rotation,
             };
 
@@ -151,28 +152,11 @@ const Editor = () => {
                             const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
                             const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
 
-                            const parentRotationRad = parentTransform.rotation * (Math.PI / 180);
-                            const childRotationRad = childLimb.rotation * (Math.PI / 180);
-
-                            // Parent (limb1)
-                            const p_origin1_px = { x: parentLimb.size.width * parentLimb.origin.x, y: parentLimb.size.height * parentLimb.origin.y };
-                            const p_vec_o_a_1_local = { x: limb1Anchor[0] - p_origin1_px.x, y: limb1Anchor[1] - p_origin1_px.y };
-                            const p_vec_o_a_1_rotated = {
-                                x: p_vec_o_a_1_local.x * Math.cos(parentRotationRad) - p_vec_o_a_1_local.y * Math.sin(parentRotationRad),
-                                y: p_vec_o_a_1_local.x * Math.sin(parentRotationRad) + p_vec_o_a_1_local.y * Math.cos(parentRotationRad)
-                            };
-
-                            // Child (limb2)
-                            const c_origin2_px = { x: childLimb.size.width * childLimb.origin.x, y: childLimb.size.height * childLimb.origin.y };
-                            const c_vec_o_a_2_local = { x: limb2Anchor[0] - c_origin2_px.x, y: limb2Anchor[1] - c_origin2_px.y };
-                            const c_vec_o_a_2_rotated = {
-                                x: c_vec_o_a_2_local.x * Math.cos(childRotationRad) - c_vec_o_a_2_local.y * Math.sin(childRotationRad),
-                                y: c_vec_o_a_2_local.x * Math.sin(childRotationRad) + c_vec_o_a_2_local.y * Math.cos(childRotationRad)
-                            };
-
-                            // position2 = position1 + origin1_px - origin2_px + rotate(anchor1 - origin1) - rotate(anchor2 - origin2)
-                            const childPosX = parentTransform.position.x + p_origin1_px.x - c_origin2_px.x + p_vec_o_a_1_rotated.x - c_vec_o_a_2_rotated.x;
-                            const childPosY = parentTransform.position.y + p_origin1_px.y - c_origin2_px.y + p_vec_o_a_1_rotated.y - c_vec_o_a_2_rotated.y;
+                            const scale1 = parentLimb.scale;
+                            const scale2 = childLimb.scale;
+                            // y轴翻转
+                            const childPosX = parentTransform.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
+                            const childPosY = parentTransform.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
 
                             calculatedLimbPositions[childId] = {
                                 position: { x: childPosX, y: childPosY },
@@ -233,31 +217,14 @@ const Editor = () => {
 
     if (!limb1 || !limb2) return;
 
+    const scale1 = limb1.scale;
+    const scale2 = limb2.scale;
     const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
     const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
 
-    const parentRotationRad = limb1.rotation * (Math.PI / 180);
-    const childRotationRad = limb2.rotation * (Math.PI / 180);
-
-    // Parent (limb1)
-    const p_origin1_px = { x: limb1.size.width * limb1.origin.x, y: limb1.size.height * limb1.origin.y };
-    const p_vec_o_a_1_local = { x: limb1Anchor[0] - p_origin1_px.x, y: limb1Anchor[1] - p_origin1_px.y };
-    const p_vec_o_a_1_rotated = {
-        x: p_vec_o_a_1_local.x * Math.cos(parentRotationRad) - p_vec_o_a_1_local.y * Math.sin(parentRotationRad),
-        y: p_vec_o_a_1_local.x * Math.sin(parentRotationRad) + p_vec_o_a_1_local.y * Math.cos(parentRotationRad)
-    };
-
-    // Child (limb2)
-    const c_origin2_px = { x: limb2.size.width * limb2.origin.x, y: limb2.size.height * limb2.origin.y };
-    const c_vec_o_a_2_local = { x: limb2Anchor[0] - c_origin2_px.x, y: limb2Anchor[1] - c_origin2_px.y };
-    const c_vec_o_a_2_rotated = {
-        x: c_vec_o_a_2_local.x * Math.cos(childRotationRad) - c_vec_o_a_2_local.y * Math.sin(childRotationRad),
-        y: c_vec_o_a_2_local.x * Math.sin(childRotationRad) + c_vec_o_a_2_local.y * Math.cos(childRotationRad)
-    };
-
-    // position2 = position1 + origin1_px - origin2_px + rotate(anchor1 - origin1) - rotate(anchor2 - origin2)
-    const childPosX = limb1.position.x + p_origin1_px.x - c_origin2_px.x + p_vec_o_a_1_rotated.x - c_vec_o_a_2_rotated.x;
-    const childPosY = limb1.position.y + p_origin1_px.y - c_origin2_px.y + p_vec_o_a_1_rotated.y - c_vec_o_a_2_rotated.y;
+    // y轴翻转
+    const childPosX = limb1.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
+    const childPosY = limb1.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
 
     const updatedLimb2 = { ...limb2, position: { x: childPosX, y: childPosY } };
     handleUpdateLimb(updatedLimb2);
