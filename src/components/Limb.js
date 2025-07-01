@@ -88,9 +88,9 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb }) =>
         {/* {renderJointAnchors()} */}
         {limb.name.includes('Head') && (
             <>
-                {renderAttachment(limb.selectedHair)}
-                {renderAttachment(limb.selectedBeard)}
-                {renderAttachment(limb.selectedFaceAttachment)}
+                {Object.keys(limb).filter(key => key.startsWith('selected')).map(key => (
+                    renderAttachment(limb[key])
+                ))}
             </>
         )}
       </div>

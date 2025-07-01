@@ -112,39 +112,29 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
       )}
             {selectedLimb.name.includes('Head') && (
                 <>
-                    {headAttachments.hair.length > 0 && (
-                        <div style={{ marginBottom: '10px' }}>
-                            <label style={{ display: 'block', marginBottom: '5px' }}>Hair:</label>
-                            <select name="selectedHair" onChange={handleChange} value={selectedLimb.selectedHair ? selectedLimb.selectedHair.id : ''}> 
-                                <option value="">None</option>
-                                {headAttachments.hair.map(hair => (
-                                    <option key={hair.id} value={hair.id}>{hair.name}</option> 
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                    {headAttachments.beard.length > 0 && (
-                        <div style={{ marginBottom: '10px' }}>
-                            <label style={{ display: 'block', marginBottom: '5px' }}>Beard:</label>
-                            <select name="selectedBeard" onChange={handleChange} value={selectedLimb.selectedBeard ? selectedLimb.selectedBeard.id : ''}> 
-                                <option value="">None</option>
-                                {headAttachments.beard.map(beard => (
-                                    <option key={beard.id} value={beard.id}>{beard.name}</option> 
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                    {headAttachments.faceattachment.length > 0 && (
-                        <div style={{ marginBottom: '10px' }}>
-                            <label style={{ display: 'block', marginBottom: '5px' }}>Face Attachment:</label>
-                            <select name="selectedFaceAttachment" onChange={handleChange} value={selectedLimb.selectedFaceAttachment ? selectedLimb.selectedFaceAttachment.id : ''}> 
-                                <option value="">None</option>
-                                {headAttachments.faceattachment.map(att => (
-                                    <option key={att.id} value={att.id}>{att.name}</option> 
-                                ))}
-                            </select>
-                        </div>
-                    )}
+                    {Object.keys(headAttachments).map(type => {
+                        const attachments = headAttachments[type];
+                        if (attachments.length === 0) return null;
+
+                        const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+                        const selectedAttachmentKey = `selected${capitalizedType}`;
+
+                        return (
+                            <div key={type} style={{ marginBottom: '10px' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>{capitalizedType}:</label>
+                                <select 
+                                    name={selectedAttachmentKey} 
+                                    onChange={handleChange} 
+                                    value={selectedLimb[selectedAttachmentKey] ? selectedLimb[selectedAttachmentKey].id : ''}
+                                > 
+                                    <option value="">None</option>
+                                    {attachments.map(att => (
+                                        <option key={att.id} value={att.id}>{att.name}</option> 
+                                    ))}
+                                </select>
+                            </div>
+                        );
+                    })}
                 </>
             )}
     </div>
