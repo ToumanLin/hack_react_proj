@@ -64,7 +64,7 @@ const Editor = () => {
               size: { width, height },
               origin: { x: origin[0], y: origin[1] },
               depth: parseFloat(sprite.$.Depth),
-              rotation: parseFloat(limb.$.SpriteOrientation || 0) || 0, // Default to 0 if NaN
+              rotation: parseFloat(0), // We are static display, so rotation is 0
               scale: scale,
               type: limb.$.Type,
             };
@@ -222,7 +222,7 @@ const Editor = () => {
     const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
     const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
 
-    // y轴翻转
+    // Flip y axis
     const childPosX = limb1.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
     const childPosY = limb1.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
 

@@ -49,73 +49,6 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb }) =>
     return <div key={attachment.id} style={attStyle} />;
   };
 
-  const renderJointAnchors = () => {
-    if (!isSelected || !joints) return null;
-
-    const relevantJoints = joints.filter(j => j.$.Limb1 === limb.id || j.$.Limb2 === limb.id);
-    if (relevantJoints.length === 0) return null;
-
-    const anchorStyle = {
-      position: 'absolute',
-      width: '10px',
-      height: '10px',
-      borderRadius: '50%',
-      zIndex: 9999, // Always on top
-    };
-
-    return relevantJoints.map(joint => {
-      const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-      const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
-
-      const anchor1IsOnThisLimb = joint.$.Limb1 === limb.id;
-      const anchor2IsOnThisLimb = joint.$.Limb2 === limb.id;
-
-      const rotationRad = 0; // Force rotation to 0 for debugging
-      const originPx = { x: limb.size.width * limb.origin.x, y: limb.size.height * limb.origin.y };
-
-      const calculateWorldCoords = (anchor) => {
-        const rotatedAnchor = {
-            x: anchor[0] * Math.cos(rotationRad) - anchor[1] * Math.sin(rotationRad),
-            y: anchor[0] * Math.sin(rotationRad) + anchor[1] * Math.cos(rotationRad)
-        };
-        return {
-            x: limb.position.x + originPx.x + rotatedAnchor.x,
-            y: limb.position.y + originPx.y + rotatedAnchor.y
-        };
-      };
-
-      const worldCoords1 = calculateWorldCoords(limb1Anchor);
-      const worldCoords2 = calculateWorldCoords(limb2Anchor);
-
-      return (
-        <React.Fragment key={`${joint.$.Limb1}-${joint.$.Limb2}`}>
-          {anchor1IsOnThisLimb && (
-            <div 
-              style={{ 
-                ...anchorStyle, 
-                backgroundColor: 'red', 
-                left: `${limb.size.width * limb.origin.x + limb1Anchor[0]}px`,
-                top: `${limb.size.height * limb.origin.y + limb1Anchor[1]}px` 
-              }} 
-              title={`Joint ${joint.$.Limb1}-${joint.$.Limb2} Anchor:1 (${worldCoords1.x.toFixed(0)},${worldCoords1.y.toFixed(0)})`}
-            />
-          )}
-          {anchor2IsOnThisLimb && (
-            <div 
-              style={{ 
-                ...anchorStyle, 
-                backgroundColor: 'blue', 
-                left: `${limb.size.width * limb.origin.x + limb2Anchor[0]}px`,
-                top: `${limb.size.height * limb.origin.y + limb2Anchor[1]}px` 
-              }} 
-              title={`Joint ${joint.$.Limb1}-${joint.$.Limb2} Anchor:2 (${worldCoords2.x.toFixed(0)},${worldCoords2.y.toFixed(0)})`}
-            />
-          )}
-        </React.Fragment>
-      );
-    });
-  };
-
   return (
     <Draggable
       nodeRef={nodeRef}
@@ -151,18 +84,8 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb }) =>
             </div>
         )}
         <div style={innerStyle} />
-        <div style={{
-            position: 'absolute',
-            left: `${limb.size.width * limb.origin.x}px`,
-            top: `${limb.size.height * limb.origin.y}px`,
-            width: '8px',
-            height: '8px',
-            backgroundColor: 'white',
-            borderRadius: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 10000,
-        }} title={`Limb Position: (${limb.position.x.toFixed(0)}, ${limb.position.y.toFixed(0)})`} />
-        {renderJointAnchors()}
+        <div title={`Limb Position: (${limb.position.x.toFixed(0)}, ${limb.position.y.toFixed(0)})`} />
+        {/* {renderJointAnchors()} */}
         {limb.name.includes('Head') && (
             <>
                 {renderAttachment(limb.selectedHair)}
