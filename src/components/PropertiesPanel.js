@@ -37,10 +37,10 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
   };
 
   return (
-    <div style={{ padding: '10px', borderLeft: '1px solid #ccc', width: '250px', color: 'white' }}>
-      <h3 style={{ color: 'white' }}>{selectedLimb.name}</h3>
-      <div>
-        <label>Position X:</label>
+    <div style={{ padding: '10px', width: '300px', color: 'white', textAlign: 'left' }}>
+      <h3 style={{ color: 'white', textAlign: 'left' }}>{selectedLimb.name}</h3>
+      <div style={{ marginBottom: '10px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>Position X:</label>
         <input
           type="number"
           name="position.x"
@@ -49,8 +49,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
           // readOnly // Remove read-only
         />
       </div>
-      <div>
-        <label>Position Y:</label>
+      <div style={{ marginBottom: '10px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>Position Y:</label>
         <input
           type="number"
           name="position.y"
@@ -59,8 +59,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
           // readOnly // Remove read-only
         />
       </div>
-      <div>
-        <label>Depth (z-index):</label>
+      <div style={{ marginBottom: '10px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>Depth (z-index):</label>
         <input
           type="number"
           name="depth"
@@ -69,8 +69,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
           onChange={handleChange}
         />
       </div>
-      <div>
-        <label>Rotation:</label>
+      <div style={{ marginBottom: '10px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>Rotation:</label>
         <input
           type="number"
           name="rotation"
@@ -78,8 +78,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
           onChange={handleChange}
         />
       </div>
-      <div>
-        <label>Scale:</label>
+      <div style={{ marginBottom: '10px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>Scale:</label>
         <input
           type="number"
           name="scale"
@@ -90,8 +90,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
       </div>
       {(selectedLimb.name.includes('Head') || selectedLimb.type === 'Hair' || selectedLimb.type === 'Beard' || selectedLimb.type === 'FaceAttachment') && selectedLimb.sheetIndex && (
         <>
-            <div>
-                <label>Sheet Index X:</label>
+            <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Sheet Index X:</label>
                 <input
                 type="number"
                 name="sheetIndex[0]"
@@ -99,8 +99,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
                 onChange={handleChange}
                 />
             </div>
-            <div>
-                <label>Sheet Index Y:</label>
+            <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Sheet Index Y:</label>
                 <input
                 type="number"
                 name="sheetIndex[1]"
@@ -113,8 +113,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
             {selectedLimb.name.includes('Head') && (
                 <>
                     {headAttachments.hair.length > 0 && (
-                        <div>
-                            <label>Hair:</label>
+                        <div style={{ marginBottom: '10px' }}>
+                            <label style={{ display: 'block', marginBottom: '5px' }}>Hair:</label>
                             <select name="selectedHair" onChange={handleChange} value={selectedLimb.selectedHair ? selectedLimb.selectedHair.id : ''}> 
                                 <option value="">None</option>
                                 {headAttachments.hair.map(hair => (
@@ -124,8 +124,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
                         </div>
                     )}
                     {headAttachments.beard.length > 0 && (
-                        <div>
-                            <label>Beard:</label>
+                        <div style={{ marginBottom: '10px' }}>
+                            <label style={{ display: 'block', marginBottom: '5px' }}>Beard:</label>
                             <select name="selectedBeard" onChange={handleChange} value={selectedLimb.selectedBeard ? selectedLimb.selectedBeard.id : ''}> 
                                 <option value="">None</option>
                                 {headAttachments.beard.map(beard => (
@@ -135,8 +135,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
                         </div>
                     )}
                     {headAttachments.faceAttachment.length > 0 && (
-                        <div>
-                            <label>Face Attachment:</label>
+                        <div style={{ marginBottom: '10px' }}>
+                            <label style={{ display: 'block', marginBottom: '5px' }}>Face Attachment:</label>
                             <select name="selectedFaceAttachment" onChange={handleChange} value={selectedLimb.selectedFaceAttachment ? selectedLimb.selectedFaceAttachment.id : ''}> 
                                 <option value="">None</option>
                                 {headAttachments.faceAttachment.map(att => (

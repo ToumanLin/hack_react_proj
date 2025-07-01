@@ -135,7 +135,7 @@ const Editor = () => {
         const rootLimb = Object.values(parsedLimbs).find(l => l.type === 'Torso');
         if (rootLimb) {
             calculatedLimbPositions[rootLimb.id] = {
-                position: { x: 500, y: 500 },
+                position: { x: 500, y: 300 },
                 rotation: rootLimb.rotation,
             };
 
@@ -327,7 +327,7 @@ const Editor = () => {
         position={genderPanelPosition}
         onStop={(e, data) => setGenderPanelPosition({ x: data.x, y: data.y })}
       >
-        <div ref={genderPanelRef} style={{ position: 'absolute', left: 0, top: '150px', zIndex: 1000, backgroundColor: '#2D2D2D' }}>
+        <div ref={genderPanelRef} style={{ position: 'absolute', left: 0, top: '600px', zIndex: 1000, backgroundColor: '#2D2D2D' }}>
           <GenderPanel onGenderChange={handleGenderChange} currentGender={gender} />
         </div>
       </Draggable>
