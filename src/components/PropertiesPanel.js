@@ -37,8 +37,8 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
   };
 
   return (
-    <div style={{ padding: '10px', borderLeft: '1px solid #ccc', width: '250px' }}>
-      <h3>{selectedLimb.name}</h3>
+    <div style={{ padding: '10px', borderLeft: '1px solid #ccc', width: '250px', color: 'white' }}>
+      <h3 style={{ color: 'white' }}>{selectedLimb.name}</h3>
       <div>
         <label>Position X:</label>
         <input

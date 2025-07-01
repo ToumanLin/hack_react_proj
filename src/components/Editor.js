@@ -4,9 +4,11 @@ import xml2js from 'xml2js';
 import Draggable from 'react-draggable';
 import Limb from './Limb';
 import PropertiesPanel from './PropertiesPanel';
+import JointsPanel from './JointsPanel';
 
 const Editor = () => {
   const [limbs, setLimbs] = useState([]);
+  const [joints, setJoints] = useState([]);
   const [selectedLimb, setSelectedLimb] = useState(null);
   const [headAttachments, setHeadAttachments] = useState({
     hair: [],
@@ -16,6 +18,8 @@ const Editor = () => {
 
   const panelRef = useRef(null);
   const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
+  const jointsPanelRef = useRef(null);
+  const [jointsPanelPosition, setJointsPanelPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const parseXMLAndCalculatePose = async () => {
@@ -38,11 +42,15 @@ const Editor = () => {
 
         const parsedLimbs = {};
         ragdoll.limb.forEach(limb => {
-            const sprite = limb.sprite; 
+            const sprite = limb.sprite;
             let sourceRect = sprite.$.SourceRect.split(',').map(Number);
             let [x, y, width, height] = sourceRect;
-            
-            const scale = parseFloat(limb.$.Scale || 1); 
+            let origin = [0.5, 0.5]; // Default origin
+            if (sprite.$.Origin) {
+                origin = sprite.$.Origin.split(',').map(Number);
+            }
+
+            const scale = parseFloat(limb.$.Scale || 1);
 
             let texturePath = (sprite.$.Texture || ragdoll.$.Texture).replace('[GENDER]', gender);
             texturePath = texturePath.replace('Content/Characters/Human/', '/assets/');
@@ -52,8 +60,9 @@ const Editor = () => {
               name: limb.$.Name,
               texture: texturePath,
               position: { x: 0, y: 0 }, // Will be calculated initially
-              size: { width, height }, 
-              depth: parseFloat(sprite.$.Depth), 
+              size: { width, height },
+              origin: { x: origin[0], y: origin[1] },
+              depth: parseFloat(sprite.$.Depth),
               rotation: parseFloat(limb.$.SpriteOrientation || 0) || 0, // Default to 0 if NaN
               scale: scale,
               type: limb.$.Type,
@@ -108,9 +117,10 @@ const Editor = () => {
         }
 
         // --- Ragdoll Pose Calculation (Initial Pose) ---
-        const joints = ragdoll.joint;
+        const ragdollJoints = ragdoll.joint;
+        setJoints(ragdollJoints);
         const limbGraph = {}; // Adjacency list for limbs
-        joints.forEach(joint => {
+        ragdollJoints.forEach(joint => {
             const limb1Id = joint.$.Limb1;
             const limb2Id = joint.$.Limb2;
             if (!limbGraph[limb1Id]) limbGraph[limb1Id] = [];
@@ -138,31 +148,31 @@ const Editor = () => {
                     limbGraph[parentLimbId].forEach(({ joint, childId }) => {
                         if (!visited.has(childId)) {
                             const childLimb = parsedLimbs[childId];
-                            let limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-                            let limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
-
-                            // Apply Ragdoll.LimbScale to anchors
-                            limb1Anchor[0] *= ragdollLimbScale;
-                            limb1Anchor[1] *= ragdollLimbScale;
-                            limb2Anchor[0] *= ragdollLimbScale;
-                            limb2Anchor[1] *= ragdollLimbScale;
-
-                            // Invert Y-coordinates for anchors to match web coordinate system
-                            limb1Anchor[1] = -limb1Anchor[1];
-                            limb2Anchor[1] = -limb2Anchor[1];
+                            const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
+                            const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
 
                             const parentRotationRad = parentTransform.rotation * (Math.PI / 180);
                             const childRotationRad = childLimb.rotation * (Math.PI / 180);
 
-                            const globalAnchorX = parentTransform.position.x + 
-                                (limb1Anchor[0] * Math.cos(parentRotationRad) - limb1Anchor[1] * Math.sin(parentRotationRad));
-                            const globalAnchorY = parentTransform.position.y + 
-                                (limb1Anchor[0] * Math.sin(parentRotationRad) + limb1Anchor[1] * Math.cos(parentRotationRad));
+                            // Parent (limb1)
+                            const p_origin1_px = { x: parentLimb.size.width * parentLimb.origin.x, y: parentLimb.size.height * parentLimb.origin.y };
+                            const p_vec_o_a_1_local = { x: limb1Anchor[0] - p_origin1_px.x, y: limb1Anchor[1] - p_origin1_px.y };
+                            const p_vec_o_a_1_rotated = {
+                                x: p_vec_o_a_1_local.x * Math.cos(parentRotationRad) - p_vec_o_a_1_local.y * Math.sin(parentRotationRad),
+                                y: p_vec_o_a_1_local.x * Math.sin(parentRotationRad) + p_vec_o_a_1_local.y * Math.cos(parentRotationRad)
+                            };
 
-                            const childPosX = globalAnchorX - 
-                                (limb2Anchor[0] * Math.cos(childRotationRad) - limb2Anchor[1] * Math.sin(childRotationRad));
-                            const childPosY = globalAnchorY - 
-                                (limb2Anchor[0] * Math.sin(childRotationRad) + limb2Anchor[1] * Math.cos(childRotationRad));
+                            // Child (limb2)
+                            const c_origin2_px = { x: childLimb.size.width * childLimb.origin.x, y: childLimb.size.height * childLimb.origin.y };
+                            const c_vec_o_a_2_local = { x: limb2Anchor[0] - c_origin2_px.x, y: limb2Anchor[1] - c_origin2_px.y };
+                            const c_vec_o_a_2_rotated = {
+                                x: c_vec_o_a_2_local.x * Math.cos(childRotationRad) - c_vec_o_a_2_local.y * Math.sin(childRotationRad),
+                                y: c_vec_o_a_2_local.x * Math.sin(childRotationRad) + c_vec_o_a_2_local.y * Math.cos(childRotationRad)
+                            };
+
+                            // position2 = position1 + origin1_px - origin2_px + rotate(anchor1 - origin1) - rotate(anchor2 - origin2)
+                            const childPosX = parentTransform.position.x + p_origin1_px.x - c_origin2_px.x + p_vec_o_a_1_rotated.x - c_vec_o_a_2_rotated.x;
+                            const childPosY = parentTransform.position.y + p_origin1_px.y - c_origin2_px.y + p_vec_o_a_1_rotated.y - c_vec_o_a_2_rotated.y;
 
                             calculatedLimbPositions[childId] = {
                                 position: { x: childPosX, y: childPosY },
@@ -217,6 +227,42 @@ const Editor = () => {
     setSelectedLimb(limb);
   };
 
+  const handleConstruct = (joint) => {
+    const limb1 = limbs.find(l => l.id === joint.$.Limb1);
+    const limb2 = limbs.find(l => l.id === joint.$.Limb2);
+
+    if (!limb1 || !limb2) return;
+
+    const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
+    const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+
+    const parentRotationRad = limb1.rotation * (Math.PI / 180);
+    const childRotationRad = limb2.rotation * (Math.PI / 180);
+
+    // Parent (limb1)
+    const p_origin1_px = { x: limb1.size.width * limb1.origin.x, y: limb1.size.height * limb1.origin.y };
+    const p_vec_o_a_1_local = { x: limb1Anchor[0] - p_origin1_px.x, y: limb1Anchor[1] - p_origin1_px.y };
+    const p_vec_o_a_1_rotated = {
+        x: p_vec_o_a_1_local.x * Math.cos(parentRotationRad) - p_vec_o_a_1_local.y * Math.sin(parentRotationRad),
+        y: p_vec_o_a_1_local.x * Math.sin(parentRotationRad) + p_vec_o_a_1_local.y * Math.cos(parentRotationRad)
+    };
+
+    // Child (limb2)
+    const c_origin2_px = { x: limb2.size.width * limb2.origin.x, y: limb2.size.height * limb2.origin.y };
+    const c_vec_o_a_2_local = { x: limb2Anchor[0] - c_origin2_px.x, y: limb2Anchor[1] - c_origin2_px.y };
+    const c_vec_o_a_2_rotated = {
+        x: c_vec_o_a_2_local.x * Math.cos(childRotationRad) - c_vec_o_a_2_local.y * Math.sin(childRotationRad),
+        y: c_vec_o_a_2_local.x * Math.sin(childRotationRad) + c_vec_o_a_2_local.y * Math.cos(childRotationRad)
+    };
+
+    // position2 = position1 + origin1_px - origin2_px + rotate(anchor1 - origin1) - rotate(anchor2 - origin2)
+    const childPosX = limb1.position.x + p_origin1_px.x - c_origin2_px.x + p_vec_o_a_1_rotated.x - c_vec_o_a_2_rotated.x;
+    const childPosY = limb1.position.y + p_origin1_px.y - c_origin2_px.y + p_vec_o_a_1_rotated.y - c_vec_o_a_2_rotated.y;
+
+    const updatedLimb2 = { ...limb2, position: { x: childPosX, y: childPosY } };
+    handleUpdateLimb(updatedLimb2);
+  };
+
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <div style={{ flex: 1, position: 'relative', backgroundColor: '#3e3e3e' }}>
@@ -227,7 +273,9 @@ const Editor = () => {
             onUpdate={handleUpdateLimb}
             onSelect={handleSelectLimb} 
             isSelected={selectedLimb && selectedLimb.id === limb.id}
-            headAttachments={headAttachments} 
+            headAttachments={headAttachments}
+            joints={joints}
+            selectedLimb={selectedLimb}
           />
         ))}
       </div>
@@ -236,12 +284,21 @@ const Editor = () => {
         position={panelPosition}
         onStop={(e, data) => setPanelPosition({ x: data.x, y: data.y })}
       >
-        <div ref={panelRef} style={{ position: 'absolute', right: 0, top: 0, zIndex: 1000 }}>
+        <div ref={panelRef} style={{ position: 'absolute', right: 0, top: 0, zIndex: 1000, backgroundColor: '#2D2D2D' }}>
           <PropertiesPanel 
             selectedLimb={selectedLimb} 
             onUpdate={handleUpdateLimb}
             headAttachments={headAttachments} 
           />
+        </div>
+      </Draggable>
+      <Draggable
+        nodeRef={jointsPanelRef}
+        position={jointsPanelPosition}
+        onStop={(e, data) => setJointsPanelPosition({ x: data.x, y: data.y })}
+      >
+        <div ref={jointsPanelRef} style={{ position: 'absolute', left: 0, top: 0, zIndex: 1000, backgroundColor: '#2D2D2D' }}>
+          <JointsPanel joints={joints} onConstruct={handleConstruct} />
         </div>
       </Draggable>
     </div>
