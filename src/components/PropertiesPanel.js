@@ -36,6 +36,12 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
     });
   };
 
+  const handleRemove = (type) => {
+    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+    const selectedAttachmentKey = `selected${capitalizedType}`;
+    onUpdate({ ...selectedLimb, [selectedAttachmentKey]: null });
+  };
+
   return (
     <div style={{ padding: '10px', width: '300px', color: 'white', textAlign: 'left' }}>
       <h3 style={{ color: 'white', textAlign: 'left' }}>{selectedLimb.name}</h3>
@@ -132,6 +138,7 @@ const PropertiesPanel = ({ selectedLimb, onUpdate, headAttachments }) => {
                                         <option key={att.id} value={att.id}>{att.name}</option> 
                                     ))}
                                 </select>
+                                <button onClick={() => handleRemove(type)} style={{ marginLeft: '10px' }}>Remove</button>
                             </div>
                         );
                     })}
