@@ -5,6 +5,7 @@ import Limb from './Limb';
 import PropertiesPanel from './PropertiesPanel';
 import JointsPanel from './JointsPanel';
 import GenderPanel from './GenderPanel';
+import SpriteSheetViewer from './SpriteSheetViewer';
 
 const Editor = () => {
   const [limbs, setLimbs] = useState([]);
@@ -223,6 +224,13 @@ const Editor = () => {
     setSelectedLimb(limb);
   };
 
+  const handleBackgroundClick = (e) => {
+    // If the click is on the background (not on a limb), deselect the limb
+    if (e.target.classList.contains('editor-background')) {
+      setSelectedLimb(null);
+    }
+  };
+
   const handleGenderChange = (newGender) => {
     setGender(newGender);
   };
@@ -295,7 +303,7 @@ const Editor = () => {
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ flex: 1, position: 'relative', backgroundColor: '#3e3e3e' }}>
+      <div className="editor-background" style={{ flex: 1, position: 'relative', backgroundColor: '#3e3e3e' }} onClick={handleBackgroundClick}>
         {limbs.map(limb => (
           <Limb
             key={limb.id}
@@ -340,6 +348,7 @@ const Editor = () => {
           <GenderPanel onGenderChange={handleGenderChange} currentGender={gender} />
         </div>
       </Draggable>
+      <SpriteSheetViewer gender={gender} />
     </div>
   );
 };
