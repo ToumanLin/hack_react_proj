@@ -218,6 +218,53 @@ const Editor = () => {
     setGender(newGender);
   };
 
+  const handleConstructAll = () => {
+    const rootLimb = limbs.find(l => l.type === 'Torso');
+    if (!rootLimb) return;
+
+    const limbGraph = {};
+    joints.forEach(joint => {
+        const limb1Id = joint.$.Limb1;
+        const limb2Id = joint.$.Limb2;
+        if (!limbGraph[limb1Id]) limbGraph[limb1Id] = [];
+        limbGraph[limb1Id].push({ joint, childId: limb2Id });
+    });
+
+    const newLimbs = [...limbs];
+    const queue = [rootLimb.id];
+    const visited = new Set();
+    visited.add(rootLimb.id);
+
+    while (queue.length > 0) {
+        const parentLimbId = queue.shift();
+        const parentLimb = newLimbs.find(l => l.id === parentLimbId);
+
+        if (limbGraph[parentLimbId]) {
+            limbGraph[parentLimbId].forEach(({ joint, childId }) => {
+                if (!visited.has(childId)) {
+                    const childLimb = newLimbs.find(l => l.id === childId);
+                    const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
+                    const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+
+                    const scale1 = parentLimb.scale;
+                    const scale2 = childLimb.scale;
+
+                    const childPosX = parentLimb.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
+                    const childPosY = parentLimb.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
+
+                    const updatedChildLimb = { ...childLimb, position: { x: childPosX, y: childPosY } };
+                    const index = newLimbs.findIndex(l => l.id === childId);
+                    newLimbs[index] = updatedChildLimb;
+
+                    queue.push(childId);
+                    visited.add(childId);
+                }
+            });
+        }
+    }
+    setLimbs(newLimbs);
+  };
+
   const handleConstruct = (joint) => {
     const limb1 = limbs.find(l => l.id === joint.$.Limb1);
     const limb2 = limbs.find(l => l.id === joint.$.Limb2);
@@ -272,7 +319,7 @@ const Editor = () => {
         onStop={(e, data) => setJointsPanelPosition({ x: data.x, y: data.y })}
       >
         <div ref={jointsPanelRef} style={{ position: 'absolute', left: 0, top: 0, zIndex: 1000, backgroundColor: '#2D2D2D' }}>
-          <JointsPanel joints={joints} onConstruct={handleConstruct} />
+          <JointsPanel joints={joints} onConstruct={handleConstruct} onConstructAll={handleConstructAll} />
         </div>
       </Draggable>
       <Draggable

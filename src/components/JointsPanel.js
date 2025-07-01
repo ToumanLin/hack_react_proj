@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 
-const JointsPanel = ({ joints, onConstruct }) => {
+const JointsPanel = ({ joints, onConstruct, onConstructAll }) => {
   const [hoveredJoint, setHoveredJoint] = useState(null);
 
   return (
     <div style={{ background: '#2d2d2d', color: 'white', padding: '10px', width: '300px' }}>
       <h3>Joints</h3>
+      <button onClick={onConstructAll} style={{ marginBottom: '10px' }}>
+        Construct All Based on Torso
+      </button>
       <ul>
         {joints.map((joint, index) => (
           <li 
