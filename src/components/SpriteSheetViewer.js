@@ -6,6 +6,7 @@ const SpriteSheetViewer = ({ gender }) => {
   const [spriteSheet, setSpriteSheet] = useState(null);
   const [limbs, setLimbs] = useState([]);
   const [hoveredLimb, setHoveredLimb] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const imageRef = useRef(null);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
@@ -47,41 +48,59 @@ const SpriteSheetViewer = ({ gender }) => {
 
   return (
     <Draggable>
-      <div style={{ position: 'absolute', top: '600px', left: '300px', zIndex: 1000, border: '1px solid grey' }}>{/* Make it transparent */}
-        <div style={{ position: 'relative', cursor: 'move', width: imageSize.width, height: imageSize.height }}>
-            {spriteSheet && <img ref={imageRef} src={spriteSheet} alt="Sprite Sheet" onLoad={handleImageLoad} />}
-            {imageRef.current && limbs.map((limb, index) => (
-            <div
-                key={index}
-                onMouseEnter={() => setHoveredLimb(limb)}
-                onMouseLeave={() => setHoveredLimb(null)}
-                style={{
-                    position: 'absolute',
-                    border: `1px solid ${hoveredLimb === limb ? 'yellow' : 'red'}`,
-                    left: limb.rect.x,
-                    top: limb.rect.y,
-                    width: limb.rect.width,
-                    height: limb.rect.height,
-                }}
-            >
-                {hoveredLimb === limb && (
-                    <div style={{
-                        position: 'absolute',
-                        top: '-20px',
-                        left: '0px',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        color: 'white',
-                        padding: '2px 5px',
-                        borderRadius: '3px',
-                        whiteSpace: 'nowrap',
-                        fontSize: '12px',
-                    }}>
-                        {limb.name}
-                    </div>
-                )}
-            </div>
-            ))}
+      <div style={{ position: 'absolute', top: '600px', left: '300px', zIndex: 1000, border: '1px solid grey' }}>
+        <div style={{ padding: '5px', cursor: 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold' }}>Body Sprites</span>
+          <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          style={{
+            background: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '4px 10px',
+            borderRadius: '3px'
+          }}
+        >
+          {isCollapsed ? '+' : '-'}
+          </button>
         </div>
+        {!isCollapsed && (
+          <div style={{ position: 'relative', cursor: 'move', width: imageSize.width, height: imageSize.height }}>
+              {spriteSheet && <img ref={imageRef} src={spriteSheet} alt="Sprite Sheet" onLoad={handleImageLoad} />}
+              {limbs.map((limb, index) => (
+              <div
+                  key={index}
+                  onMouseEnter={() => setHoveredLimb(limb)}
+                  onMouseLeave={() => setHoveredLimb(null)}
+                  style={{
+                      position: 'absolute',
+                      border: `1px solid ${hoveredLimb === limb ? 'yellow' : 'red'}`,
+                      left: limb.rect.x,
+                      top: limb.rect.y,
+                      width: limb.rect.width,
+                      height: limb.rect.height,
+                  }}
+              >
+                  {hoveredLimb === limb && (
+                      <div style={{
+                          position: 'absolute',
+                          top: '-20px',
+                          left: '0px',
+                          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                          color: 'white',
+                          padding: '2px 5px',
+                          borderRadius: '3px',
+                          whiteSpace: 'nowrap',
+                          fontSize: '12px',
+                      }}>
+                          {limb.name}
+                      </div>
+                  )}
+              </div>
+              ))}
+          </div>
+        )}
       </div>
     </Draggable>
   );

@@ -6,6 +6,7 @@ import PropertiesPanel from './PropertiesPanel';
 import JointsPanel from './JointsPanel';
 import GenderPanel from './GenderPanel';
 import SpriteSheetViewer from './SpriteSheetViewer';
+import HeadSheetViewer from './HeadSheetViewer';
 
 const Editor = () => {
   const [limbs, setLimbs] = useState([]);
@@ -13,6 +14,7 @@ const Editor = () => {
   const [selectedLimb, setSelectedLimb] = useState(null);
   const [ragdollLimbScale, setRagdollLimbScale] = useState(1);
   const [headAttachments, setHeadAttachments] = useState({});
+  const [headSprites, setHeadSprites] = useState([]);
 
   const panelRef = useRef(null);
   const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
@@ -118,6 +120,20 @@ const Editor = () => {
             });
         }
         setHeadAttachments(newHeadAttachments);
+
+        // Process Head sprites from Human.xml <Heads> section
+        if (character.Heads && character.Heads.Head) {
+          const heads = Array.isArray(character.Heads.Head) ? character.Heads.Head : [character.Heads.Head];
+          const parsedHeadSprites = heads
+            .filter(head => head.$.tags.includes(gender)) // Only include heads for current gender
+            .map(head => ({
+              name: `Head ${head.$.tags.split(',')[0]}`, // Extract head name from tags
+              texture: `/assets/Human_${gender}_heads.png`, // Use the heads texture
+              sheetIndex: head.$.sheetindex.split(',').map(Number),
+              baseSize: [128, 128], // Assuming a fixed size for head sprites
+            }));
+          setHeadSprites(parsedHeadSprites);
+        }
 
         // Set default selected attachments for the head
         const headLimb = Object.values(parsedLimbs).find(l => l.name.includes('Head'));
@@ -349,6 +365,7 @@ const Editor = () => {
         </div>
       </Draggable>
       <SpriteSheetViewer gender={gender} />
+      <HeadSheetViewer gender={gender} headAttachments={headAttachments} headSprites={headSprites} />
     </div>
   );
 };
