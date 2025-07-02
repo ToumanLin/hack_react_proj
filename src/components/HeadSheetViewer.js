@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
+import { convertTexturePath } from '../utils/textureUtils';
 
 const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
   const [imageSrc, setImageSrc] = useState('');
@@ -11,7 +12,7 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
   const imageRef = useRef(null);
 
   useEffect(() => {
-    const defaultTexture = `/assets/Content/Characters/Human/Human_${gender}_heads.png`;
+    const defaultTexture = convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender);
     if (!selectedTexture) { // Set default only if nothing is selected
       setImageSrc(defaultTexture);
       setSelectedTexture(defaultTexture);

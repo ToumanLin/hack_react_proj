@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import xml2js from 'xml2js';
+import { convertTexturePath } from '../utils/textureUtils';
 
 const Character = () => {
   const [limbs, setLimbs] = useState([]);
@@ -68,7 +69,7 @@ const Character = () => {
             const origin = sprite.$.Origin.split(',').map(Number);
             const depth = parseFloat(sprite.$.Depth);
             let texturePath = sprite.$.Texture || ragdoll.$.Texture;
-            texturePath = texturePath.replace('[GENDER]', gender).replace('Content/Characters/Human/', '/assets/Content/Characters/Human/');
+            texturePath = convertTexturePath(texturePath, gender);
 
             calculatedLimbs.push({
                 name: limb.$.Name,

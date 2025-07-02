@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import xml2js from 'xml2js';
+import { convertTexturePath } from '../utils/textureUtils';
 
 const SpriteSheetViewer = ({ gender }) => {
   const [spriteSheet, setSpriteSheet] = useState(null);
@@ -39,7 +40,23 @@ const SpriteSheetViewer = ({ gender }) => {
   }, []);
 
   useEffect(() => {
-    setSpriteSheet(`/assets/Content/Characters/Human/Human_${gender}.png`);
+    // Get the main texture path from the ragdoll XML
+    const fetchRagdollTexture = async () => {
+      try {
+        const response = await fetch('/assets/Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
+        const xmlText = await response.text();
+        const parser = new xml2js.Parser({ explicitArray: false, mergeAttrs: true });
+        const result = await parser.parseStringPromise(xmlText);
+        const mainTexture = result.Ragdoll.Texture;
+        setSpriteSheet(convertTexturePath(mainTexture, gender));
+      } catch (error) {
+        console.error('Error fetching ragdoll texture:', error);
+        // Fallback to default path
+        setSpriteSheet(convertTexturePath('Content/Characters/Human/Human_[GENDER].png', gender));
+      }
+    };
+    
+    fetchRagdollTexture();
   }, [gender]);
 
   const handleImageLoad = (e) => {

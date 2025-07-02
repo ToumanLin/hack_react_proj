@@ -7,6 +7,7 @@ import JointsPanel from './JointsPanel';
 import GenderPanel from './GenderPanel';
 import SpriteSheetViewer from './SpriteSheetViewer';
 import HeadSheetViewer from './HeadSheetViewer';
+import { convertTexturePath } from '../utils/textureUtils';
 
 const Editor = () => {
   const [limbs, setLimbs] = useState([]);
@@ -59,8 +60,7 @@ const Editor = () => {
             if (!texturePath) {
               texturePath = ragdoll.$.Texture;
             }
-            texturePath = texturePath.replace('[GENDER]', gender);
-            texturePath = texturePath.replace('Content/Characters/Human/', '/assets/Content/Characters/Human/');
+            texturePath = convertTexturePath(texturePath, gender);
 
             const limbData = {
               id: limb.$.ID,
@@ -114,7 +114,7 @@ const Editor = () => {
                     const attachmentData = {
                         id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
                         name: sprite.$.name,
-                        texture: sprite.$.texture.replace('Content/Characters/Human/', '/assets/Content/Characters/Human/'),
+                        texture: convertTexturePath(sprite.$.texture, gender),
                         sheetIndex: sprite.$.sheetindex.split(',').map(Number),
                         type: wearable.$.type,
                         baseSize: [128, 128],
@@ -132,7 +132,7 @@ const Editor = () => {
             .filter(head => head.$.tags.includes(gender)) // Only include heads for current gender
             .map(head => ({
               name: `Head ${head.$.tags.split(',')[0]}`, // Extract head name from tags
-              texture: `/assets/Content/Characters/Human/Human_${gender}_heads.png`, // Use the heads texture
+              texture: convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender), // Use the heads texture from XML
               sheetIndex: head.$.sheetindex.split(',').map(Number),
               baseSize: [128, 128], // Assuming a fixed size for head sprites
             }));
@@ -142,10 +142,15 @@ const Editor = () => {
         // Set default selected attachments for the head
         const headLimb = Object.values(parsedLimbs).find(l => l.name.includes('Head'));
         if (headLimb) {
+            const exceptions = ['hair', 'beard', 'moustache'];
             for (const type in newHeadAttachments) {
                 if (newHeadAttachments[type].length > 0) {
                     const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-                    headLimb[`selected${capitalizedType}`] = newHeadAttachments[type][0];
+                    if (exceptions.includes(type.toLowerCase())) {
+                        headLimb[`selected${capitalizedType}`] = newHeadAttachments[type][0];
+                    } else {
+                        headLimb[`selected${capitalizedType}`] = null;
+                    }
                 }
             }
         }
