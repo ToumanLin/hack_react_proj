@@ -19,5 +19,7 @@ This is a React-based character editor for the game Barotrauma.
     - `Character.js`: Represents the character being edited.
     - `PropertiesPanel.js`: UI for editing character properties.
     - `GenderPanel.js`, `JointsPanel.js`, `Limb.js`: Components for specific character features.
+    - `HeadSheetViewer.js`: Displays a sheet of character heads.
+    - `SpriteSheetViewer.js`: Displays a sprite sheet for the character.
 - The `Reference` directory contains the source code for Barotrauma, which can be used for reference.
 - The `public/assets` directory contains image assets from the game.

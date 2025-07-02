@@ -7,7 +7,7 @@ const Character = () => {
   useEffect(() => {
     const parseXML = async () => {
       try {
-        const response = await fetch('/assets/HumanDefaultRagdoll.xml');
+        const response = await fetch('/assets/Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
         const xmlText = await response.text();
         
         const parser = new xml2js.Parser({ explicitArray: false });
@@ -68,7 +68,7 @@ const Character = () => {
             const origin = sprite.$.Origin.split(',').map(Number);
             const depth = parseFloat(sprite.$.Depth);
             let texturePath = sprite.$.Texture || ragdoll.$.Texture;
-            texturePath = texturePath.replace('[GENDER]', gender).replace('Content/Characters/Human/', '/assets/');
+            texturePath = texturePath.replace('[GENDER]', gender).replace('Content/Characters/Human/', '/assets/Content/Characters/Human/');
 
             calculatedLimbs.push({
                 name: limb.$.Name,

@@ -27,9 +27,9 @@ const Editor = () => {
   useEffect(() => {
     const parseXMLAndCalculatePose = async (gender) => {
       try {
-        const ragdollResponse = await fetch('/assets/HumanDefaultRagdoll.xml');
+        const ragdollResponse = await fetch('/assets/Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
         const ragdollXmlText = await ragdollResponse.text();
-        const characterResponse = await fetch('/assets/Human.xml');
+        const characterResponse = await fetch('/assets/Content/Characters/Human/Human.xml');
         const characterXmlText = await characterResponse.text();
 
         const parser = new xml2js.Parser({ explicitArray: false }); 
@@ -55,8 +55,12 @@ const Editor = () => {
 
             const scale = parseFloat(limb.$.Scale || 1);
 
-            let texturePath = (sprite.$.Texture || ragdoll.$.Texture).replace('[GENDER]', gender);
-            texturePath = texturePath.replace('Content/Characters/Human/', '/assets/');
+            let texturePath = sprite.$.Texture;
+            if (!texturePath) {
+              texturePath = ragdoll.$.Texture;
+            }
+            texturePath = texturePath.replace('[GENDER]', gender);
+            texturePath = texturePath.replace('Content/Characters/Human/', '/assets/Content/Characters/Human/');
 
             const limbData = {
               id: limb.$.ID,
@@ -110,7 +114,7 @@ const Editor = () => {
                     const attachmentData = {
                         id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
                         name: sprite.$.name,
-                        texture: sprite.$.texture.replace('Content/Characters/Human/', '/assets/'),
+                        texture: sprite.$.texture.replace('Content/Characters/Human/', '/assets/Content/Characters/Human/'),
                         sheetIndex: sprite.$.sheetindex.split(',').map(Number),
                         type: wearable.$.type,
                         baseSize: [128, 128],
@@ -128,7 +132,7 @@ const Editor = () => {
             .filter(head => head.$.tags.includes(gender)) // Only include heads for current gender
             .map(head => ({
               name: `Head ${head.$.tags.split(',')[0]}`, // Extract head name from tags
-              texture: `/assets/Human_${gender}_heads.png`, // Use the heads texture
+              texture: `/assets/Content/Characters/Human/Human_${gender}_heads.png`, // Use the heads texture
               sheetIndex: head.$.sheetindex.split(',').map(Number),
               baseSize: [128, 128], // Assuming a fixed size for head sprites
             }));
@@ -161,7 +165,7 @@ const Editor = () => {
         const rootLimb = Object.values(parsedLimbs).find(l => l.type === 'Torso');
         if (rootLimb) {
             calculatedLimbPositions[rootLimb.id] = {
-                position: { x: 500, y: 300 },
+                position: { x: 320, y: 300 },
                 rotation: rootLimb.rotation,
             };
 
@@ -317,9 +321,9 @@ const Editor = () => {
     handleUpdateLimb(updatedLimb2);
   };
 
-  return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <div className="editor-background" style={{ flex: 1, position: 'relative', backgroundColor: '#3e3e3e' }} onClick={handleBackgroundClick}>
+      return (
+      <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#3e3e3e', overflow: 'hidden' }}>
+        <div className="editor-background" style={{ flex: 1, position: 'relative', backgroundColor: '#3e3e3e' }} onClick={handleBackgroundClick}>
         {limbs.map(limb => (
           <Limb
             key={limb.id}

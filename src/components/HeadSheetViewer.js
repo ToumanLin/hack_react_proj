@@ -11,7 +11,7 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
   const imageRef = useRef(null);
 
   useEffect(() => {
-    const defaultTexture = `/assets/Human_${gender}_heads.png`;
+    const defaultTexture = `/assets/Content/Characters/Human/Human_${gender}_heads.png`;
     if (!selectedTexture) { // Set default only if nothing is selected
       setImageSrc(defaultTexture);
       setSelectedTexture(defaultTexture);
@@ -84,7 +84,7 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
 
   return (
     <Draggable>
-      <div style={{ position: 'absolute', top: '600px', left: '600px', zIndex: 1000, border: '1px solid grey' }}>
+      <div style={{ position: 'absolute', top: '600px', left: '820px', zIndex: 1000, border: '1px solid grey' }}>
         <div style={{ padding: '5px', cursor: 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold', marginRight: '5px' }}>Head Sprites</span>
           <select onChange={handleTextureChange} value={selectedTexture} style={{ flex: 1, marginRight: '5px' }}>

@@ -1,0 +1,13 @@
+﻿<PersonalityTraits>
+
+  <!-- Personality traits -->
+  <PersonalityTrait identifier="professional" alloweddialogtags="professional,none" commonness="1" />
+  <PersonalityTrait identifier="laid-back" alloweddialogtags="laid-back,none" commonness="1" />
+  <PersonalityTrait identifier="rude" alloweddialogtags="rude,none" commonness="1" />
+  <PersonalityTrait identifier="tough" alloweddialogtags="tough,none" commonness="1" />
+  <PersonalityTrait identifier="joker" alloweddialogtags="joker,none" commonness="0.5" />
+  <PersonalityTrait identifier="brokenenglish" alloweddialogtags="brokenenglish" commonness="0.5" />
+  <PersonalityTrait identifier="fearful" alloweddialogtags="fearful,none" commonness="0.5" />
+  <PersonalityTrait identifier="crazy" alloweddialogtags="crazy,none" commonness="0.5" />
+
+</PersonalityTraits>

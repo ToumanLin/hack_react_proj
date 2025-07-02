@@ -3,7 +3,7 @@ import Draggable from 'react-draggable';
 
 const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb }) => {
   const [x, y, width, height] = limb.sourceRect;
-  const texturePath = limb.texture.replace('Content/Characters/Human/', '/assets/').replace('.png', '.png');
+  const texturePath = limb.texture; // Use the texture path directly as it's already processed in Editor.js
   const nodeRef = useRef(null);
 
   const calculatedZIndex = Math.round((1 - limb.depth) * 1000);

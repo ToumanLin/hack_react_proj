@@ -13,7 +13,7 @@ const SpriteSheetViewer = ({ gender }) => {
   useEffect(() => {
     const fetchRagdollData = async () => {
       try {
-        const response = await fetch('/assets/HumanDefaultRagdoll.xml');
+        const response = await fetch('/assets/Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
         const xmlText = await response.text();
         const parser = new xml2js.Parser({ explicitArray: false, mergeAttrs: true });
         const result = await parser.parseStringPromise(xmlText);
@@ -39,7 +39,7 @@ const SpriteSheetViewer = ({ gender }) => {
   }, []);
 
   useEffect(() => {
-    setSpriteSheet(`/assets/Human_${gender}.png`);
+    setSpriteSheet(`/assets/Content/Characters/Human/Human_${gender}.png`);
   }, [gender]);
 
   const handleImageLoad = (e) => {
