@@ -25,8 +25,9 @@ const Character = () => {
         const joints = ragdoll.joint;
         const children = {};
         joints.forEach(j => {
-            const parent = j.$.Limb1;
-            const child = j.$.Limb2;
+            // Handle both uppercase and lowercase attribute names for joints
+            const parent = j.$.Limb1 || j.$.limb1;
+            const child = j.$.Limb2 || j.$.limb2;
             if (!children[parent]) children[parent] = [];
             children[parent].push(child);
         });
@@ -43,14 +44,17 @@ const Character = () => {
                 parentTransform = limbTransforms[parentId];
             }
 
-            const joint = joints.find(j => j.$.Limb2 === limbId && j.$.Limb1 === parentId);
+            const joint = joints.find(j => (j.$.Limb2 || j.$.limb2) === limbId && (j.$.Limb1 || j.$.limb1) === parentId);
             
             let localX = 0;
             let localY = 0;
 
             if (joint) {
-                const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-                const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+                // Handle both uppercase and lowercase attribute names for joint anchors
+                const limb1AnchorStr = joint.$.Limb1Anchor || joint.$.limb1anchor;
+                const limb2AnchorStr = joint.$.Limb2Anchor || joint.$.limb2anchor;
+                const limb1Anchor = limb1AnchorStr.split(',').map(Number);
+                const limb2Anchor = limb2AnchorStr.split(',').map(Number);
                 
                 // Simple relative positioning based on anchors
                 // This is a simplification and might need adjustments for rotation
@@ -65,14 +69,26 @@ const Character = () => {
             limbTransforms[limbId] = { x: globalX, y: globalY, rot: rotation };
 
             const sprite = limb.sprite;
-            const sourceRect = sprite.$.SourceRect.split(',').map(Number);
-            const origin = sprite.$.Origin.split(',').map(Number);
-            const depth = parseFloat(sprite.$.Depth);
-            let texturePath = sprite.$.Texture || ragdoll.$.Texture;
+            
+            // Handle both uppercase and lowercase attribute names
+            const sourceRectStr = sprite.$.SourceRect || sprite.$.sourcerect;
+            const originStr = sprite.$.Origin || sprite.$.origin;
+            const depthStr = sprite.$.Depth || sprite.$.depth;
+            const textureStr = sprite.$.Texture || sprite.$.texture;
+            
+            if (!sourceRectStr) {
+              console.warn(`Missing SourceRect for limb ${limb.$.Name}`);
+              return; // Skip this limb if no source rect
+            }
+            
+            const sourceRect = sourceRectStr.split(',').map(Number);
+            const origin = originStr ? originStr.split(',').map(Number) : [0.5, 0.5];
+            const depth = parseFloat(depthStr || 0);
+            let texturePath = textureStr || ragdoll.$.Texture;
             texturePath = convertTexturePath(texturePath, gender);
 
             calculatedLimbs.push({
-                name: limb.$.Name,
+                name: limb.$.Name || limb.$.name,
                 sourceRect,
                 origin,
                 depth,
@@ -87,7 +103,7 @@ const Character = () => {
             }
         }
 
-        const rootLimbId = ragdoll.limb.find(l => l.$.Type === 'Torso').$.ID;
+        const rootLimbId = ragdoll.limb.find(l => (l.$.Type || l.$.type) === 'Torso').$.ID || ragdoll.limb.find(l => (l.$.Type || l.$.type) === 'Torso').$.id;
         calculateLimbTransform(rootLimbId, null);
         
         // Sort by depth for correct layering

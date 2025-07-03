@@ -7,15 +7,18 @@ import JointsPanel from './JointsPanel';
 import GenderPanel from './GenderPanel';
 import SpriteSheetViewer from './SpriteSheetViewer';
 import HeadSheetViewer from './HeadSheetViewer';
+import HeadPanel from './HeadPanel';
 import { convertTexturePath } from '../utils/textureUtils';
 
 const Editor = () => {
   const [limbs, setLimbs] = useState([]);
   const [joints, setJoints] = useState([]);
   const [selectedLimb, setSelectedLimb] = useState(null);
-  const [ragdollLimbScale, setRagdollLimbScale] = useState(1);
   const [headAttachments, setHeadAttachments] = useState({});
   const [headSprites, setHeadSprites] = useState([]);
+  const [selectedHead, setSelectedHead] = useState('');
+  const [selectedAttachments, setSelectedAttachments] = useState({});
+  const [positionAdjustments, setPositionAdjustments] = useState({});
 
   const panelRef = useRef(null);
   const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
@@ -38,44 +41,62 @@ const Editor = () => {
         const characterResult = await parser.parseStringPromise(characterXmlText);
 
         const ragdoll = ragdollResult.Ragdoll;
-        const character = characterResult.Character;
+        // Handle both direct Character and Override.Character structures
+        const character = characterResult.Character || characterResult.Override?.Character;
+        
 
-        // Get Ragdoll.LimbScale
-        const limbScale = parseFloat(ragdoll.$.LimbScale || 1);
-        setRagdollLimbScale(limbScale);
+            // Get Ragdoll.LimbScale - handle both uppercase and lowercase
+    // eslint-disable-next-line no-unused-vars
+    const limbScale = parseFloat(ragdoll.$.LimbScale || ragdoll.$.limbscale || 1);
 
         const parsedLimbs = {};
-        ragdoll.limb.forEach(limb => {
+        // Ensure limb is always an array
+        const limbs = Array.isArray(ragdoll.limb) ? ragdoll.limb : [ragdoll.limb];
+        
+
+        limbs.forEach(limb => {
             const sprite = limb.sprite;
-            let sourceRect = sprite.$.SourceRect.split(',').map(Number);
-            let [x, y, width, height] = sourceRect;
+            
+            // Handle both uppercase and lowercase attribute names
+            const sourceRectStr = sprite.$.SourceRect || sprite.$.sourcerect;
+            const originStr = sprite.$.Origin || sprite.$.origin;
+            const depthStr = sprite.$.Depth || sprite.$.depth;
+            const textureStr = sprite.$.Texture || sprite.$.texture;
+            
+            if (!sourceRectStr) {
+              console.warn(`Missing SourceRect for limb ${limb.$.Name || limb.$.name}`);
+              return; // Skip this limb if no source rect
+            }
+            
+            let sourceRect = sourceRectStr.split(',').map(Number);
+            let [, , width, height] = sourceRect;
             let origin = [0.5, 0.5]; // Default origin
-            if (sprite.$.Origin) {
-                origin = sprite.$.Origin.split(',').map(Number);
+            if (originStr) {
+                origin = originStr.split(',').map(Number);
             }
 
-            const scale = parseFloat(limb.$.Scale || 1);
+            const scale = parseFloat(limb.$.Scale || limb.$.scale || 1);
 
-            let texturePath = sprite.$.Texture;
+            let texturePath = textureStr;
             if (!texturePath) {
-              texturePath = ragdoll.$.Texture;
+              texturePath = ragdoll.$.Texture || ragdoll.$.texture;
             }
             texturePath = convertTexturePath(texturePath, gender);
 
             const limbData = {
-              id: limb.$.ID,
-              name: limb.$.Name,
+              id: limb.$.ID || limb.$.id,
+              name: limb.$.Name || limb.$.name,
               texture: texturePath,
               position: { x: 0, y: 0 }, // Will be calculated initially
               size: { width, height },
               origin: { x: origin[0], y: origin[1] },
-              depth: parseFloat(sprite.$.Depth),
+              depth: parseFloat(depthStr || 0),
               rotation: parseFloat(0), // We are static display, so rotation is 0
               scale: scale,
-              type: limb.$.Type,
+              type: limb.$.Type || limb.$.type,
             };
 
-            if (limb.$.Type === 'Head') {
+            if ((limb.$.Type || limb.$.type) === 'Head') {
                 limbData.sheetIndex = [0, 0];
                 limbData.baseSize = [width, height]; 
                 limbData.sourceRect = [0, 0, width, height]; 
@@ -111,13 +132,50 @@ const Editor = () => {
 
                 const sprite = wearable.sprite;
                 if (sprite) {
+                    // Check if using SheetIndex or SourceRect
+                    const hasSheetIndex = sprite.$.sheetindex || sprite.$.SheetIndex;
+                    const hasSourceRect = sprite.$.sourcerect || sprite.$.SourceRect;
+                    
+                    let sheetIndex, baseSize, sourceRect, origin;
+                    
+                    if (hasSheetIndex) {
+                        // Use SheetIndex - calculate based on Head sprite size from ragdoll
+                        sheetIndex = (sprite.$.sheetindex || sprite.$.SheetIndex || '0,0').split(',').map(Number);
+                        // Get Head sprite size from ragdoll (160x228)
+                        const headLimb = Object.values(parsedLimbs).find(l => l.type === 'Head');
+                        const headSize = headLimb ? headLimb.size : { width: 160, height: 228 };
+                        baseSize = [headSize.width, headSize.height];
+                        sourceRect = [
+                            sheetIndex[0] * headSize.width,
+                            sheetIndex[1] * headSize.height,
+                            headSize.width,
+                            headSize.height
+                        ];
+                        // Use the attachment's own origin from XML, not the head limb's origin
+                        origin = (sprite.$.origin || sprite.$.Origin || '0.5,0.5').split(',').map(Number);
+                    } else if (hasSourceRect) {
+                        // Use SourceRect directly
+                        sourceRect = (sprite.$.sourcerect || sprite.$.SourceRect).split(',').map(Number);
+                        origin = (sprite.$.origin || sprite.$.Origin || '0.5,0.5').split(',').map(Number);
+                        baseSize = [sourceRect[2], sourceRect[3]];
+                        sheetIndex = [0, 0]; // Not used when using SourceRect
+                    } else {
+                        // Fallback
+                        sheetIndex = [0, 0];
+                        baseSize = [128, 128];
+                        sourceRect = [0, 0, 128, 128];
+                        origin = [0.5, 0.5];
+                    }
+
                     const attachmentData = {
                         id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
                         name: sprite.$.name,
-                        texture: convertTexturePath(sprite.$.texture, gender),
-                        sheetIndex: sprite.$.sheetindex.split(',').map(Number),
+                        texture: convertTexturePath(sprite.$.texture || sprite.$.Texture, gender),
+                        sheetIndex: sheetIndex,
+                        sourceRect: sourceRect,
+                        origin: origin,
+                        baseSize: baseSize,
                         type: wearable.$.type,
-                        baseSize: [128, 128],
                     };
                     newHeadAttachments[type].push(attachmentData);
                 }
@@ -133,8 +191,8 @@ const Editor = () => {
             .map(head => ({
               name: `Head ${head.$.tags.split(',')[0]}`, // Extract head name from tags
               texture: convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender), // Use the heads texture from XML
-              sheetIndex: head.$.sheetindex.split(',').map(Number),
-              baseSize: [128, 128], // Assuming a fixed size for head sprites
+              sheetIndex: (head.$.sheetindex || head.$.SheetIndex || '0,0').split(',').map(Number),
+              baseSize: [160, 228], // Use actual head sprite size from ragdoll
             }));
           setHeadSprites(parsedHeadSprites);
         }
@@ -142,7 +200,7 @@ const Editor = () => {
         // Set default selected attachments for the head
         const headLimb = Object.values(parsedLimbs).find(l => l.name.includes('Head'));
         if (headLimb) {
-            const exceptions = ['hair', 'beard', 'moustache'];
+            const exceptions = ['hair', 'beard', 'moustache', 'faceattachment', 'husk', 'herpes'];
             for (const type in newHeadAttachments) {
                 if (newHeadAttachments[type].length > 0) {
                     const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
@@ -156,12 +214,15 @@ const Editor = () => {
         }
 
         // --- Ragdoll Pose Calculation (Initial Pose) ---
-        const ragdollJoints = ragdoll.joint;
+        // Ensure joint is always an array
+        const ragdollJoints = Array.isArray(ragdoll.joint) ? ragdoll.joint : [ragdoll.joint];
+
         setJoints(ragdollJoints);
         const limbGraph = {}; // Adjacency list for limbs
         ragdollJoints.forEach(joint => {
-            const limb1Id = joint.$.Limb1;
-            const limb2Id = joint.$.Limb2;
+            // Handle both uppercase and lowercase attribute names for joints
+            const limb1Id = joint.$.Limb1 || joint.$.limb1;
+            const limb2Id = joint.$.Limb2 || joint.$.limb2;
             if (!limbGraph[limb1Id]) limbGraph[limb1Id] = [];
             limbGraph[limb1Id].push({ joint, childId: limb2Id });
         });
@@ -187,8 +248,11 @@ const Editor = () => {
                     limbGraph[parentLimbId].forEach(({ joint, childId }) => {
                         if (!visited.has(childId)) {
                             const childLimb = parsedLimbs[childId];
-                            const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-                            const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+                            // Handle both uppercase and lowercase attribute names for joint anchors
+                            const limb1AnchorStr = joint.$.Limb1Anchor || joint.$.limb1anchor;
+                            const limb2AnchorStr = joint.$.Limb2Anchor || joint.$.limb2anchor;
+                            const limb1Anchor = limb1AnchorStr.split(',').map(Number);
+                            const limb2Anchor = limb2AnchorStr.split(',').map(Number);
 
                             const scale1 = parentLimb.scale;
                             const scale2 = childLimb.scale;
@@ -217,10 +281,13 @@ const Editor = () => {
                 rotation: calculated ? calculated.rotation : limb.rotation,
             };
         });
+
         setLimbs(finalLimbs);
 
       } catch (error) {
         console.error('Error fetching or parsing XML:', error);
+        console.error('Error details:', error.message);
+        console.error('Error stack:', error.stack);
       }
     };
 
@@ -260,14 +327,58 @@ const Editor = () => {
     setGender(newGender);
   };
 
+  const handleHeadChange = (headName) => {
+    setSelectedHead(headName);
+    // Find the head sprite and update the head limb
+    const headSprite = headSprites.find(head => head.name === headName);
+    if (headSprite) {
+      const headLimb = limbs.find(l => l.name.includes('Head'));
+      if (headLimb) {
+        const updatedHeadLimb = {
+          ...headLimb,
+          sheetIndex: headSprite.sheetIndex,
+          sourceRect: [
+            headSprite.sheetIndex[0] * headSprite.baseSize[0],
+            headSprite.sheetIndex[1] * headSprite.baseSize[1],
+            headSprite.baseSize[0],
+            headSprite.baseSize[1]
+          ]
+        };
+        handleUpdateLimb(updatedHeadLimb);
+      }
+    }
+  };
+
+  const handleAttachmentChange = (type, attachment) => {
+    const newSelectedAttachments = {
+      ...selectedAttachments,
+      [type]: attachment
+    };
+    setSelectedAttachments(newSelectedAttachments);
+
+    // Update the head limb with the selected attachment
+    const headLimb = limbs.find(l => l.name.includes('Head'));
+    if (headLimb) {
+      const updatedHeadLimb = {
+        ...headLimb,
+        [`selected${type.charAt(0).toUpperCase() + type.slice(1)}`]: attachment
+      };
+      handleUpdateLimb(updatedHeadLimb);
+    }
+  };
+
+  const handlePositionAdjustment = (adjustments) => {
+    setPositionAdjustments(adjustments);
+  };
+
   const handleConstructAll = () => {
     const rootLimb = limbs.find(l => l.type === 'Torso');
     if (!rootLimb) return;
 
     const limbGraph = {};
     joints.forEach(joint => {
-        const limb1Id = joint.$.Limb1;
-        const limb2Id = joint.$.Limb2;
+        const limb1Id = joint.$.Limb1 || joint.$.limb1;
+        const limb2Id = joint.$.Limb2 || joint.$.limb2;
         if (!limbGraph[limb1Id]) limbGraph[limb1Id] = [];
         limbGraph[limb1Id].push({ joint, childId: limb2Id });
     });
@@ -285,8 +396,8 @@ const Editor = () => {
             limbGraph[parentLimbId].forEach(({ joint, childId }) => {
                 if (!visited.has(childId)) {
                     const childLimb = newLimbs.find(l => l.id === childId);
-                    const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-                    const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+                    const limb1Anchor = (joint.$.Limb1Anchor || joint.$.limb1anchor).split(',').map(Number);
+                    const limb2Anchor = (joint.$.Limb2Anchor || joint.$.limb2anchor).split(',').map(Number);
 
                     const scale1 = parentLimb.scale;
                     const scale2 = childLimb.scale;
@@ -308,15 +419,15 @@ const Editor = () => {
   };
 
   const handleConstruct = (joint) => {
-    const limb1 = limbs.find(l => l.id === joint.$.Limb1);
-    const limb2 = limbs.find(l => l.id === joint.$.Limb2);
+    const limb1 = limbs.find(l => l.id === (joint.$.Limb1 || joint.$.limb1));
+    const limb2 = limbs.find(l => l.id === (joint.$.Limb2 || joint.$.limb2));
 
     if (!limb1 || !limb2) return;
 
     const scale1 = limb1.scale;
     const scale2 = limb2.scale;
-    const limb1Anchor = joint.$.Limb1Anchor.split(',').map(Number);
-    const limb2Anchor = joint.$.Limb2Anchor.split(',').map(Number);
+    const limb1Anchor = (joint.$.Limb1Anchor || joint.$.limb1anchor).split(',').map(Number);
+    const limb2Anchor = (joint.$.Limb2Anchor || joint.$.limb2anchor).split(',').map(Number);
 
     // Flip y axis
     const childPosX = limb1.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
@@ -325,6 +436,7 @@ const Editor = () => {
     const updatedLimb2 = { ...limb2, position: { x: childPosX, y: childPosY } };
     handleUpdateLimb(updatedLimb2);
   };
+
 
       return (
       <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#3e3e3e', overflow: 'hidden' }}>
@@ -339,6 +451,7 @@ const Editor = () => {
             headAttachments={headAttachments}
             joints={joints}
             selectedLimb={selectedLimb}
+            positionAdjustments={positionAdjustments}
           />
         ))}
       </div>
@@ -351,7 +464,6 @@ const Editor = () => {
           <PropertiesPanel 
             selectedLimb={selectedLimb} 
             onUpdate={handleUpdateLimb}
-            headAttachments={headAttachments} 
           />
         </div>
       </Draggable>
@@ -375,6 +487,16 @@ const Editor = () => {
       </Draggable>
       <SpriteSheetViewer gender={gender} />
       <HeadSheetViewer gender={gender} headAttachments={headAttachments} headSprites={headSprites} />
+              <HeadPanel 
+          gender={gender} 
+          headSprites={headSprites} 
+          headAttachments={headAttachments} 
+          selectedHead={selectedHead} 
+          selectedAttachments={selectedAttachments}
+          onHeadChange={handleHeadChange}
+          onAttachmentChange={handleAttachmentChange}
+          onPositionAdjustment={handlePositionAdjustment}
+        />
     </div>
   );
 };

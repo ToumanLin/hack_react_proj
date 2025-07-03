@@ -19,9 +19,17 @@ const SpriteSheetViewer = ({ gender }) => {
         const parser = new xml2js.Parser({ explicitArray: false, mergeAttrs: true });
         const result = await parser.parseStringPromise(xmlText);
         const limbData = result.Ragdoll.limb.map(limb => {
-            const sourceRect = limb.sprite.SourceRect.split(',').map(Number);
+            // Handle both uppercase and lowercase attribute names
+            const sourceRectStr = limb.sprite.SourceRect || limb.sprite.sourcerect;
+            
+            if (!sourceRectStr) {
+              console.warn(`Missing SourceRect for limb ${limb.Name}`);
+              return null; // Skip this limb if no source rect
+            }
+            
+            const sourceRect = sourceRectStr.split(',').map(Number);
             return {
-                name: limb.Name,
+                name: limb.Name || limb.name,
                 rect: {
                     x: sourceRect[0],
                     y: sourceRect[1],
@@ -29,7 +37,7 @@ const SpriteSheetViewer = ({ gender }) => {
                     height: sourceRect[3],
                 }
             };
-        });
+        }).filter(limb => limb !== null); // Remove null entries
         setLimbs(limbData);
       } catch (error) {
         console.error('Error parsing XML:', error);

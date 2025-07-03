@@ -29,14 +29,29 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
           if (!spriteData[attachment.texture]) {
             spriteData[attachment.texture] = [];
           }
-          spriteData[attachment.texture].push({
-            name: attachment.name,
-            rect: {
+          
+          let rect;
+          if (attachment.sourceRect) {
+            // Use SourceRect directly
+            rect = {
+              x: attachment.sourceRect[0],
+              y: attachment.sourceRect[1],
+              width: attachment.sourceRect[2],
+              height: attachment.sourceRect[3],
+            };
+          } else {
+            // Use SheetIndex calculation
+            rect = {
               x: attachment.sheetIndex[0] * attachment.baseSize[0],
               y: attachment.sheetIndex[1] * attachment.baseSize[1],
               width: attachment.baseSize[0],
               height: attachment.baseSize[1],
-            }
+            };
+          }
+          
+          spriteData[attachment.texture].push({
+            name: attachment.name,
+            rect: rect
           });
         });
       }

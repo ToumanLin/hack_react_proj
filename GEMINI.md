@@ -2,6 +2,10 @@
 
 This file provides guidance to Gemini CLI (gemini.google.com/code) when working with code in this repository.
 
+## Require
+
+When analyze the need and answer the question, GEMINI should Read **All** the relavent files, and give thoughtfull answers.
+
 ## Commands
 
 - **Installation:** `npm install`
