@@ -23,20 +23,36 @@ const GenderPanel = ({ onGenderChange, currentGender }) => {
         </button>
       </h3>
       {!isCollapsed && (
-        <div>
-          <button 
-            onClick={() => onGenderChange('male')} 
-            style={{ marginRight: '8px', backgroundColor: currentGender === 'male' ? '#4CAF50' : '#555', color: 'white', border: 'none', padding: '6px 10px', cursor: 'pointer', display: 'block', width: '100%', marginBottom: '8px', fontSize: '10px' }}
-          >
-            Male
-          </button>
-          <button 
-            onClick={() => onGenderChange('female')}
-            style={{ backgroundColor: currentGender === 'female' ? '#4CAF50' : '#555', color: 'white', border: 'none', padding: '6px 10px', cursor: 'pointer', display: 'block', width: '100%', fontSize: '10px' }}
-          >
-            Female
-          </button>
-        </div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+        <button
+          onClick={() => onGenderChange('male')}
+          style={{
+            backgroundColor: currentGender === 'male' ? '#4CAF50' : '#555',
+            color: 'white',
+            border: 'none',
+            padding: '6px 10px',
+            cursor: 'pointer',
+            flex: '1',
+            fontSize: '10px'
+          }}
+        >
+          Male
+        </button>
+        <button
+          onClick={() => onGenderChange('female')}
+          style={{
+            backgroundColor: currentGender === 'female' ? '#4CAF50' : '#555',
+            color: 'white',
+            border: 'none',
+            padding: '6px 10px',
+            cursor: 'pointer',
+            flex: '1',
+            fontSize: '10px'
+          }}
+        >
+          Female
+        </button>
+      </div>
       )}
     </div>
   );

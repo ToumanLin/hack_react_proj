@@ -10,7 +10,7 @@ const OVERRIDE_ORDER = {
   'herpes': 2,
 };
 
-const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, positionAdjustments = {} }) => {
+const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clothingSprites = [], allLimbs }) => {
   const [x, y, width, height] = limb.sourceRect;
   const texturePath = limb.texture; // Use the texture path directly as it's already processed in Editor.js
   const nodeRef = useRef(null);
@@ -18,7 +18,12 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, posi
   // calculate z-index then addjust order
   const baseZIndex = Math.round((1 - limb.depth) * 1000);
   const overrideOrder = OVERRIDE_ORDER[limb.type?.toLowerCase()] || 1;
-  const calculatedZIndex = baseZIndex + (overrideOrder * 100);
+  const calculatedZIndex = baseZIndex + (overrideOrder * 1);
+
+  // Check if the limb should be hidden
+  const shouldHideLimb = clothingSprites.some(
+    sprite => sprite.limb === limb.type && sprite.hidelimb === true
+  );
 
   const innerStyle = {
     width: `${width}px`,
@@ -29,63 +34,123 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, posi
     cursor: 'move',
     transform: `rotate(${limb.rotation}deg) scale(${limb.scale})`,
     transformOrigin: `${limb.origin.x * 100}% ${limb.origin.y * 100}%`,
+    opacity: shouldHideLimb ? 0 : 1,
   };
 
-  const renderAttachment = (attachment, type) => {
-    if (!attachment) return null;
+  // Unified rendering function, handle attachments and clothing sprites
+  const renderOverlay = (overlayItem, type = null) => {
+    if (!overlayItem) return null;
 
-    let attSourceRect, attOrigin;
-    
-    if (attachment.sourceRect) {
-      // Use SourceRect directly
-      attSourceRect = attachment.sourceRect;
-      attOrigin = attachment.origin || [0.5, 0.5];
+    let sourceRect, origin, scale, depth, texturePath, zIndex;
+    const isAttachment = type !== null; // Check if it's an attachment or clothing
+
+    if (isAttachment) {
+      // Attachment logic
+      // Check if this attachment uses sheetindex (has sheetIndex and baseSize)
+      if (overlayItem.sheetIndex && overlayItem.baseSize) {
+        // Use SheetIndex calculation
+        const [attX, attY] = overlayItem.sheetIndex;
+        const [attBaseWidth, attBaseHeight] = overlayItem.baseSize;
+        sourceRect = [
+            attX * attBaseWidth,
+            attY * attBaseHeight,
+            attBaseWidth,
+            attBaseHeight
+        ];
+        origin = [limb.origin.x, limb.origin.y] || [0.5, 0.5]; // sheet index origin inherit from head
+        // console.log('Attachment using sheetindex:', overlayItem.name, 'sourceRect:', sourceRect, 'origin:', origin);
+      } else if (overlayItem.sourceRect) {
+        // Use SourceRect directly
+        sourceRect = overlayItem.sourceRect;
+        origin = overlayItem.origin || [0.5, 0.5];
+        // console.log('Attachment using sourceRect:', overlayItem.name, 'sourceRect:', sourceRect, 'origin:', origin);
+      } else {
+        // Fallback
+        sourceRect = [0, 0, 128, 128];
+        origin = [0.5, 0.5];
+        // console.log('Attachment fallback:', overlayItem.name, 'sourceRect:', sourceRect, 'origin:', origin);
+      }
+      texturePath = overlayItem.texture;
+      scale = limb.scale;
+      zIndex = calculatedZIndex + (OVERRIDE_ORDER[type] || 0);
     } else {
-      // Use SheetIndex calculation
-      const [attX, attY] = attachment.sheetIndex;
-      const [attBaseWidth, attBaseHeight] = attachment.baseSize;
-      attSourceRect = [
-          attX * attBaseWidth,
-          attY * attBaseHeight,
-          attBaseWidth,
-          attBaseHeight
-      ];
-      attOrigin = [0.5, 0.5]; // Default origin for sheet index
+      // Clothing logic
+      // Determine source rectangle
+      if (overlayItem.inheritSourceRect) {
+        sourceRect = limb.sourceRect;
+      } else if (overlayItem.sourceRect) {
+        sourceRect = overlayItem.sourceRect;
+      } else {
+        sourceRect = [0, 0, 128, 128];
+      }
+
+      // Determine origin
+      if (overlayItem.inheritOrigin) {
+        origin = [limb.origin.x, limb.origin.y];
+      } else if (overlayItem.origin) {
+        origin = overlayItem.origin;
+      } else {
+        origin = [0.5, 0.5];
+      }
+
+      // Determine scale
+      // overlayItem.scale Default is 1.0
+      scale = overlayItem.scale;
+      
+      if (overlayItem.inheritScale || overlayItem.inheritTextureScale) // 如果继承缩放为 true
+      {
+          if (!overlayItem.ignoreLimbScale) // 如果不忽略肢体缩放（即应用肢体缩放）
+          {
+              scale *= limb.scale; // 乘以肢体缩放（对应 Params.Scale）
+          }
+      }
+
+      // Determine depth
+      if (overlayItem.inheritLimbDepth) {
+        if (overlayItem.depthLimb) {
+          // Find the limb specified by depthLimb
+          const targetLimb = allLimbs?.find(l => l.type === overlayItem.depthLimb || l.name === overlayItem.depthLimb);
+          if (targetLimb) {
+            depth = targetLimb.depth - 0.01;
+          } else {
+            depth = limb.depth - 0.01;
+          }
+        } else {
+          depth = limb.depth - 0.01;
+        }
+      } else if (overlayItem.depth !== null) {
+        depth = overlayItem.depth;
+      } else {
+        depth = 0.5;
+      }
+
+      texturePath = overlayItem.texturePath;
+      zIndex = Math.round((1 - depth) * 1000);
     }
 
-    const attTexturePath = attachment.texture;
+    const limbOriginX = limb.origin.x;
+    const limbOriginY = limb.origin.y;
 
-    // The attachment should be positioned so that its origin aligns with the head's origin
-    // We need to calculate the offset from the center (50%, 50%) to the head's origin
-    const headOriginX = limb.origin.x;
-    const headOriginY = limb.origin.y;
+    // Calculate total rotation: limb rotation + wearable rotation
+    const totalRotation = (limb.rotation || 0) + ( - overlayItem.rotation || 0); // CCW
     
-    // Calculate the offset from center to align the attachment's origin with head's origin
-    // The attachment's origin point should align with the head's origin point
-    const offsetX = (headOriginX - attOrigin[0]) * attSourceRect[2];
-    const offsetY = (headOriginY - attOrigin[1]) * attSourceRect[3];
-
-    // Apply position adjustments from HeadPanel
-    const adjustment = positionAdjustments[type] || { x: 0, y: 0 };
-    const adjustedOffsetX = offsetX + adjustment.x;
-    const adjustedOffsetY = offsetY + adjustment.y;
-
-    // 计算 HeadAttachments 的 z-index，确保按照覆盖顺序渲染
-    const attachmentZIndex = calculatedZIndex + (OVERRIDE_ORDER[type] || 0);
-
-    const attStyle = {
-        position: 'absolute',
-        width: `${attSourceRect[2]}px`,
-        height: `${attSourceRect[3]}px`,
-        backgroundImage: `url(${attTexturePath})`,
-        backgroundPosition: `-${attSourceRect[0]}px -${attSourceRect[1]}px`,
-        zIndex: attachmentZIndex,
-        left: `${50 + (adjustedOffsetX / attSourceRect[2]) * 100}%`,
-        top: `${50 + (adjustedOffsetY / attSourceRect[3]) * 100}%`,
-        transform: `translate(-50%, -50%) scale(${limb.scale})`,
+    const overlayStyle = {
+      position: 'absolute',
+      width: `${sourceRect[2]}px`,
+      height: `${sourceRect[3]}px`,
+      backgroundImage: `url(${texturePath})`,
+      backgroundPosition: `-${sourceRect[0]}px -${sourceRect[1]}px`,
+      zIndex: zIndex,
+      // Make wearable's origin point the same as limb's origin point
+      // origin is not the center of the rect, but the origin of the texture defined in the xml file, it is not 50%, 50%
+      left: `calc(100% * ${limbOriginX})`,
+      top: `calc(100% * ${limbOriginY})`,
+      transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
+      transform: `translate(calc(-100% * ${origin[0]}), calc(-100% * ${origin[1]})) scale(${scale}) rotate(${totalRotation}deg)`,
     };
 
-    return <div key={attachment.id} style={attStyle} />;
+    const key = isAttachment ? overlayItem.id : overlayItem.name;
+    return <div key={key} style={overlayStyle} />;
   };
 
   return (
@@ -107,7 +172,7 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, posi
       onStart={() => onSelect(limb)}
     >
       <div ref={nodeRef} style={{ position: 'absolute', zIndex: calculatedZIndex }} onClick={() => onSelect(limb)}>
-        {isSelected && (
+        {/* {isSelected && (
             <div style={{
                 position: 'absolute',
                 top: `${-25 - (limb.size.height * limb.origin.y)}px`, // Position above the limb
@@ -121,7 +186,7 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, posi
             }}>
                 {`x: ${limb.position.x.toFixed(0)}, y: ${limb.position.y.toFixed(0)}`}
             </div>
-        )}
+        )} */}
         <div style={innerStyle} />
         <div title={`Limb Position: (${limb.position.x.toFixed(0)}, ${limb.position.y.toFixed(0)})`} />
         {/* {renderJointAnchors()} */}
@@ -129,10 +194,55 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, posi
             <>
                 {Object.keys(limb).filter(key => key.startsWith('selected')).map(key => {
                     const type = key.replace('selected', '').toLowerCase();
-                    return renderAttachment(limb[key], type);
+                    
+                    // Check if this attachment should be hidden by clothing
+                    const shouldHideAttachment = clothingSprites.some(clothingSprite => 
+                      clothingSprite.limb === limb.type && 
+                      clothingSprite.hideOtherWearables === true
+                    );
+                    
+                    // Check if this attachment should be hidden by specific wearable types
+                    const shouldHideByType = clothingSprites.some(clothingSprite => 
+                      clothingSprite.limb === limb.type && 
+                      clothingSprite.hideWearablesOfType && 
+                      clothingSprite.hideWearablesOfType !== '' &&
+                      type && 
+                      type.toLowerCase().includes(clothingSprite.hideWearablesOfType.toLowerCase())
+                    );
+                    
+                    if (shouldHideAttachment || shouldHideByType) return null;
+                    
+                    return renderOverlay(limb[key], type);
                 })}
             </>
         )}
+        {clothingSprites
+          .filter(clothingSprite => {
+            // Basic limb matching
+            if (clothingSprite.limb !== limb.type) return false;
+            
+            // Check if this clothing should be hidden by other wearables
+            const shouldHideThis = clothingSprites.some(otherSprite => 
+              otherSprite.limb === limb.type && 
+              otherSprite.hideOtherWearables === true &&
+              otherSprite !== clothingSprite
+            );
+            
+            if (shouldHideThis) return false;
+            
+            // Check if this clothing should be hidden by specific wearable types
+            const shouldHideByType = clothingSprites.some(otherSprite => 
+              otherSprite.limb === limb.type && 
+              otherSprite.hideWearablesOfType && 
+              otherSprite.hideWearablesOfType !== '' &&
+              clothingSprite.name && 
+              clothingSprite.name.toLowerCase().includes(otherSprite.hideWearablesOfType.toLowerCase())
+            );
+            
+            return !shouldHideByType;
+          })
+          .map(clothingSprite => renderOverlay(clothingSprite, null))
+        }
       </div>
     </Draggable>
   );

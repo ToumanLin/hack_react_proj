@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Draggable from 'react-draggable';
-import { convertTexturePath } from '../utils/textureUtils';
 
 const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
-  const [imageSrc, setImageSrc] = useState('');
-  const [textureOptions, setTextureOptions] = useState([]);
   const [selectedTexture, setSelectedTexture] = useState('');
-  const [sprites, setSprites] = useState([]);
+  const [sprites, setSprites] = useState({});
   const [hoveredSprite, setHoveredSprite] = useState(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const imageRef = useRef(null);
+  const draggableRef = useRef(null);
 
-  useEffect(() => {
-    const defaultTexture = convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender);
-    if (!selectedTexture) { // Set default only if nothing is selected
-      setImageSrc(defaultTexture);
+  // Process data when props change
+  React.useEffect(() => {
+    const defaultTexture = `/assets/Content/Characters/Human/Human_${gender}_heads.png`;
+    if (!selectedTexture) {
       setSelectedTexture(defaultTexture);
     }
 
@@ -79,28 +77,33 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
     }
 
     setSprites(spriteData);
-
-    const options = Array.from(textures).map(texture => ({
-      value: texture,
-      label: texture.split('/').pop().replace('.png', '').replace(/_/g, ' '),
-    }));
-
-    setTextureOptions(options);
   }, [gender, headAttachments, headSprites, selectedTexture]);
-
-  useEffect(() => {
-    setImageSrc(selectedTexture);
-  }, [selectedTexture]);
 
   const handleTextureChange = (e) => {
     setSelectedTexture(e.target.value);
   };
 
   const currentSprites = sprites[selectedTexture] || [];
+  const textureOptions = Object.keys(sprites).map(texture => ({
+    value: texture,
+    label: texture.split('/').pop().replace('.png', '').replace(/_/g, ' '),
+  }));
 
   return (
-    <Draggable>
-      <div style={{ position: 'absolute', top: '600px', left: '820px', zIndex: 1000, border: '1px solid grey' }}>
+    <Draggable nodeRef={draggableRef}>
+      <div style={{ 
+        position: 'absolute', 
+        top: '0px', 
+        left: '800px', 
+        zIndex: 2000, 
+        backgroundColor: '#2a2a2a',
+        border: '1px solid #555',
+        borderRadius: '5px',
+        minWidth: '200px',
+        color: 'white',
+        padding: '8px',
+        fontSize: '8px',
+      }} ref={draggableRef}>
         <div style={{ padding: '5px', cursor: 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold', marginRight: '5px' }}>Head Sprites</span>
           <select onChange={handleTextureChange} value={selectedTexture} style={{ flex: 1, marginRight: '5px' }}>
@@ -109,22 +112,23 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
             ))}
           </select>
           <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          style={{
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '4px 10px',
-            borderRadius: '3px'
-          }}
-        >
-          {isCollapsed ? '+' : '-'}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            style={{
+              background: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              fontSize: '10px',
+            }}
+          >
+            {isCollapsed ? '+' : '-'}
           </button>
         </div>
         {!isCollapsed && (
           <div style={{ position: 'relative', cursor: 'move' }}>
-            {imageSrc && <img ref={imageRef} src={imageSrc} alt="Sprite Sheet" />}
+            {selectedTexture && <img ref={imageRef} src={selectedTexture} alt="Sprite Sheet" />}
             {currentSprites.map((sprite, index) => (
               <div
                 key={index}

@@ -8,15 +8,20 @@ export const convertTexturePath = (texturePath, gender) => {
   // Replace [GENDER] placeholder with actual gender
   let convertedPath = texturePath.replace('[GENDER]', gender);
   
-  // Handle both path formats:
-  // 1. Content/Characters/Human/...
-  // 2. %ModDir%/Content/Characters/Human/...
+  // Remove %ModDir%/ if present
   if (convertedPath.startsWith('%ModDir%/')) {
     convertedPath = convertedPath.replace('%ModDir%/', '');
   }
   
-  // Convert to web path
-  convertedPath = convertedPath.replace('Content/Characters/Human/', '/assets/Content/Characters/Human/');
+  // Convert any Content/xxx to /assets/Content/xxx
+  if (convertedPath.startsWith('Content/')) {
+    convertedPath = convertedPath.replace('Content/', '/assets/Content/');
+  }
+  
+  // If the path doesn't start with /assets/ but contains Content/, add the prefix
+  if (!convertedPath.startsWith('/assets/') && convertedPath.includes('Content/')) {
+    convertedPath = `/assets/${convertedPath}`;
+  }
   
   return convertedPath;
 };

@@ -13,12 +13,13 @@
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
-    "react-draggable": "^4.5.0",
+    "react-draggable": "^4.4.5",
     "react-scripts": "5.0.1",
     "stream-browserify": "^3.0.0",
     "timers-browserify": "^2.0.12",
     "web-vitals": "^2.1.4",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "xmldom": "^0.6.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 
 const JointsPanel = ({ joints, onConstruct, onConstructAll }) => {
   const [hoveredJoint, setHoveredJoint] = useState(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Collapsed initially
 
   return (
     <div style={{ background: '#2d2d2d', color: 'white', padding: '8px', width: '200px', textAlign: 'left' }}>
       <h3 style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', fontSize: '12px', margin: '0 0 8px 0' }}>
         Joints
-        <button onClick={onConstructAll} style={{ display: 'block', width: '30%', border: 'none', backgroundColor: '#555', color: 'white', cursor: 'pointer', fontSize: '10px', padding: '3px 6px' }}>
-          Build
+        <button onClick={onConstructAll} style={{ display: 'block', width: '40%', border: 'none', backgroundColor: '#555', color: 'white', cursor: 'pointer', fontSize: '10px', padding: '3px 6px' }}>
+          Build by Torso
         </button>
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}

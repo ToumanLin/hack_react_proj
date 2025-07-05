@@ -5,26 +5,29 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
 
   if (!selectedLimb) {
     return (
-      // <div style={{ padding: '10px', width: '300px', color: 'white' }}>
-      //   Select a limb to edit properties.
-      // </div>
-      <div style={{ padding: '10px', width: '200px', color: 'white', textAlign: 'left' }}>
-        <h3 style={{ color: 'white', textAlign: 'left', display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ padding: '8px', width: '200px', color: 'white', textAlign: 'left' }}>
+        <h3 style={{ color: 'white', textAlign: 'left', display: 'flex', justifyContent: 'space-between', fontSize: '12px', margin: '0 0 8px 0' }}>
           Limb
           <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          style={{
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '4px 10px',
-            borderRadius: '3px'
-          }}
-        >
-          {isCollapsed ? '+' : '-'}
-        </button>
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            style={{
+              background: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              fontSize: '10px'
+            }}
+          >
+            {isCollapsed ? '+' : '-'}
+          </button>
         </h3>
+        {!isCollapsed && (
+          <div style={{ fontSize: '12px', color: '#ccc', marginTop: '10px' }}>
+            Select a limb to edit properties.
+          </div>
+        )}
       </div>
     );
   }
@@ -170,47 +173,6 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
               }}
             />
           </div>
-          {(selectedLimb.name.includes('Head') || selectedLimb.type === 'Hair' || selectedLimb.type === 'Beard' || selectedLimb.type === 'FaceAttachment') && selectedLimb.sheetIndex && (
-            <>
-                <div style={{ marginBottom: '8px' }}>
-                    <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Sheet Index X:</label>
-                    <input
-                    type="number"
-                    name="sheetIndex[0]"
-                    value={selectedLimb.sheetIndex[0]}
-                    onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      padding: '3px',
-                      backgroundColor: '#3a3a3a',
-                      color: 'white',
-                      border: '1px solid #555',
-                      borderRadius: '2px',
-                      fontSize: '10px'
-                    }}
-                    />
-                </div>
-                <div style={{ marginBottom: '8px' }}>
-                    <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Sheet Index Y:</label>
-                    <input
-                    type="number"
-                    name="sheetIndex[1]"
-                    value={selectedLimb.sheetIndex[1]}
-                    onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      padding: '3px',
-                      backgroundColor: '#3a3a3a',
-                      color: 'white',
-                      border: '1px solid #555',
-                      borderRadius: '2px',
-                      fontSize: '10px'
-                    }}
-                    />
-                </div>
-            </>
-          )}
-
         </>
       )}
     </div>
