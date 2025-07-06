@@ -8,8 +8,8 @@ export const convertTexturePath = (texturePath, gender) => {
   // Replace [GENDER] placeholder with actual gender
   let convertedPath = texturePath.replace(/\[gender\]/gi, gender);
   
-  // Remove %ModDir%/ or %moddir%/ (case-insensitive) if present
-  convertedPath = convertedPath.replace(/^%moddir%\//i, '');
+  // Remove %ModDir%/ or %moddir%/ or %moddir:xxxxxxxx%/ (case-insensitive) if present
+  convertedPath = convertedPath.replace(/^%moddir(?::\d+)?%\//i, '');
 
   // Convert any Content/xxx to /assets/Content/xxx
   if (convertedPath.startsWith('Content/')) {
@@ -43,8 +43,8 @@ export const convertTexturePathWithFallback = (texturePath, gender) => {
     console.log(`UnderwearTexture fallback: ${texturePath} -> ${convertedPath}`);
   }
   
-  // Remove %ModDir%/ or %moddir%/ (case-insensitive) if present
-  convertedPath = convertedPath.replace(/^%moddir%\//i, '');
+  // Remove %ModDir%/ or %moddir%/ or %moddir:xxxxxxxx%/ (case-insensitive) if present
+  convertedPath = convertedPath.replace(/^%moddir(?::\d+)?%\//i, '');
 
   // Convert any Content/xxx to /assets/Content/xxx
   if (convertedPath.startsWith('Content/')) {

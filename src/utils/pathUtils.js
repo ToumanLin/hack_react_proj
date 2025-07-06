@@ -8,7 +8,7 @@ import { convertTexturePathWithFallback } from './textureUtils';
 // Helper: Remove %ModDir%/ or %moddir%/ prefix (case-insensitive)
 const removeModDirPrefix = (path) => {
   if (!path) return path;
-  return path.replace(/^%moddir%\//i, '');
+  return path.replace(/^%moddir(?::\d+)?%\//i, '');
 };
 
 /**
@@ -310,8 +310,9 @@ export const processClothingTexturePath = (texturePath, gender, xmlPath) => {
   }
   
   // Case 2: With %ModDir% prefix (e.g., "%ModDir%/Content/Items/Jobgear/Assistant/artiedolittle_2.png")
-  if (/%moddir%/i.test(convertedPath)) {
-    const cleanPath = convertedPath.replace(/^%moddir%\//i, '');
+  // Support %ModDir% and %ModDir:xxxxxxxx% (case-insensitive, optional colon and digits)
+  if (/%moddir(?::\d+)?%/i.test(convertedPath)) {
+    const cleanPath = convertedPath.replace(/^%moddir(?::\d+)?%\//i, '');
     return `/assets/${cleanPath}`;
   }
   
