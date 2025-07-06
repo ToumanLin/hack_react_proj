@@ -1,28 +1,28 @@
 /**
- * XML解析工具函数
- * 处理XML属性名大小写不一致的问题
+ * XML parsing utility functions
+ * Handles inconsistencies in attribute name casing in XML files
  */
 
 /**
- * 从元素中获取属性值，支持多种大小写变体
- * @param {Element} element - XML元素
- * @param {string} baseName - 基础属性名（小写）
- * @param {string} defaultValue - 默认值
- * @returns {string|null} 属性值
+ * Retrieves an attribute value from a DOM element, supporting multiple case variants
+ * @param {Element} element - XML element
+ * @param {string} baseName - Base attribute name (lowercase)
+ * @param {string} defaultValue - Default value
+ * @returns {string|null} Attribute value
  */
 export const getAttribute = (element, baseName, defaultValue = null) => {
   if (!element) return defaultValue;
   
-  // 尝试多种大小写变体
+  // Try multiple case variants
   const variants = [
-    baseName,                    // 原始名称
-    baseName.toLowerCase(),      // 全小写
-    baseName.toUpperCase(),      // 全大写
-    baseName.charAt(0).toUpperCase() + baseName.slice(1), // 首字母大写
-    baseName.charAt(0).toLowerCase() + baseName.slice(1), // 首字母小写
+    baseName,                    // Original name
+    baseName.toLowerCase(),      // All lowercase
+    baseName.toUpperCase(),      // All uppercase
+    baseName.charAt(0).toUpperCase() + baseName.slice(1), // First letter uppercase
+    baseName.charAt(0).toLowerCase() + baseName.slice(1), // First letter lowercase
   ];
   
-  // 对于复合词，也尝试驼峰命名
+  // For compound words, also try camel case
   if (baseName.includes('source') && baseName.includes('rect')) {
     variants.push('sourceRect', 'SourceRect', 'sourcerect', 'SourceRect');
   }
@@ -36,7 +36,7 @@ export const getAttribute = (element, baseName, defaultValue = null) => {
     variants.push('Texture');
   }
   
-  // 去重
+  // Remove duplicates
   const uniqueVariants = [...new Set(variants)];
   
   for (const variant of uniqueVariants) {
@@ -50,25 +50,25 @@ export const getAttribute = (element, baseName, defaultValue = null) => {
 };
 
 /**
- * 从xml2js解析的对象中获取属性值，支持多种大小写变体
- * @param {Object} obj - xml2js解析的对象
- * @param {string} baseName - 基础属性名（小写）
- * @param {string} defaultValue - 默认值
- * @returns {string|null} 属性值
+ * Retrieves an attribute value from a xml2js object, supporting multiple case variants
+ * @param {Object} obj - xml2js object
+ * @param {string} baseName - Base attribute name (lowercase)
+ * @param {string} defaultValue - Default value
+ * @returns {string|null} Attribute value
  */
 export const getXml2jsAttribute = (obj, baseName, defaultValue = null) => {
   if (!obj || !obj.$) return defaultValue;
   
-  // 尝试多种大小写变体
+  // Try multiple case variants
   const variants = [
-    baseName,                    // 原始名称
-    baseName.toLowerCase(),      // 全小写
-    baseName.toUpperCase(),      // 全大写
-    baseName.charAt(0).toUpperCase() + baseName.slice(1), // 首字母大写
-    baseName.charAt(0).toLowerCase() + baseName.slice(1), // 首字母小写
+    baseName,                    // Original name
+    baseName.toLowerCase(),      // All lowercase
+    baseName.toUpperCase(),      // All uppercase
+    baseName.charAt(0).toUpperCase() + baseName.slice(1), // First letter uppercase
+    baseName.charAt(0).toLowerCase() + baseName.slice(1), // First letter lowercase
   ];
   
-  // 对于复合词，也尝试驼峰命名
+  // For compound words, also try camel case
   if (baseName.includes('source') && baseName.includes('rect')) {
     variants.push('sourceRect', 'SourceRect', 'sourcerect', 'SourceRect');
   }
@@ -78,12 +78,12 @@ export const getXml2jsAttribute = (obj, baseName, defaultValue = null) => {
   if (baseName.includes('limb') && baseName.includes('anchor')) {
     variants.push('limbAnchor', 'LimbAnchor', 'limbanchor', 'LimbAnchor');
   }
-  // 对于texture属性，添加特殊处理
+  // For texture attribute, add special handling
   if (baseName === 'texture') {
     variants.push('Texture', 'TEXTURE');
   }
   
-  // 去重
+  // Remove duplicates
   const uniqueVariants = [...new Set(variants)];
   
   for (const variant of uniqueVariants) {
@@ -97,10 +97,10 @@ export const getXml2jsAttribute = (obj, baseName, defaultValue = null) => {
 };
 
 /**
- * 解析数值数组，支持小数和去除空白字符
- * @param {string} value - 逗号分隔的数值字符串
- * @param {Array} defaultValue - 默认值
- * @returns {Array<number>} 解析后的数值数组
+ * Parses a comma-separated array of numbers, supports decimals and removes whitespace
+ * @param {string} value - Comma-separated numeric string
+ * @param {Array} defaultValue - Default value
+ * @returns {Array<number>} Parsed numeric array
  */
 export const parseNumberArray = (value, defaultValue = []) => {
   if (!value) return defaultValue;
@@ -114,10 +114,10 @@ export const parseNumberArray = (value, defaultValue = []) => {
 };
 
 /**
- * 解析布尔值，支持多种表示方式
- * @param {string} value - 布尔值字符串
- * @param {boolean} defaultValue - 默认值
- * @returns {boolean} 解析后的布尔值
+ * Parses a boolean value, supports multiple representations
+ * @param {string} value - Boolean string
+ * @param {boolean} defaultValue - Default value
+ * @returns {boolean} Parsed boolean value
  */
 export const parseBoolean = (value, defaultValue = false) => {
   if (value === null || value === undefined) return defaultValue;
@@ -127,10 +127,10 @@ export const parseBoolean = (value, defaultValue = false) => {
 };
 
 /**
- * 解析浮点数
- * @param {string} value - 数值字符串
- * @param {number} defaultValue - 默认值
- * @returns {number} 解析后的浮点数
+ * Parses a float number
+ * @param {string} value - Numeric string
+ * @param {number} defaultValue - Default value
+ * @returns {number} Parsed float number
  */
 export const parseFloat = (value, defaultValue = 0) => {
   if (value === null || value === undefined) return defaultValue;
@@ -140,12 +140,15 @@ export const parseFloat = (value, defaultValue = 0) => {
 };
 
 /**
- * 从XML元素中解析sprite属性
- * @param {Element} spriteElement - sprite XML元素
- * @returns {Object} 解析后的sprite对象
+ * Parses sprite attributes from an XML element
+ * @param {Element} spriteElement - Sprite XML element
+ * @returns {Object} Parsed sprite object
  */
 export const parseSpriteAttributes = (spriteElement) => {
   if (!spriteElement) return null;
+  
+  // Check if inheritscale attribute is defined
+  const hasInheritScale = getAttribute(spriteElement, 'inheritscale', null) !== null;
   
   return {
     name: getAttribute(spriteElement, 'name', ''),
@@ -155,27 +158,32 @@ export const parseSpriteAttributes = (spriteElement) => {
     depthLimb: getAttribute(spriteElement, 'depthlimb', null),
     inheritLimbDepth: parseBoolean(getAttribute(spriteElement, 'inheritlimbdepth', 'true')),
     depth: parseFloat(getAttribute(spriteElement, 'depth', null)),
-    inheritTextureScale: parseBoolean(getAttribute(spriteElement, 'inherittexturescale', 'false')),
+    inheritTextureScale: hasInheritScale ? false : parseBoolean(getAttribute(spriteElement, 'inherittexturescale', 'false')),
     scale: parseFloat(getAttribute(spriteElement, 'scale', '1.0')),
     inheritOrigin: parseBoolean(getAttribute(spriteElement, 'inheritorigin', 'false')),
     origin: parseNumberArray(getAttribute(spriteElement, 'origin', null)),
     inheritSourceRect: parseBoolean(getAttribute(spriteElement, 'inheritsourcerect', 'false')),
     sourceRect: parseNumberArray(getAttribute(spriteElement, 'sourcerect', null)),
     ignoreLimbScale: parseBoolean(getAttribute(spriteElement, 'ignorelimbscale', 'false')),
-    inheritScale: parseBoolean(getAttribute(spriteElement, 'inheritscale', 'false')),
+    ignoreRagdollScale: parseBoolean(getAttribute(spriteElement, 'ignoreragdollscale', 'false')),
+    inheritScale: hasInheritScale ? parseBoolean(getAttribute(spriteElement, 'inheritscale', 'true')) : true,
     hideOtherWearables: parseBoolean(getAttribute(spriteElement, 'hideotherwearables', 'false')),
     hideWearablesOfType: getAttribute(spriteElement, 'hidewearablesoftype', ''),
     rotation: parseFloat(getAttribute(spriteElement, 'rotation', '0')),
+    useLegacyScaleLogic: !hasInheritScale,
   };
 };
 
 /**
- * 从xml2js对象中解析sprite属性
- * @param {Object} spriteObj - xml2js解析的sprite对象
- * @returns {Object} 解析后的sprite对象
+ * Parses sprite attributes from an xml2js object
+ * @param {Object} spriteObj - xml2js parsed sprite object
+ * @returns {Object} Parsed sprite object
  */
 export const parseSpriteAttributesFromXml2js = (spriteObj) => {
   if (!spriteObj || !spriteObj.$) return null;
+  
+  // Check if inheritscale attribute is defined
+  const hasInheritScale = getXml2jsAttribute(spriteObj, 'inheritscale', null) !== null;
   
   return {
     name: getXml2jsAttribute(spriteObj, 'name', ''),
@@ -185,24 +193,26 @@ export const parseSpriteAttributesFromXml2js = (spriteObj) => {
     depthLimb: getXml2jsAttribute(spriteObj, 'depthlimb', null),
     inheritLimbDepth: parseBoolean(getXml2jsAttribute(spriteObj, 'inheritlimbdepth', 'true')),
     depth: parseFloat(getXml2jsAttribute(spriteObj, 'depth', null)),
-    inheritTextureScale: parseBoolean(getXml2jsAttribute(spriteObj, 'inherittexturescale', 'false')),
+    inheritTextureScale: hasInheritScale ? false : parseBoolean(getXml2jsAttribute(spriteObj, 'inherittexturescale', 'false')),
     scale: parseFloat(getXml2jsAttribute(spriteObj, 'scale', '1.0')),
     inheritOrigin: parseBoolean(getXml2jsAttribute(spriteObj, 'inheritorigin', 'false')),
     origin: parseNumberArray(getXml2jsAttribute(spriteObj, 'origin', null)),
     inheritSourceRect: parseBoolean(getXml2jsAttribute(spriteObj, 'inheritsourcerect', 'false')),
     sourceRect: parseNumberArray(getXml2jsAttribute(spriteObj, 'sourcerect', null)),
     ignoreLimbScale: parseBoolean(getXml2jsAttribute(spriteObj, 'ignorelimbscale', 'false')),
-    inheritScale: parseBoolean(getXml2jsAttribute(spriteObj, 'inheritscale', 'false')),
+    ignoreRagdollScale: parseBoolean(getXml2jsAttribute(spriteObj, 'ignoreragdollscale', 'false')),
+    inheritScale: hasInheritScale ? parseBoolean(getXml2jsAttribute(spriteObj, 'inheritscale', 'true')) : true,
     hideOtherWearables: parseBoolean(getXml2jsAttribute(spriteObj, 'hideotherwearables', 'false')),
     hideWearablesOfType: getXml2jsAttribute(spriteObj, 'hidewearablesoftype', ''),
     rotation: parseFloat(getXml2jsAttribute(spriteObj, 'rotation', '0')),
+    useLegacyScaleLogic: !hasInheritScale,
   };
 };
 
 /**
- * 从XML元素中解析limb属性
- * @param {Element} limbElement - limb XML元素
- * @returns {Object} 解析后的limb对象
+ * Parses limb attributes from an XML element
+ * @param {Element} limbElement - Limb XML element
+ * @returns {Object} Parsed limb object
  */
 export const parseLimbAttributes = (limbElement) => {
   if (!limbElement) return null;
@@ -220,9 +230,9 @@ export const parseLimbAttributes = (limbElement) => {
 };
 
 /**
- * 从xml2js对象中解析limb属性
- * @param {Object} limbObj - xml2js解析的limb对象
- * @returns {Object} 解析后的limb对象
+ * Parses limb attributes from an xml2js object
+ * @param {Object} limbObj - xml2js parsed limb object
+ * @returns {Object} Parsed limb object
  */
 export const parseLimbAttributesFromXml2js = (limbObj) => {
   if (!limbObj || !limbObj.$) return null;
@@ -240,9 +250,9 @@ export const parseLimbAttributesFromXml2js = (limbObj) => {
 };
 
 /**
- * 从XML元素中解析joint属性
- * @param {Element} jointElement - joint XML元素
- * @returns {Object} 解析后的joint对象
+ * Parses joint attributes from an XML element
+ * @param {Element} jointElement - Joint XML element
+ * @returns {Object} Parsed joint object
  */
 export const parseJointAttributes = (jointElement) => {
   if (!jointElement) return null;
@@ -256,9 +266,9 @@ export const parseJointAttributes = (jointElement) => {
 };
 
 /**
- * 从xml2js对象中解析joint属性
- * @param {Object} jointObj - xml2js解析的joint对象
- * @returns {Object} 解析后的joint对象
+ * Parses joint attributes from an xml2js object
+ * @param {Object} jointObj - xml2js parsed joint object
+ * @returns {Object} Parsed joint object
  */
 export const parseJointAttributesFromXml2js = (jointObj) => {
   if (!jointObj || !jointObj.$) return null;

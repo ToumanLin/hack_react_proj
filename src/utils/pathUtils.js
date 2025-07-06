@@ -1,9 +1,15 @@
 import xml2js from 'xml2js';
-import { convertTexturePath } from './textureUtils';
+import { convertTexturePathWithFallback } from './textureUtils';
 
 /**
  * Utility functions for parsing and resolving file paths in the Barotrauma character system
  */
+
+// Helper: Remove %ModDir%/ or %moddir%/ prefix (case-insensitive)
+const removeModDirPrefix = (path) => {
+  if (!path) return path;
+  return path.replace(/^%moddir%\//i, '');
+};
 
 /**
  * Converts a game path to a web-compatible path
@@ -15,10 +21,8 @@ export const convertGamePathToWebPath = (path) => {
   
   let convertedPath = path;
   
-  // Handle %ModDir%/ prefix - convert to proper web path
-  if (convertedPath.startsWith('%ModDir%/')) {
-    convertedPath = convertedPath.replace('%ModDir%/', '');
-  }
+  // Handle %ModDir%/ prefix (case-insensitive) - convert to proper web path
+  convertedPath = removeModDirPrefix(convertedPath);
   
   // Convert to web path
   if (convertedPath.startsWith('Content/')) {
@@ -63,10 +67,8 @@ export const resolveRagdollsFolderPath = (character, humanXmlPath) => {
     const humanXmlDir = humanXmlPath.substring(0, humanXmlPath.lastIndexOf('/'));
     ragdollsFolder = `${humanXmlDir}/Ragdolls`;
   } else {
-    // Handle %ModDir%/ prefix for ragdolls folder
-    if (ragdollsFolder.startsWith('%ModDir%/')) {
-      ragdollsFolder = ragdollsFolder.replace('%ModDir%/', '');
-    }
+    // Handle %ModDir%/ prefix for ragdolls folder (case-insensitive)
+    ragdollsFolder = removeModDirPrefix(ragdollsFolder);
     
     // Convert the ragdolls folder path
     if (ragdollsFolder.startsWith('Content/')) {
@@ -157,10 +159,10 @@ export const loadRagdollXml = async (ragdollsFolder) => {
  */
 export const processRagdollTexturePath = (ragdoll, gender) => {
   let mainTexturePath = ragdoll.$.Texture || ragdoll.$.texture;
-  if (mainTexturePath && mainTexturePath.startsWith('%ModDir%/')) {
-    mainTexturePath = mainTexturePath.replace('%ModDir%/', '');
+  if (mainTexturePath) {
+    mainTexturePath = removeModDirPrefix(mainTexturePath);
   }
-  return convertTexturePath(mainTexturePath, gender);
+  return convertTexturePathWithFallback(mainTexturePath, gender);
 };
 
 /**
@@ -176,12 +178,12 @@ export const processLimbTexturePath = (texturePath, fallbackTexture, gender) => 
     finalTexturePath = fallbackTexture;
   }
   
-  // Handle %ModDir%/ prefix for texture paths
-  if (finalTexturePath && finalTexturePath.startsWith('%ModDir%/')) {
-    finalTexturePath = finalTexturePath.replace('%ModDir%/', '');
+  // Handle %ModDir%/ prefix for texture paths (case-insensitive)
+  if (finalTexturePath) {
+    finalTexturePath = removeModDirPrefix(finalTexturePath);
   }
   
-  return convertTexturePath(finalTexturePath, gender);
+  return convertTexturePathWithFallback(finalTexturePath, gender);
 };
 
 /**
@@ -251,4 +253,84 @@ export const loadCharacterDataFallback = async (gender) => {
     console.error('Fallback loading failed:', error);
     throw error;
   }
+};
+
+/**
+ * Loads and parses filelist.xml to get all Item file paths
+ * @returns {Promise<Array>} - Array of item file paths
+ */
+export const loadItemFilesFromFilelist = async () => {
+  try {
+    const response = await fetch('/assets/filelist.xml');
+    if (!response.ok) {
+      throw new Error(`Failed to load filelist.xml: ${response.status} ${response.statusText}`);
+    }
+    const xmlText = await response.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+    
+    const itemElements = xmlDoc.querySelectorAll('Item');
+    const itemFiles = [];
+    
+    itemElements.forEach(itemElement => {
+      const filePath = itemElement.getAttribute('file');
+      if (filePath) {
+        // Convert %ModDir% path to web path
+        const webPath = convertGamePathToWebPath(filePath);
+        itemFiles.push(webPath);
+        // console.log(webPath);
+      }
+    });
+    
+    return itemFiles;
+  } catch (error) {
+    console.error('Error reading filelist.xml:', error);
+    return [];
+  }
+};
+
+/**
+ * Processes texture path for clothing items
+ * @param {string} texturePath - The texture path
+ * @param {string} gender - Current gender ('male' or 'female')
+ * @param {string} xmlPath - The XML file path for context (already converted to web path)
+ * @returns {string} - The processed texture path
+ */
+export const processClothingTexturePath = (texturePath, gender, xmlPath) => {
+  if (!texturePath) return '';
+  
+  // Replace [GENDER] or [gender] (case-insensitive) placeholder with actual gender
+  let convertedPath = texturePath.replace(/\[gender\]/gi, gender);
+  
+  // Case 1: Just filename (e.g., "artiedolittle_2.png" or "Human_[GENDER].png") - same directory as XML
+  if (convertedPath.includes('.png') && !convertedPath.includes('/')) {
+    // Extract the directory from the XML path (xmlPath is already /assets/Content/...)
+    const xmlDir = xmlPath.substring(0, xmlPath.lastIndexOf('/'));
+    return `${xmlDir}/${convertedPath}`;
+  }
+  
+  // Case 2: With %ModDir% prefix (e.g., "%ModDir%/Content/Items/Jobgear/Assistant/artiedolittle_2.png")
+  if (/%moddir%/i.test(convertedPath)) {
+    const cleanPath = convertedPath.replace(/^%moddir%\//i, '');
+    return `/assets/${cleanPath}`;
+  }
+  
+  // Case 3: Relative to assets without %ModDir% (e.g., "Content/Items/Jobgear/Assistant/artiedolittle_2.png")
+  return `/assets/${convertedPath}`;
+};
+
+/**
+ * Processes attachment texture path
+ * @param {string} texturePath - The texture path from attachment
+ * @param {string} gender - Current gender ('male' or 'female')
+ * @returns {string} - The processed texture path
+ */
+export const processAttachmentTexturePath = (texturePath, gender) => {
+  if (!texturePath) return '';
+  
+  // Handle %ModDir%/ prefix for texture paths (case-insensitive)
+  let processedPath = texturePath;
+  processedPath = removeModDirPrefix(processedPath);
+  
+  return convertTexturePathWithFallback(processedPath, gender);
 }; 

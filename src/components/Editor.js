@@ -17,7 +17,8 @@ import {
 import { 
   loadCharacterData, 
   loadCharacterDataFallback,
-  processLimbTexturePath
+  processLimbTexturePath,
+  processAttachmentTexturePath
 } from '../utils/pathUtils';
 
 const Editor = () => {
@@ -165,16 +166,12 @@ const Editor = () => {
                         origin = [0.5, 0.5];
                     }
 
-                    // Handle %ModDir%/ prefix for texture paths
-                    let texturePath = sprite.$.texture || sprite.$.Texture;
-                    if (texturePath && texturePath.startsWith('%ModDir%/')) {
-                      texturePath = texturePath.replace('%ModDir%/', '');
-                    }
+                    const texturePath = processAttachmentTexturePath(sprite.$.texture || sprite.$.Texture, gender);
 
                     const attachmentData = {
                         id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
                         name: sprite.$.name,
-                        texture: convertTexturePath(texturePath, gender),
+                        texture: texturePath,
                         sheetIndex: sheetIndex,
                         sourceRect: sourceRect,
                         origin: origin,
@@ -283,10 +280,10 @@ const Editor = () => {
                             const limb2Anchor = limb2AnchorStr.split(',').map(val => parseFloat(val.trim()));
 
                             const scale1 = parentLimb.scale;
-                            const scale2 = childLimb.scale;
+                            // const scale2 = childLimb.scale;
                             // Flip y axis
-                            const childPosX = parentTransform.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
-                            const childPosY = parentTransform.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
+                            const childPosX = parentTransform.position.x + (limb1Anchor[0] - limb2Anchor[0]) * scale1;
+                            const childPosY = parentTransform.position.y - (limb1Anchor[1] - limb2Anchor[1]) * scale1;
 
                             calculatedLimbPositions[childId] = {
                                 position: { x: childPosX, y: childPosY },
@@ -443,7 +440,7 @@ const Editor = () => {
                       const attachmentData = {
                           id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
                           name: sprite.$.name,
-                          texture: convertTexturePath(sprite.$.texture || sprite.$.Texture, gender),
+                          texture: processAttachmentTexturePath(sprite.$.texture || sprite.$.Texture, gender),
                           sheetIndex: sheetIndex,
                           sourceRect: sourceRect,
                           origin: origin,

@@ -7,5 +7,8 @@
 			"path": "../../Game/Barotrauma/Barotrauma"
 		}
 	],
-	"settings": {}
+	
+	"settings": {
+		"search.useIgnoreFiles": false
+	}
 }

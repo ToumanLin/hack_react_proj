@@ -1,41 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { parseSpriteAttributes } from '../utils/xmlUtils';
+import { loadItemFilesFromFilelist, processClothingTexturePath } from '../utils/pathUtils';
 
 // Read filelist.xml and get all Item file paths
 const getItemFilesFromFilelist = async () => {
-  try {
-    const response = await fetch('/assets/filelist.xml');
-    if (!response.ok) {
-      throw new Error(`Failed to load filelist.xml: ${response.status} ${response.statusText}`);
-    }
-    const xmlText = await response.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    
-    const itemElements = xmlDoc.querySelectorAll('Item');
-    const itemFiles = [];
-    
-    itemElements.forEach(itemElement => {
-      const filePath = itemElement.getAttribute('file');
-      if (filePath) {
-        // Convert %ModDir% path to web path
-        const webPath = filePath.replace('%ModDir%/', '');
-        itemFiles.push(webPath);
-      }
-    });
-    
-    return itemFiles;
-  } catch (error) {
-    console.error('Error reading filelist.xml:', error);
-    return [];
-  }
+  return await loadItemFilesFromFilelist();
 };
 
 // Get all items that have Wearable element from a single XML file
 const parseClothingItemsFromFile = async (xmlPath) => {
   try {
-    const response = await fetch(`/assets/${xmlPath}`);
+    // xmlPath is already a full web path (e.g., /assets/Content/Items/...)
+    const response = await fetch(xmlPath);
     if (!response.ok) {
       console.warn(`Failed to load ${xmlPath}: ${response.status} ${response.statusText}`);
       return [];
@@ -100,7 +77,8 @@ const parseAllClothingItems = async () => {
 // Parse clothing XML file
 const parseClothingXML = async (xmlPath, selectedItemIdentifier) => {
   try {
-    const response = await fetch(`/assets/${xmlPath}`);
+    // xmlPath is already a full web path (e.g., /assets/Content/Items/...)
+    const response = await fetch(xmlPath);
     if (!response.ok) {
       throw new Error(`Failed to load ${xmlPath}: ${response.status} ${response.statusText}`);
     }
@@ -146,26 +124,7 @@ const parseClothingXML = async (xmlPath, selectedItemIdentifier) => {
 
 // Process texture path
 const processTexturePath = (texturePath, gender, xmlPath) => {
-  if (!texturePath) return '';
-  
-  // Replace [GENDER] placeholder with actual gender
-  let convertedPath = texturePath.replace('[GENDER]', gender);
-  
-  // Case 1: Just filename (e.g., "artiedolittle_2.png" or "Human_[GENDER].png") - same directory as XML
-  if (convertedPath.includes('.png') && !convertedPath.includes('/')) {
-    // Extract the directory from the XML path
-    const xmlDir = xmlPath.substring(0, xmlPath.lastIndexOf('/'));
-    return `/assets/${xmlDir}/${convertedPath}`;
-  }
-  
-  // Case 2: With %ModDir% prefix (e.g., "%ModDir%/Content/Items/Jobgear/Assistant/artiedolittle_2.png")
-  if (convertedPath.includes('%ModDir%')) {
-    const cleanPath = convertedPath.replace('%ModDir%/', '');
-    return `/assets/${cleanPath}`;
-  }
-  
-  // Case 3: Relative to assets without %ModDir% (e.g., "Content/Items/Jobgear/Assistant/artiedolittle_2.png")
-  return `/assets/${convertedPath}`;
+  return processClothingTexturePath(texturePath, gender, xmlPath);
 };
 
 const ClothingManager = ({ gender, limbs, onClothingUpdate }) => {

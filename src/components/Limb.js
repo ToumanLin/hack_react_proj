@@ -94,16 +94,33 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clot
       }
 
       // Determine scale
-      // overlayItem.scale Default is 1.0
+      // overlayItem.scale Default is 0.5
       scale = overlayItem.scale;
       
-      if (overlayItem.inheritScale || overlayItem.inheritTextureScale) // 如果继承缩放为 true
-      {
-          if (!overlayItem.ignoreLimbScale) // 如果不忽略肢体缩放（即应用肢体缩放）
-          {
-              scale *= limb.scale; // 乘以肢体缩放（对应 Params.Scale）
+      // based on the useLegacyScaleLogic attribute, determine the scale
+      if (overlayItem.useLegacyScaleLogic) {
+        // old version logic: only when inheritTextureScale is true, multiply by 1.0
+        if (overlayItem.inheritTextureScale) {
+          scale *= 1.0;
+          if (!overlayItem.ignoreRagdollScale) {
+            scale *= 0.5;
           }
+        }
+        if (!overlayItem.ignoreLimbScale) {
+          scale *= limb.scale;
+        }
+      } else {
+        // new version logic: use inheritScale attribute
+        if (overlayItem.inheritScale) {
+          if (!overlayItem.ignoreLimbScale) {
+            scale *= limb.scale;
+          }
+          if (!overlayItem.ignoreRagdollScale) {
+            scale *= 0.5;
+          }
+        }
       }
+      scale = scale * 2.0;
 
       // Determine depth
       if (overlayItem.inheritLimbDepth) {

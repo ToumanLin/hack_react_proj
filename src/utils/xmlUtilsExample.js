@@ -1,6 +1,6 @@
 /**
- * XML解析工具使用示例
- * 展示如何使用新的健壮XML解析工具
+ * XML parsing utility example
+ * Shows how to use the new robust XML parsing utility
  */
 
 import { 
@@ -13,9 +13,9 @@ import {
   parseSpriteAttributesFromXml2js 
 } from './xmlUtils';
 
-// 示例1: 使用原生DOM解析
+// Example 1: Using native DOM parsing
 export const exampleDomParsing = () => {
-  // 假设我们有一个XML元素
+  // Assume we have an XML element
   const xmlString = `
     <sprite name="Pirate Uniform 2 Right Lower Arm" 
             texture="pirate_2.png" 
@@ -32,11 +32,11 @@ export const exampleDomParsing = () => {
   const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
   const spriteElement = xmlDoc.querySelector('sprite');
   
-  // 使用健壮的属性解析
+  // Use robust attribute parsing
   const spriteData = parseSpriteAttributes(spriteElement);
   
   console.log('Parsed sprite data:', spriteData);
-  // 输出:
+  // Output:
   // {
   //   name: "Pirate Uniform 2 Right Lower Arm",
   //   texture: "pirate_2.png",
@@ -54,9 +54,9 @@ export const exampleDomParsing = () => {
   // }
 };
 
-// 示例2: 使用xml2js解析
+// Example 2: Using xml2js parsing
 export const exampleXml2jsParsing = () => {
-  // 模拟xml2js解析后的对象
+  // Simulate xml2js parsed object
   const xml2jsResult = {
     sprite: {
       $: {
@@ -65,20 +65,20 @@ export const exampleXml2jsParsing = () => {
         limb: "RightArm",
         hidelimb: "false",
         inheritsourcerect: "true",
-        SourceRect: "272,0,64,92.5",  // 注意这里是大写的SourceRect
-        Origin: "0.5,0.518919"        // 注意这里是大写的Origin
+        SourceRect: "272,0,64,92.5",  // Note: SourceRect is uppercase
+        Origin: "0.5,0.518919"        // Note: Origin is uppercase
       }
     }
   };
   
-  // 使用健壮的属性解析
+  // Use robust attribute parsing
   const spriteData = parseSpriteAttributesFromXml2js(xml2jsResult.sprite);
   
   console.log('Parsed sprite data from xml2js:', spriteData);
-  // 输出相同的结果，即使XML中使用了大写属性名
+  // Output same result, even if XML uses uppercase attribute names
 };
 
-// 示例3: 手动使用单个解析函数
+// Example 3: Manually using single parsing function
 export const exampleManualParsing = () => {
   const xmlString = `
     <limb id="Torso" 
@@ -95,10 +95,10 @@ export const exampleManualParsing = () => {
   const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
   const limbElement = xmlDoc.querySelector('limb');
   
-  // 手动解析各个属性
+  // Manually parse each attribute
   const id = getAttribute(limbElement, 'id', '');
-  const name = getAttribute(limbElement, 'name', '');  // 会自动找到Name属性
-  const type = getAttribute(limbElement, 'type', '');  // 会自动找到Type属性
+  const name = getAttribute(limbElement, 'name', '');  // Will automatically find Name attribute
+  const type = getAttribute(limbElement, 'type', '');  // Will automatically find Type attribute
   const scale = parseFloat(getAttribute(limbElement, 'scale', '1'));
   const depth = parseFloat(getAttribute(limbElement, 'depth', '0'));
   const origin = parseNumberArray(getAttribute(limbElement, 'origin', '0.5,0.5'));
@@ -117,16 +117,16 @@ export const exampleManualParsing = () => {
   });
 };
 
-// 示例4: 处理各种大小写变体
+// Example 4: Handling various case variants
 export const exampleCaseVariants = () => {
   const testCases = [
-    // 原始DOM元素
+    // Original DOM element
     { element: createTestElement('sourcerect', '100,200,300,400') },
     { element: createTestElement('SourceRect', '100,200,300,400') },
     { element: createTestElement('sourceRect', '100,200,300,400') },
     { element: createTestElement('SOURCERECT', '100,200,300,400') },
     
-    // xml2js对象
+    // xml2js object
     { xml2js: createTestXml2js('sourcerect', '100,200,300,400') },
     { xml2js: createTestXml2js('SourceRect', '100,200,300,400') },
     { xml2js: createTestXml2js('sourceRect', '100,200,300,400') },
@@ -142,11 +142,11 @@ export const exampleCaseVariants = () => {
     }
     
     console.log(`Test case ${index + 1}:`, result);
-    // 所有测试用例都应该输出: [100, 200, 300, 400]
+    // All test cases should output: [100, 200, 300, 400]
   });
 };
 
-// 辅助函数
+// Helper function
 function createTestElement(attrName, attrValue) {
   const element = document.createElement('div');
   element.setAttribute(attrName, attrValue);
@@ -161,19 +161,19 @@ function createTestXml2js(attrName, attrValue) {
   };
 }
 
-// 导出示例函数
+// Export example functions
 export const runAllExamples = () => {
-  console.log('=== XML解析工具示例 ===');
+  console.log('=== XML parsing utility example ===');
   
-  console.log('\n1. DOM解析示例:');
+  console.log('\n1. DOM parsing example:');
   exampleDomParsing();
   
-  console.log('\n2. xml2js解析示例:');
+  console.log('\n2. xml2js parsing example:');
   exampleXml2jsParsing();
   
-  console.log('\n3. 手动解析示例:');
+  console.log('\n3. Manual parsing example:');
   exampleManualParsing();
   
-  console.log('\n4. 大小写变体测试:');
+  console.log('\n4. Case variant test:');
   exampleCaseVariants();
 }; 

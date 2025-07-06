@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Draggable from 'react-draggable';
 
 const SpriteSheetViewer = ({ gender, limbs, mainTexture }) => {
@@ -9,7 +9,8 @@ const SpriteSheetViewer = ({ gender, limbs, mainTexture }) => {
   const draggableRef = useRef(null);
 
   // Convert limbs data to the format expected by the viewer
-  const viewerLimbs = limbs.map(limb => ({
+  const viewerLimbs = limbs.map((limb, index) => ({
+    id: index, // add unique ID for comparison
     name: limb.name,
     rect: {
       x: limb.sourceRect[0],
@@ -25,7 +26,7 @@ const SpriteSheetViewer = ({ gender, limbs, mainTexture }) => {
   };
 
   const handleImageError = (e) => {
-    console.error('Image failed to load:', e.target.src);
+    console.error('Body sprite image failed to load:', e.target.src);
   };
 
   return (
@@ -68,7 +69,7 @@ const SpriteSheetViewer = ({ gender, limbs, mainTexture }) => {
           <div>
             {!mainTexture && <div style={{ padding: '10px', textAlign: 'center' }}>No texture available</div>}
             {mainTexture && (
-              <div style={{ position: 'relative', cursor: 'move', width: imageSize.width, height: imageSize.height }}>
+              <div style={{ position: 'relative', cursor: 'move' }}>
                 <img 
                   ref={imageRef} 
                   src={mainTexture} 
@@ -80,18 +81,23 @@ const SpriteSheetViewer = ({ gender, limbs, mainTexture }) => {
                 {viewerLimbs.map((limb, index) => (
                 <div
                     key={index}
-                    onMouseEnter={() => setHoveredLimb(limb)}
-                    onMouseLeave={() => setHoveredLimb(null)}
-                    style={{
-                        position: 'absolute',
-                        border: `1px solid ${hoveredLimb === limb ? 'yellow' : 'red'}`,
-                        left: limb.rect.x,
-                        top: limb.rect.y,
-                        width: limb.rect.width,
-                        height: limb.rect.height,
-                    }}
+                                                              onMouseEnter={() => {
+                         setHoveredLimb(limb);
+                     }}
+                     onMouseLeave={() => {
+                         setHoveredLimb(null);
+                     }}
+                     style={{
+                         position: 'absolute',
+                         border: `1px solid ${hoveredLimb && hoveredLimb.id === limb.id ? 'yellow' : 'red'}`,
+                         left: limb.rect.x,
+                         top: limb.rect.y,
+                         width: limb.rect.width,
+                         height: limb.rect.height,
+                         zIndex: 2000,
+                     }}
                 >
-                    {hoveredLimb === limb && (
+                    {hoveredLimb && hoveredLimb.id === limb.id && (
                         <div style={{
                             position: 'absolute',
                             top: '-20px',
@@ -101,7 +107,8 @@ const SpriteSheetViewer = ({ gender, limbs, mainTexture }) => {
                             padding: '2px 5px',
                             borderRadius: '3px',
                             whiteSpace: 'nowrap',
-                            fontSize: '12px',
+                            fontSize: '11px',
+                            zIndex: 2000,
                         }}>
                             {limb.name}
                         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Draggable from 'react-draggable';
+import { convertTexturePath } from '../utils/textureUtils';
 
 const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
   const [selectedTexture, setSelectedTexture] = useState('');
@@ -11,7 +12,7 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
 
   // Process data when props change
   React.useEffect(() => {
-    const defaultTexture = `/assets/Content/Characters/Human/Human_${gender}_heads.png`;
+    const defaultTexture = convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender);
     if (!selectedTexture) {
       setSelectedTexture(defaultTexture);
     }
