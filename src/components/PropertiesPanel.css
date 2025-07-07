@@ -1,0 +1,23 @@
+.properties-panel-container {
+  width: 180px;
+}
+
+.property-row {
+  margin-bottom: 8px;
+}
+
+.property-label {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10px;
+}
+
+.property-input {
+  width: 100%;
+  padding: 3px;
+  background-color: #3a3a3a;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 2px;
+  font-size: 10px;
+}

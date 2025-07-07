@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Draggable from 'react-draggable';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
+import useCharacterStore from '../store/characterStore';
+import Panel from './Panel';
 
-const ClothSheetViewer = ({ clothingSprites, gender, limbs }) => {
+const ClothSheetViewer = () => {
+  const {
+    clothingSprites,
+    limbs,
+  } = useCharacterStore();
+
   const [textureGroups, setTextureGroups] = useState([]);
   const [hoveredSprite, setHoveredSprite] = useState(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedTexture, setSelectedTexture] = useState(null);
   const [processedSelectedTexture, setProcessedSelectedTexture] = useState(null);
-  const draggableRef = useRef(null);
 
   // Process selected texture for Electron production environment
   useEffect(() => {
@@ -101,158 +105,108 @@ const ClothSheetViewer = ({ clothingSprites, gender, limbs }) => {
   const selectedGroup = textureGroups.find(group => group.texturePath === selectedTexture);
 
   return (
-    <Draggable nodeRef={draggableRef}>
-      <div 
-        ref={draggableRef}
-        style={{
-          position: 'absolute',
-          top: '100px', 
-          left: '600px', 
-          zIndex: 2000,
-          backgroundColor: '#2a2a2a',
-          border: '1px solid #555',
-          borderRadius: '5px',
-          width: '200px',
-          minWidth: '600px',
-          color: 'white',
-          padding: '8px',
-          fontSize: '8px',
-        }}
-      >
-        {/* Header */}
-        <div style={{
-          padding: '8px',
-          cursor: 'default',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #555',
-          backgroundColor: '#3a3a3a',
-          fontSize: '12px',
-          fontWeight: 'bold',
-        }}>
-          <span>Clothing Sprites</span>
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            style={{
-              background: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              fontSize: '10px',
-            }}
-          >
-            {isCollapsed ? '+' : '-'}
-          </button>
-        </div>
+    <Panel title="Clothing Sprites" isOpenInitially={false} position={{ x: 600, y: 100 }}>
+      <div style={{width: '580px'}}>
+        {/* Texture selector */}
+        {textureGroups.length > 1 && (
+          <div style={{ marginBottom: '8px' }}>
+            <select
+              value={selectedTexture || ''}
+              onChange={(e) => setSelectedTexture(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '4px',
+                fontSize: '10px',
+                backgroundColor: '#3a3a3a',
+                border: '1px solid #555',
+                borderRadius: '3px',
+                color: 'white'
+              }}
+            >
+              {textureGroups.map(group => (
+                <option key={group.texturePath} value={group.texturePath}>
+                  {group.fileName} ({group.sprites.length} sprites)
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        {!isCollapsed && (
-          <div style={{ padding: '8px 0 0 0' }}>
-            {/* Texture selector */}
-            {textureGroups.length > 1 && (
-              <div style={{ marginBottom: '8px' }}>
-                <select
-                  value={selectedTexture || ''}
-                  onChange={(e) => setSelectedTexture(e.target.value)}
+        {/* Sprite sheet viewer with sourcerect highlighting */}
+        {selectedGroup && (
+          <div style={{ 
+            position: 'relative', 
+            cursor: 'move',
+            border: '1px solid #555',
+            backgroundColor: '#808080',
+            overflow: 'auto',
+            maxHeight: '600px'
+          }}>
+            <img 
+              src={processedSelectedTexture || selectedGroup.texturePath} 
+              alt="Clothing Sprite Sheet" 
+              style={{ display: 'block' }}
+            />
+            {/* Sourcerect overlays */}
+            {selectedGroup.sprites.map((sprite, index) => (
+              sprite.rect && (
+                <div
+                  key={index}
+                  onMouseEnter={() => setHoveredSprite(sprite)}
+                  onMouseLeave={() => setHoveredSprite(null)}
                   style={{
-                    width: '100%',
-                    padding: '4px',
-                    fontSize: '10px',
-                    backgroundColor: '#3a3a3a',
-                    border: '1px solid #555',
-                    borderRadius: '3px',
-                    color: 'white'
+                    position: 'absolute',
+                    border: `1px solid ${hoveredSprite === sprite ? '#ffff00' : '#ff0000'}`,
+                    left: sprite.rect.x,
+                    top: sprite.rect.y,
+                    width: sprite.rect.width,
+                    height: sprite.rect.height,
+                    pointerEvents: 'auto',
                   }}
                 >
-                  {textureGroups.map(group => (
-                    <option key={group.texturePath} value={group.texturePath}>
-                      {group.fileName} ({group.sprites.length} sprites)
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {/* Sprite sheet viewer with sourcerect highlighting */}
-            {selectedGroup && (
-              <div style={{ 
-                position: 'relative', 
-                cursor: 'move',
-                border: '1px solid #555',
-                backgroundColor: '#808080',
-                overflow: 'auto',
-                maxWidth: '600px',
-                maxHeight: '600px'
-              }}>
-                <img 
-                  src={processedSelectedTexture || selectedGroup.texturePath} 
-                  alt="Clothing Sprite Sheet" 
-                  style={{ display: 'block' }}
-                />
-                {/* Sourcerect overlays */}
-                {selectedGroup.sprites.map((sprite, index) => (
-                  sprite.rect && (
-                    <div
-                      key={index}
-                      onMouseEnter={() => setHoveredSprite(sprite)}
-                      onMouseLeave={() => setHoveredSprite(null)}
-                      style={{
-                        position: 'absolute',
-                        border: `1px solid ${hoveredSprite === sprite ? '#ffff00' : '#ff0000'}`,
-                        left: sprite.rect.x,
-                        top: sprite.rect.y,
-                        width: sprite.rect.width,
-                        height: sprite.rect.height,
-                        pointerEvents: 'auto',
-                      }}
-                    >
-                      {hoveredSprite === sprite && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '-25px',
-                          left: '0px',
-                          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                          color: 'white',
-                          padding: '3px 6px',
-                          borderRadius: '3px',
-                          whiteSpace: 'nowrap',
-                          fontSize: '11px',
-                          zIndex: 1000,
-                        }}>
-                          <div style={{ fontWeight: 'bold' }}>{sprite.name}</div>
-                          <div style={{ fontSize: '9px', color: '#ccc' }}>Limb: {sprite.limb}</div>
-                          <div style={{ fontSize: '9px', color: '#aaa' }}>
-                            Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
-                          </div>
-                          {sprite.inheritSourceRect && (
-                            <div style={{ fontSize: '9px', color: '#888' }}>(Inherited from limb)</div>
-                          )}
-                        </div>
+                  {hoveredSprite === sprite && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-25px',
+                      left: '0px',
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      color: 'white',
+                      padding: '3px 6px',
+                      borderRadius: '3px',
+                      whiteSpace: 'nowrap',
+                      fontSize: '11px',
+                      zIndex: 1000,
+                    }}>
+                      <div style={{ fontWeight: 'bold' }}>{sprite.name}</div>
+                      <div style={{ fontSize: '9px', color: '#ccc' }}>Limb: {sprite.limb}</div>
+                      <div style={{ fontSize: '9px', color: '#aaa' }}>
+                        Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
+                      </div>
+                      {sprite.inheritSourceRect && (
+                        <div style={{ fontSize: '9px', color: '#888' }}>(Inherited from limb)</div>
                       )}
                     </div>
-                  )
-                ))}
-              </div>
-            )}
+                  )}
+                </div>
+              )
+            ))}
+          </div>
+        )}
 
-            {/* No clothing message */}
-            {textureGroups.length === 0 && (
-              <div style={{ 
-                padding: '20px', 
-                textAlign: 'center', 
-                color: '#888',
-                fontSize: '11px'
-              }}>
-                No clothing sprites loaded
-              </div>
-            )}
+        {/* No clothing message */}
+        {textureGroups.length === 0 && (
+          <div style={{ 
+            padding: '20px', 
+            textAlign: 'center', 
+            color: '#888',
+            fontSize: '11px'
+          }}>
+            No clothing sprites loaded
           </div>
         )}
       </div>
-    </Draggable>
+    </Panel>
   );
 };
 
-export default ClothSheetViewer; 
+export default ClothSheetViewer;

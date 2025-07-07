@@ -22,7 +22,8 @@
     "timers-browserify": "^2.0.12",
     "web-vitals": "^2.1.4",
     "xml2js": "^0.6.2",
-    "xmldom": "^0.6.0"
+    "xmldom": "^0.6.0",
+    "zustand": "^5.0.6"
   },
   "scripts": {
     "start": "react-app-rewired start",

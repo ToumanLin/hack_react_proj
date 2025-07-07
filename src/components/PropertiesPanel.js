@@ -1,34 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
+import useCharacterStore from '../store/characterStore';
+import Panel from './Panel';
+import './PropertiesPanel.css';
 
-const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const PropertiesPanel = () => {
+  const { selectedLimb, setLimbs, limbs } = useCharacterStore();
+
+  const onUpdate = (updatedLimb) => {
+    setLimbs(limbs.map(l => l.id === updatedLimb.id ? updatedLimb : l));
+  };
 
   if (!selectedLimb) {
     return (
-      <div style={{ padding: '8px', width: '200px', color: 'white', textAlign: 'left' }}>
-        <h3 style={{ color: 'white', textAlign: 'left', display: 'flex', justifyContent: 'space-between', fontSize: '12px', margin: '0 0 8px 0' }}>
-          Limb
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            style={{
-              background: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              fontSize: '10px'
-            }}
-          >
-            {isCollapsed ? '+' : '-'}
-          </button>
-        </h3>
-        {!isCollapsed && (
-          <div style={{ fontSize: '12px', color: '#ccc', marginTop: '10px' }}>
-            Select a limb to edit properties.
-          </div>
-        )}
-      </div>
+      <Panel title="Limb" isOpenInitially={true} position={{ x: 0, y: 360 }}>
+        <div className="properties-panel-container" style={{color: '#ccc', marginTop: '10px', fontSize: '12px'}}>
+          Select a limb to edit properties.
+        </div>
+      </Panel>
     );
   }
 
@@ -49,8 +37,6 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
         return;
     }
 
-
-
     const [group, prop] = name.split('.');
     onUpdate({
       ...selectedLimb,
@@ -58,124 +44,63 @@ const PropertiesPanel = ({ selectedLimb, onUpdate }) => {
     });
   };
 
-
-
   return (
-    <div style={{ padding: '8px', width: '200px', color: 'white', textAlign: 'left' }}>
-      <h3 style={{ color: 'white', textAlign: 'left', display: 'flex', justifyContent: 'space-between', fontSize: '12px', margin: '0 0 8px 0' }}>
-        {selectedLimb.name}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          style={{
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '3px 8px',
-            borderRadius: '3px',
-            fontSize: '10px'
-          }}
-        >
-          {isCollapsed ? '+' : '-'}
-        </button>
-      </h3>
-      {!isCollapsed && (
-        <>
-          <div style={{ marginBottom: '8px' }}>
-            <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Position X:</label>
-            <input
-              type="number"
-              name="position.x"
-              value={selectedLimb.position.x}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '3px',
-                backgroundColor: '#3a3a3a',
-                color: 'white',
-                border: '1px solid #555',
-                borderRadius: '2px',
-                fontSize: '10px'
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '8px' }}>
-            <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Position Y:</label>
-            <input
-              type="number"
-              name="position.y"
-              value={selectedLimb.position.y}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '3px',
-                backgroundColor: '#3a3a3a',
-                color: 'white',
-                border: '1px solid #555',
-                borderRadius: '2px',
-                fontSize: '10px'
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '8px' }}>
-            <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Depth (z-index):</label>
-            <input
-              type="number"
-              name="depth"
-              step="0.0001" 
-              value={selectedLimb.depth}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '3px',
-                backgroundColor: '#3a3a3a',
-                color: 'white',
-                border: '1px solid #555',
-                borderRadius: '2px',
-                fontSize: '10px'
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '8px' }}>
-            <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Rotation:</label>
-            <input
-              type="number"
-              name="rotation"
-              value={selectedLimb.rotation}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '3px',
-                backgroundColor: '#3a3a3a',
-                color: 'white',
-                border: '1px solid #555',
-                borderRadius: '2px',
-                fontSize: '10px'
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '8px' }}>
-            <label style={{ display: 'block', marginBottom: '3px', fontSize: '10px' }}>Scale:</label>
-            <input
-              type="number"
-              name="scale"
-              step="0.1"
-              value={selectedLimb.scale}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: '3px',
-                backgroundColor: '#3a3a3a',
-                color: 'white',
-                border: '1px solid #555',
-                borderRadius: '2px',
-                fontSize: '10px'
-              }}
-            />
-          </div>
-        </>
-      )}
-    </div>
+    <Panel title={selectedLimb.name} isOpenInitially={true} position={{ x: 0, y: 360 }}>
+      <div className="properties-panel-container">
+        <div className="property-row">
+          <label className="property-label">Position X:</label>
+          <input
+            type="number"
+            name="position.x"
+            value={selectedLimb.position.x}
+            onChange={handleChange}
+            className="property-input"
+          />
+        </div>
+        <div className="property-row">
+          <label className="property-label">Position Y:</label>
+          <input
+            type="number"
+            name="position.y"
+            value={selectedLimb.position.y}
+            onChange={handleChange}
+            className="property-input"
+          />
+        </div>
+        <div className="property-row">
+          <label className="property-label">Depth (z-index):</label>
+          <input
+            type="number"
+            name="depth"
+            step="0.0001" 
+            value={selectedLimb.depth}
+            onChange={handleChange}
+            className="property-input"
+          />
+        </div>
+        <div className="property-row">
+          <label className="property-label">Rotation:</label>
+          <input
+            type="number"
+            name="rotation"
+            value={selectedLimb.rotation}
+            onChange={handleChange}
+            className="property-input"
+          />
+        </div>
+        <div className="property-row">
+          <label className="property-label">Scale:</label>
+          <input
+            type="number"
+            name="scale"
+            step="0.1"
+            value={selectedLimb.scale}
+            onChange={handleChange}
+            className="property-input"
+          />
+        </div>
+      </div>
+    </Panel>
   );
 };
 

@@ -1,0 +1,30 @@
+.head-panel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 195px;
+}
+
+.head-panel-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.head-panel-label {
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 48px;
+  text-transform: capitalize;
+}
+
+.head-panel-select {
+  flex: 1;
+  padding: 2px 4px;
+  background-color: #3a3a3a;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 3px;
+  font-size: 10px;
+  min-width: 0;
+}

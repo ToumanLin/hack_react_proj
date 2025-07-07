@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Draggable from 'react-draggable';
 import { parseSpriteAttributes } from '../utils/xmlUtils';
 import { loadItemFilesFromFilelist, processClothingTexturePath } from '../utils/pathUtils';
+import useCharacterStore from '../store/characterStore';
+import Panel from './Panel';
 
 // Read filelist.xml and get all Item file paths
 const getItemFilesFromFilelist = async () => {
@@ -127,16 +128,19 @@ const processTexturePath = (texturePath, gender, xmlPath) => {
   return processClothingTexturePath(texturePath, gender, xmlPath);
 };
 
-const ClothingManager = ({ gender, limbs, onClothingUpdate }) => {
-  const [clothingSprites, setClothingSprites] = useState([]);
+const ClothingManager = () => {
+  const {
+    gender,
+    clothingSprites,
+    setClothingSprites,
+  } = useCharacterStore();
+
   const [isLoading, setIsLoading] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [itemIdentifier, setItemIdentifier] = useState('');
   const [availableItems, setAvailableItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedItemXmlPath, setSelectedItemXmlPath] = useState('');
-  const draggableRef = useRef(null);
 
   // Load all available clothing items from all Item files
   const loadAvailableItems = async () => {
@@ -171,7 +175,6 @@ const ClothingManager = ({ gender, limbs, onClothingUpdate }) => {
           texturePath: processTexturePath(sprite.texture, gender, xmlPath)
         }));
         setClothingSprites(processedSprites);
-        onClothingUpdate(processedSprites);
       }
     } catch (error) {
       console.error('Error loading clothing:', error);
@@ -182,7 +185,6 @@ const ClothingManager = ({ gender, limbs, onClothingUpdate }) => {
 
   const removeClothing = () => {
     setClothingSprites([]);
-    onClothingUpdate([]);
   };
 
   useEffect(() => {
@@ -249,189 +251,141 @@ const ClothingManager = ({ gender, limbs, onClothingUpdate }) => {
   };
 
   return (
-    <Draggable nodeRef={draggableRef}>
-      <div 
-        ref={draggableRef}
-        style={{
-          position: 'absolute',
-          top: '500px', 
-          left: '230px', 
-          zIndex: 2000,
-          backgroundColor: '#2a2a2a',
-          border: '1px solid #555',
-          borderRadius: '5px',
-          width: '250px',
-          minWidth: '200px',
-          color: 'white',
-          padding: '8px',
-          fontSize: '8px',
-        }}
-      >
-        {/* Header */}
-        <div style={{
-          padding: '8px',
-          cursor: 'default',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #555',
-          backgroundColor: '#3a3a3a',
-          fontSize: '12px',
-          fontWeight: 'bold',
-        }}>
-          <span>Clothing Manager</span>
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
+    <Panel title="Clothing Manager" isOpenInitially={false} position={{ x: 230, y: 500 }}>
+      <div style={{width: '230px'}}>
+        {/* Search and dropdown menu */}
+        <div style={{ marginBottom: '8px' }}>
+          <input
+            type="text"
+            placeholder="Search clothing..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             style={{
-              background: '#4CAF50',
+              width: '100%',
+              padding: '4px',
+              fontSize: '10px',
+              backgroundColor: '#3a3a3a',
+              border: '1px solid #555',
+              borderRadius: '3px',
+              color: 'white',
+              marginBottom: '4px'
+            }}
+          />
+          <select
+            value={selectedItem}
+            onChange={(e) => {
+              const newSelectedItem = e.target.value;
+              setSelectedItem(newSelectedItem);
+              
+              // Immediately find and load the selected item
+              const selectedItemData = availableItems.find(item => item.identifier === newSelectedItem);
+              if (selectedItemData) {
+                // console.log('select onChange: Loading item', { 
+                //   newSelectedItem, 
+                //   xmlPath: selectedItemData.xmlPath,
+                //   searchTerm,
+                //   filteredItemsCount: filteredItems.length
+                // });
+                setSelectedItemXmlPath(selectedItemData.xmlPath);
+                setItemIdentifier(selectedItemData.identifier);
+                loadClothing(selectedItemData.identifier, selectedItemData.xmlPath);
+              } else {
+                // console.warn('select onChange: Item not found', { newSelectedItem, availableItemsCount: availableItems.length });
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: '4px',
+              fontSize: '10px',
+              backgroundColor: '#3a3a3a',
+              border: '1px solid #555',
+              borderRadius: '3px',
+              color: 'white'
+            }}
+          >
+            {filteredItems.map(item => (
+              <option key={item.identifier} value={item.identifier}>
+                {item.name || item.identifier}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div style={{ fontSize: '10px', fontWeight: 'bold', marginBottom: '6px' }}>
+          Item: <span style={{ fontWeight: 'normal', fontSize: '10px' }}>{itemIdentifier}</span>
+          <br />
+          <span style={{ fontWeight: 'normal', fontSize: '8px', color: '#aaa' }}>
+            From: {selectedItemXmlPath}
+          </span>
+          <br />
+          <button
+            onClick={() => loadClothing()}
+            disabled={isLoading}
+            style={{
+              background: isLoading ? '#666' : '#4CAF50',
+              color: 'white',
+              border: 'none',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              padding: '2px 4px',
+              borderRadius: '3px',
+              fontSize: '9px',
+              float: 'center',
+              marginLeft: '4px',
+            }}
+          >
+            {isLoading ? 'Loading...' : 'Reload'}
+          </button>
+          <button
+            onClick={removeClothing}
+            style={{
+              background: '#f44336',
               color: 'white',
               border: 'none',
               cursor: 'pointer',
-              padding: '3px 8px',
+              padding: '2px 4px',
               borderRadius: '3px',
-              fontSize: '10px',
+              fontSize: '9px',
+              float: 'center',
             }}
           >
-            {isCollapsed ? '+' : '-'}
+            Remove
           </button>
+          <br/>
         </div>
-        {!isCollapsed && (
-          <div style={{ padding: '8px 0 0 0' }}>
-            {/* Search and dropdown menu */}
-            <div style={{ marginBottom: '8px' }}>
-              <input
-                type="text"
-                placeholder="Search clothing..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '4px',
-                  fontSize: '10px',
-                  backgroundColor: '#3a3a3a',
-                  border: '1px solid #555',
-                  borderRadius: '3px',
-                  color: 'white',
-                  marginBottom: '4px'
-                }}
-              />
-              <select
-                value={selectedItem}
-                onChange={(e) => {
-                  const newSelectedItem = e.target.value;
-                  setSelectedItem(newSelectedItem);
-                  
-                  // Immediately find and load the selected item
-                  const selectedItemData = availableItems.find(item => item.identifier === newSelectedItem);
-                  if (selectedItemData) {
-                    // console.log('select onChange: Loading item', { 
-                    //   newSelectedItem, 
-                    //   xmlPath: selectedItemData.xmlPath,
-                    //   searchTerm,
-                    //   filteredItemsCount: filteredItems.length
-                    // });
-                    setSelectedItemXmlPath(selectedItemData.xmlPath);
-                    setItemIdentifier(selectedItemData.identifier);
-                    loadClothing(selectedItemData.identifier, selectedItemData.xmlPath);
-                  } else {
-                    // console.warn('select onChange: Item not found', { newSelectedItem, availableItemsCount: availableItems.length });
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  padding: '4px',
-                  fontSize: '10px',
-                  backgroundColor: '#3a3a3a',
-                  border: '1px solid #555',
-                  borderRadius: '3px',
-                  color: 'white'
-                }}
-              >
-                {filteredItems.map(item => (
-                  <option key={item.identifier} value={item.identifier}>
-                    {item.name || item.identifier}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div style={{ fontSize: '10px', fontWeight: 'bold', marginBottom: '6px' }}>
-              Item: <span style={{ fontWeight: 'normal', fontSize: '10px' }}>{itemIdentifier}</span>
-              <br />
-              <span style={{ fontWeight: 'normal', fontSize: '8px', color: '#aaa' }}>
-                From: {selectedItemXmlPath}
-              </span>
-              <br />
-              <button
-                onClick={() => loadClothing()}
-                disabled={isLoading}
-                style={{
-                  background: isLoading ? '#666' : '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  padding: '2px 4px',
-                  borderRadius: '3px',
-                  fontSize: '9px',
-                  float: 'center',
-                  marginLeft: '4px',
-                }}
-              >
-                {isLoading ? 'Loading...' : 'Reload'}
-              </button>
-              <button
-                onClick={removeClothing}
-                style={{
-                  background: '#f44336',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '2px 4px',
-                  borderRadius: '3px',
-                  fontSize: '9px',
-                  float: 'center',
-                }}
-              >
-                Remove
-              </button>
-              <br/>
-            </div>
-            {/* Compact 2-column sprite info table */}
-            <div style={{ width: '100%', marginTop: '4px' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px' }}>
-                <tbody>
-                  {getSpriteRows(clothingSprites).map((row, rowIdx) => (
-                    <tr key={rowIdx}>
-                      {row.map((sprite, colIdx) =>
-                        sprite ? (
-                          <td
-                            key={colIdx}
-                            style={{
-                              borderBottom: '1px solid #444',
-                              padding: '2px 2px',
-                              verticalAlign: 'top',
-                              wordBreak: 'break-all',
-                              width: '50%',
-                            }}
-                          >
-                            <div style={{ fontWeight: 'bold', fontSize: '9px' }}>{sprite.name}</div>
-                            <div style={{ color: '#aaa', fontSize: '8px' }}>{sprite.limb}</div>
-                            <div style={{ color: '#ccc', fontSize: '8px' }}>{sprite.texturePath.split('/').pop()}</div>
-                          </td>
-                        ) : (
-                          <td key={colIdx} style={{ width: '50%' }} />
-                        )
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {/* Compact 2-column sprite info table */}
+        <div style={{ width: '100%', marginTop: '4px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px' }}>
+            <tbody>
+              {getSpriteRows(clothingSprites).map((row, rowIdx) => (
+                <tr key={rowIdx}>
+                  {row.map((sprite, colIdx) =>
+                    sprite ? (
+                      <td
+                        key={colIdx}
+                        style={{
+                          borderBottom: '1px solid #444',
+                          padding: '2px 2px',
+                          verticalAlign: 'top',
+                          wordBreak: 'break-all',
+                          width: '50%',
+                        }}
+                      >
+                        <div style={{ fontWeight: 'bold', fontSize: '9px' }}>{sprite.name}</div>
+                        <div style={{ color: '#aaa', fontSize: '8px' }}>{sprite.limb}</div>
+                        <div style={{ color: '#ccc', fontSize: '8px' }}>{sprite.texturePath.split('/').pop()}</div>
+                      </td>
+                    ) : (
+                      <td key={colIdx} style={{ width: '50%' }} />
+                    )
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </Draggable>
+    </Panel>
   );
 };
 
-export default ClothingManager; 
+export default ClothingManager;

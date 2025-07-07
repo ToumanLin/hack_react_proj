@@ -1,135 +1,106 @@
-import React, { useState, useRef } from 'react';
-import Draggable from 'react-draggable';
+import React from 'react';
+import useCharacterStore from '../store/characterStore';
+import Panel from './Panel';
+import './HeadPanel.css';
 
-const HeadPanel = ({ 
-  gender, 
-  headSprites, 
-  headAttachments, 
-  selectedHead, 
-  selectedAttachments,
-  onHeadChange,
-  onAttachmentChange
-}) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const draggableRef = useRef(null);
+const HeadPanel = () => {
+  const {
+    headSprites,
+    headAttachments,
+    selectedHead,
+    selectedAttachments,
+    setSelectedHead,
+    setSelectedAttachments,
+    limbs,
+    setLimbs,
+  } = useCharacterStore();
 
   const attachmentTypes = Object.keys(headAttachments || {});
 
+  const handleHeadChange = (e) => {
+    const headName = e.target.value;
+    setSelectedHead(headName);
+    const headSprite = headSprites.find(head => head.name === headName);
+    if (headSprite) {
+      const headLimb = limbs.find(l => l.name.includes('Head'));
+      if (headLimb) {
+        const updatedHeadLimb = {
+          ...headLimb,
+          sheetIndex: headSprite.sheetIndex,
+          sourceRect: [
+            headSprite.sheetIndex[0] * headSprite.baseSize[0],
+            headSprite.sheetIndex[1] * headSprite.baseSize[1],
+            headSprite.baseSize[0],
+            headSprite.baseSize[1]
+          ]
+        };
+        setLimbs(limbs.map(l => l.id === updatedHeadLimb.id ? updatedHeadLimb : l));
+      }
+    }
+  };
+
+  const handleAttachmentChange = (type, value) => {
+    const attachments = headAttachments[type];
+    const selected = attachments.find(att => att.id === value);
+    setSelectedAttachments({ ...selectedAttachments, [type]: selected });
+
+    const headLimb = limbs.find(l => l.name.includes('Head'));
+      if (headLimb) {
+        const updatedHeadLimb = {
+          ...headLimb,
+          [`selected${type.charAt(0).toUpperCase() + type.slice(1)}`]: selected
+        };
+        setLimbs(limbs.map(l => l.id === updatedHeadLimb.id ? updatedHeadLimb : l));
+      }
+  };
+
   return (
-    <Draggable nodeRef={draggableRef}>
-      <div 
-        ref={draggableRef}
-        style={{ 
-          position: 'absolute', 
-          top: '130px',
-          left: '0px',
-          zIndex: 2000, 
-          backgroundColor: '#2a2a2a',
-          border: '1px solid #555',
-          borderRadius: '5px',
-          maxWidth: '215px',
-          color: 'white'
-        }}
-      >
-        {/* Header */}
-        <div style={{ 
-          padding: '8px', 
-          cursor: 'default', 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          borderBottom: '1px solid #555',
-          backgroundColor: '#3a3a3a'
-        }}>
-          <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Head Panel</span>
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            style={{
-              background: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              fontSize: '10px'
-            }}
+    <Panel title="Head Panel" isOpenInitially={true} position={{ x: 0, y: 130 }}>
+      <div className="head-panel-container">
+        {/* Head Selection */}
+        <div className="head-panel-row">
+          <span className="head-panel-label">Head:</span>
+          <select 
+            value={selectedHead || ''} 
+            onChange={handleHeadChange}
+            className="head-panel-select"
           >
-            {isCollapsed ? '+' : '-'}
-          </button>
+            <option value="">Select Head</option>
+            {headSprites && headSprites.map((head, index) => (
+              <option key={index} value={head.name}>
+                {head.name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {!isCollapsed && (
-          <div style={{ padding: '8px 10px 8px 10px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {/* Head Selection */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 'bold', minWidth: '48px' }}>Head:</span>
-                <select 
-                  value={selectedHead || ''} 
-                  onChange={(e) => onHeadChange(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '2px 4px',
-                    backgroundColor: '#3a3a3a',
-                    color: 'white',
-                    border: '1px solid #555',
-                    borderRadius: '3px',
-                    fontSize: '10px',
-                    minWidth: 0
-                  }}
-                >
-                  <option value="">Select Head</option>
-                  {headSprites && headSprites.map((head, index) => (
-                    <option key={index} value={head.name}>
-                      {head.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* HeadAttachments Selection */}
-              {attachmentTypes.map(type => {
-                const attachments = headAttachments[type];
-                const selectedAttachment = selectedAttachments[type];
-                return (
-                  <div key={type} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 'bold', minWidth: '48px', textTransform: 'capitalize' }}>
-                      {type}:
-                    </span>
-                    <select 
-                      value={selectedAttachment ? selectedAttachment.id : ''} 
-                      onChange={(e) => {
-                        const selected = attachments.find(att => att.id === e.target.value);
-                        onAttachmentChange(type, selected);
-                        // console.log(type, selected);
-                      }}
-                      style={{
-                        flex: 1,
-                        padding: '2px 4px',
-                        backgroundColor: '#3a3a3a',
-                        color: 'white',
-                        border: '1px solid #555',
-                        borderRadius: '3px',
-                        fontSize: '10px',
-                        minWidth: 0
-                      }}
-                    >
-                      <option value="">None</option>
-                      {attachments.map((attachment, index) => (
-                        <option key={index} value={attachment.id}>
-                          {attachment.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              })}
+        {/* HeadAttachments Selection */}
+        {attachmentTypes.map(type => {
+          const attachments = headAttachments[type];
+          const selectedAttachment = selectedAttachments[type];
+          return (
+            <div key={type} className="head-panel-row">
+              <span className="head-panel-label">
+                {type}:
+              </span>
+              <select 
+                value={selectedAttachment ? selectedAttachment.id : ''} 
+                onChange={(e) => handleAttachmentChange(type, e.target.value)}
+                className="head-panel-select"
+              >
+                <option value="">None</option>
+                {attachments.map((attachment, index) => (
+                  <option key={index} value={attachment.id}>
+                    {attachment.name}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
-        )}
+          );
+        })}
       </div>
-    </Draggable>
+    </Panel>
   );
 };
 
-export default HeadPanel; 
+export default HeadPanel;

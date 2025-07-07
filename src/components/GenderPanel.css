@@ -1,0 +1,19 @@
+.gender-panel-container {
+  display: flex;
+  gap: 8px;
+  width: 180px;
+}
+
+.gender-button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  flex: 1;
+  font-size: 10px;
+}
+
+.gender-button.selected {
+  background-color: #4CAF50;
+}

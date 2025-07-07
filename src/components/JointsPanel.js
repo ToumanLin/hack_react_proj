@@ -1,60 +1,111 @@
 import React, { useState } from 'react';
+import useCharacterStore from '../store/characterStore';
+import Panel from './Panel';
+import './JointsPanel.css';
 
-const JointsPanel = ({ joints, onConstruct, onConstructAll }) => {
+const JointsPanel = () => {
   const [hoveredJoint, setHoveredJoint] = useState(null);
-  const [isCollapsed, setIsCollapsed] = useState(true); // Collapsed initially
+  const { joints, limbs, setLimbs } = useCharacterStore();
+
+  const handleUpdateLimb = (updatedLimb) => {
+    setLimbs(limbs.map(limb => limb.id === updatedLimb.id ? updatedLimb : limb));
+  };
+
+  const onConstruct = (joint) => {
+    const limb1 = limbs.find(l => l.id === (joint.$.Limb1 || joint.$.limb1));
+    const limb2 = limbs.find(l => l.id === (joint.$.Limb2 || joint.$.limb2));
+
+    if (!limb1 || !limb2) return;
+
+    const scale1 = limb1.scale;
+    const scale2 = limb2.scale;
+    const limb1Anchor = (joint.$.Limb1Anchor || joint.$.limb1anchor).split(',').map(val => parseFloat(val.trim()));
+    const limb2Anchor = (joint.$.Limb2Anchor || joint.$.limb2anchor).split(',').map(val => parseFloat(val.trim()));
+
+    // Flip y axis
+    const childPosX = limb1.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
+    const childPosY = limb1.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
+
+    const updatedLimb2 = { ...limb2, position: { x: childPosX, y: childPosY } };
+    handleUpdateLimb(updatedLimb2);
+  };
+
+  const onConstructAll = () => {
+    const rootLimb = limbs.find(l => l.type === 'Torso');
+    if (!rootLimb) return;
+
+    const limbGraph = {};
+    joints.forEach(joint => {
+        const limb1Id = joint.$.Limb1 || joint.$.limb1;
+        const limb2Id = joint.$.Limb2 || joint.$.limb2;
+        if (!limbGraph[limb1Id]) limbGraph[limb1Id] = [];
+        limbGraph[limb1Id].push({ joint, childId: limb2Id });
+    });
+
+    const newLimbs = [...limbs];
+    const queue = [rootLimb.id];
+    const visited = new Set();
+    visited.add(rootLimb.id);
+
+    while (queue.length > 0) {
+        const parentLimbId = queue.shift();
+        const parentLimb = newLimbs.find(l => l.id === parentLimbId);
+
+        if (limbGraph[parentLimbId]) {
+            limbGraph[parentLimbId].forEach(({ joint, childId }) => {
+                if (!visited.has(childId)) {
+                    const childLimb = newLimbs.find(l => l.id === childId);
+                    const limb1Anchor = (joint.$.Limb1Anchor || joint.$.limb1anchor).split(',').map(val => parseFloat(val.trim()));
+                    const limb2Anchor = (joint.$.Limb2Anchor || joint.$.limb2anchor).split(',').map(val => parseFloat(val.trim()));
+
+                    const scale1 = parentLimb.scale;
+                    const scale2 = childLimb.scale;
+
+                    const childPosX = parentLimb.position.x + limb1Anchor[0] * scale1 - limb2Anchor[0] * scale2;
+                    const childPosY = parentLimb.position.y - limb1Anchor[1] * scale1 + limb2Anchor[1] * scale2;
+
+                    const updatedChildLimb = { ...childLimb, position: { x: childPosX, y: childPosY } };
+                    const index = newLimbs.findIndex(l => l.id === childId);
+                    newLimbs[index] = updatedChildLimb;
+
+                    queue.push(childId);
+                    visited.add(childId);
+                }
+            });
+        }
+    }
+    setLimbs(newLimbs);
+  };
 
   return (
-    <div style={{ background: '#2d2d2d', color: 'white', padding: '8px', width: '200px', textAlign: 'left' }}>
-      <h3 style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', fontSize: '12px', margin: '0 0 8px 0' }}>
-        Joints
-        <button onClick={onConstructAll} style={{ display: 'block', width: '40%', border: 'none', backgroundColor: '#555', color: 'white', cursor: 'pointer', fontSize: '10px', padding: '3px 6px' }}>
-          Build by Torso
+    <Panel title="Joints" isOpenInitially={false} position={{ x: 0, y: 0 }}>
+      <div className="joints-panel-container">
+        <button onClick={onConstructAll} className="construct-all-button">
+          Construct All Based on Torso
         </button>
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          style={{
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '3px 8px',
-            borderRadius: '3px',
-            fontSize: '10px'
-          }}
-        >
-          {isCollapsed ? '+' : '-'}
-        </button>
-      </h3>
-      {!isCollapsed && (
-        <>
-          <button onClick={onConstructAll} style={{ marginBottom: '8px', display: 'block', width: '100%', padding: '6px 10px', border: 'none', backgroundColor: '#555', color: 'white', cursor: 'pointer', fontSize: '10px' }}>
-            Construct All Based on Torso
-          </button>
-          <ul style={{ paddingLeft: '0', listStyle: 'none' }}>
-            {joints.map((joint, index) => (
-              <li 
-                key={index} 
-                style={{ marginBottom: '4px', position: 'relative', fontSize: '10px' }} 
-                onMouseEnter={() => setHoveredJoint(joint)}
-                onMouseLeave={() => setHoveredJoint(null)}
-              >
-                <span>{`Joint ${joint.$.Limb1 || joint.$.limb1}-${joint.$.Limb2 || joint.$.limb2}`}</span>
-                <button onClick={() => onConstruct(joint)} style={{ marginLeft: '8px', padding: '3px 8px', border: 'none', backgroundColor: '#555', color: 'white', cursor: 'pointer', fontSize: '10px' }}>
-                  Construct
-                </button>
-                {hoveredJoint === joint && (
-                  <div style={{ position: 'absolute', left: '100%', top: 0, background: 'black', padding: '5px', zIndex: 1, fontSize: '10px' }}>
-                    <div>Limb1: {joint.$.Limb1Anchor || joint.$.limb1anchor}</div>
-                    <div>Limb2: {joint.$.Limb2Anchor || joint.$.limb2anchor}</div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </div>
+        <ul className="joints-list">
+          {joints.map((joint, index) => (
+            <li
+              key={index}
+              className="joint-item"
+              onMouseEnter={() => setHoveredJoint(joint)}
+              onMouseLeave={() => setHoveredJoint(null)}
+            >
+              <span>{`Joint ${joint.$.Limb1 || joint.$.limb1}-${joint.$.Limb2 || joint.$.limb2}`}</span>
+              <button onClick={() => onConstruct(joint)} className="construct-button">
+                Construct
+              </button>
+              {hoveredJoint === joint && (
+                <div className="joint-info">
+                  <div>Limb1: {joint.$.Limb1Anchor || joint.$.limb1anchor}</div>
+                  <div>Limb2: {joint.$.Limb2Anchor || joint.$.limb2anchor}</div>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Panel>
   );
 };
 

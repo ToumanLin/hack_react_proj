@@ -1,49 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
+import useCharacterStore from '../store/characterStore';
+import Panel from './Panel';
+import './GenderPanel.css';
 
-const GenderPanel = ({ onGenderChange, currentGender, availableGenders }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const GenderPanel = () => {
+  const { gender, availableGenders, setGender } = useCharacterStore();
 
   return (
-    <div style={{ background: '#2d2d2d', color: 'white', padding: '8px', width: '200px', textAlign: 'left' }}>
-      <h3 style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', fontSize: '12px', margin: '0 0 8px 0' }}>
-        Gender
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          style={{
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '3px 8px',
-            borderRadius: '3px',
-            fontSize: '10px'
-          }}
-        >
-          {isCollapsed ? '+' : '-'}
-        </button>
-      </h3>
-      {!isCollapsed && (
-        <div style={{ display: 'flex', gap: '8px' }}>
-        {availableGenders.map(gender => (
+    <Panel title="Gender" isOpenInitially={true} position={{ x: 0, y: 50 }}>
+      <div className="gender-panel-container">
+        {availableGenders.map(g => (
           <button
-            key={gender}
-            onClick={() => onGenderChange(gender)}
-            style={{
-              backgroundColor: currentGender === gender ? '#4CAF50' : '#555',
-              color: 'white',
-              border: 'none',
-              padding: '6px 10px',
-              cursor: 'pointer',
-              flex: '1',
-              fontSize: '10px'
-            }}
-          >
-            {gender.charAt(0).toUpperCase() + gender.slice(1)}
+            key={g}
+            onClick={() => setGender(g)}
+            className={`gender-button ${gender === g ? 'selected' : ''}`}>
+            {g.charAt(0).toUpperCase() + g.slice(1)}
           </button>
         ))}
       </div>
-      )}
-    </div>
+    </Panel>
   );
 };
 

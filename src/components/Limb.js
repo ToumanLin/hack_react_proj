@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
+import useCharacterStore from '../store/characterStore';
 
 const OVERRIDE_ORDER = {
   'hair': 7,
@@ -11,7 +12,12 @@ const OVERRIDE_ORDER = {
   'herpes': 2,
 };
 
-const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clothingSprites = [], allLimbs }) => {
+const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
+  const {
+    clothingSprites,
+    limbs: allLimbs,
+  } = useCharacterStore();
+
   const [x, y, width, height] = limb.sourceRect;
   const [processedTexturePath, setProcessedTexturePath] = useState(limb.texture);
   const [processedTextureCache, setProcessedTextureCache] = useState({});

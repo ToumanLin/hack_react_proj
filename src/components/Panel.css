@@ -1,0 +1,35 @@
+.panel {
+  position: absolute;
+  z-index: 2000;
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 5px;
+  color: white;
+  padding: 8px;
+}
+
+.panel-header {
+  padding: 8px;
+  cursor: default;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #555;
+  background-color: #3a3a3a;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.panel-toggle-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.panel-content {
+  padding: 8px 0 0 0;
+}

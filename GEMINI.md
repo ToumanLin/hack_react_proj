@@ -4,7 +4,7 @@ This file provides guidance to Gemini CLI (gemini.google.com/code) when working 
 
 ## Project Overview
 
-This is a React-based character editor for the game Barotrauma. It allows users to view and edit character sprites, including limbs, attachments, and clothing. The application loads character data from XML files and renders the character using React components.
+This is a React-based character editor for the game Barotrauma. It allows users to view and edit character sprites, including limbs, attachments, and clothing. The application loads character data from XML files and renders the character using React components. It is built as a desktop application using Electron.
 
 ## Commands
 
@@ -15,43 +15,28 @@ This is a React-based character editor for the game Barotrauma. It allows users 
 
 ## Architecture
 
-This is a React-based character editor for the game Barotrauma.
+The application's architecture has been refactored to use a centralized state management approach with **Zustand**. This has significantly simplified the component structure and improved data flow throughout the application.
 
-- The main application logic is in `src/App.js`.
-- Core components are located in `src/components/`:
-    - `Editor.js`: The main editor interface.
-    - `Character.js`: Represents the character being edited.
-    - `PropertiesPanel.js`: UI for editing character properties.
-    - `GenderPanel.js`, `JointsPanel.js`, `Limb.js`: Components for specific character features.
-    - `HeadSheetViewer.js`: Displays a sheet of character heads.
-    - `SpriteSheetViewer.js`: Displays a sprite sheet for the character.
-- The `utils` directory contains helper functions for:
-    - `pathUtils.js`: Resolving file paths and loading character data.
-    - `textureUtils.js`: Converting texture paths.
-    - `xmlUtils.js`: Parsing XML data.
-- The `public/assets` directory contains image assets from the game.
+- **State Management:** All application state is managed in a central Zustand store located at `src/store/characterStore.js`. This includes character data (limbs, joints, etc.), UI state (selected items), and all data-loading and manipulation logic.
 
-### File Loading and Parsing
+- **Main Component (`src/components/Editor.js`):** The `Editor.js` component has been streamlined. It is now primarily responsible for orchestrating the layout of the various UI panels and the main character display. It fetches all its data directly from the `characterStore`.
 
-The application loads character data from several XML files:
+- **Core Components (`src/components/`):**
+    - **`Limb.js`**: Renders an individual character limb and its associated overlays (clothing, attachments). It sources its data from the `characterStore`.
+    - **`Panel.js`**: A new generic, reusable component that provides the basic structure for all draggable and collapsible UI panels.
+    - **`GenericSpriteSheetViewer.js`**: A new generic, reusable component for displaying sprite sheets with highlighted regions. It has replaced the previous `SpriteSheetViewer.js` and `HeadSheetViewer.js`.
+    - **UI Panels (`PropertiesPanel.js`, `GenderPanel.js`, `JointsPanel.js`, `HeadPanel.js`, `ClothingManager.js`, `ClothSheetViewer.js`):** All UI panels have been refactored to be more modular. They now use the generic `Panel` component for their structure and connect directly to the `characterStore` for data and actions, eliminating the need for prop drilling.
 
--   **`filelist.xml`**: This file contains a list of all content packages, including the main character file, `Human.xml`.
--   **`Human.xml`**: This file defines the character's structure, including ragdolls, head attachments, and head sprites.
--   **`HumanDefaultRagdoll.xml`**: This file defines the character's ragdoll, including limbs and joints.
+- **Styling:** The project is moving away from inline styles. All refactored panel components now have their styles defined in separate `.css` files (e.g., `Panel.css`, `GenderPanel.css`), improving maintainability and separation of concerns.
 
-The application uses the `xml2js` library to parse these XML files. The `src/utils/pathUtils.js` and `src/utils/xmlUtils.js` files contain utility functions for loading and parsing these files.
+- **Utilities (`src/utils/`):** The utility modules for path conversion (`pathUtils.js`), texture handling (`textureUtils.js`), and XML parsing (`xmlUtils.js`) remain crucial for processing the game's data files.
 
-### Character Rendering
+### Data Flow
 
-The character is rendered using a series of React components:
+1.  The main `Editor` component initializes the data loading process by calling an action in the `characterStore`.
+2.  The `characterStore` action (`loadCharacter`) is responsible for fetching and parsing all necessary XML files (`filelist.xml`, `Human.xml`, etc.) using the utility functions.
+3.  Once the data is parsed, it is processed and used to update the state within the `characterStore`.
+4.  React components, which are subscribed to the `characterStore`, automatically re-render with the new data.
+5.  User interactions (e.g., selecting a different gender, choosing a piece of clothing) call actions directly on the `characterStore`, which updates the state and triggers a re-render of the affected components.
 
--   **`Editor.js`**: This is the main component that orchestrates the entire editor. It loads the character data, manages the character's state, and renders the other components.
--   **`Character.js`**: This component renders the character's limbs.
--   **`Limb.js`**: This component renders a single limb, including any attachments or clothing.
--   **`SpriteSheetViewer.js`** and **`HeadSheetViewer.js`**: These components display the character's sprite sheets, allowing the user to see all of the available sprites.
-
-The character's position and rotation are calculated based on the data in the ragdoll XML file. The user can also edit the character's properties using the `PropertiesPanel.js` component.
-
-### State Management
-
-The application's state is managed using React's `useState` hook. The main `Editor.js` component manages the character's limbs, joints, and other properties. When the user makes a change to the character, the state is updated and the components are re-rendered.
+This new architecture is more scalable, easier to debug, and promotes better code organization and reusability.
