@@ -1,12 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Draggable from 'react-draggable';
+import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
 
 const ClothSheetViewer = ({ clothingSprites, gender, limbs }) => {
   const [textureGroups, setTextureGroups] = useState([]);
   const [hoveredSprite, setHoveredSprite] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedTexture, setSelectedTexture] = useState(null);
+  const [processedSelectedTexture, setProcessedSelectedTexture] = useState(null);
   const draggableRef = useRef(null);
+
+  // Process selected texture for Electron production environment
+  useEffect(() => {
+    const processTexture = async () => {
+      if (selectedTexture) {
+        const processed = await convertTexturePathToBlobUrl(selectedTexture);
+        setProcessedSelectedTexture(processed);
+      }
+    };
+    processTexture();
+  }, [selectedTexture]);
 
 
   // Group sprites by texture file and calculate sourcerect positions
@@ -94,7 +107,7 @@ const ClothSheetViewer = ({ clothingSprites, gender, limbs }) => {
         style={{
           position: 'absolute',
           top: '100px', 
-          left: '800px', 
+          left: '600px', 
           zIndex: 2000,
           backgroundColor: '#2a2a2a',
           border: '1px solid #555',
@@ -174,7 +187,7 @@ const ClothSheetViewer = ({ clothingSprites, gender, limbs }) => {
                 maxHeight: '600px'
               }}>
                 <img 
-                  src={selectedGroup.texturePath} 
+                  src={processedSelectedTexture || selectedGroup.texturePath} 
                   alt="Clothing Sprite Sheet" 
                   style={{ display: 'block' }}
                 />

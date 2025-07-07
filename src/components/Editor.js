@@ -18,7 +18,9 @@ import {
   loadCharacterData, 
   loadCharacterDataFallback,
   processLimbTexturePath,
-  processAttachmentTexturePath
+  processAttachmentTexturePath,
+  loadFilelistAndFindHumanXml,
+  loadHumanXmlAndGetRagdollsPath
 } from '../utils/pathUtils';
 
 const Editor = () => {
@@ -37,9 +39,46 @@ const Editor = () => {
   const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
   const jointsPanelRef = useRef(null);
   const [jointsPanelPosition, setJointsPanelPosition] = useState({ x: 0, y: 0 });
-  const [gender, setGender] = useState('female');
+  const [gender, setGender] = useState(null);
+  const [availableGenders, setAvailableGenders] = useState([]);
   const genderPanelRef = useRef(null);
   const [genderPanelPosition, setGenderPanelPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const loadGenders = async () => {
+        try {
+            const { humanXmlPath } = await loadFilelistAndFindHumanXml();
+            const { character } = await loadHumanXmlAndGetRagdollsPath(humanXmlPath);
+            
+            let genders = [];
+            if (character && character.Vars && character.Vars.Var) {
+                const genderVar = Array.isArray(character.Vars.Var)
+                    ? character.Vars.Var.find(v => v.$['var'] === 'GENDER')
+                    : character.Vars.Var.$['var'] === 'GENDER' ? character.Vars.Var : null;
+
+                if (genderVar && genderVar.$.tags) {
+                    genders = genderVar.$.tags.split(',').map(g => g.trim());
+                }
+            }
+
+            if (genders.length > 0) {
+                setAvailableGenders(genders);
+                setGender(genders[0]);
+            } else {
+                const fallbackGenders = ['female', 'male'];
+                setAvailableGenders(fallbackGenders);
+                setGender(fallbackGenders[0]);
+            }
+        } catch (error) {
+            console.error('Failed to load genders from Human.xml', error);
+            const fallbackGenders = ['female', 'male'];
+            setAvailableGenders(fallbackGenders);
+            setGender(fallbackGenders[0]);
+        }
+    };
+
+    loadGenders();
+  }, []);
 
   useEffect(() => {
     const parseXMLAndCalculatePose = async (gender) => {
@@ -140,15 +179,19 @@ const Editor = () => {
                     if (hasSheetIndex) {
                         // Use SheetIndex - calculate based on Head sprite size from ragdoll
                         sheetIndex = (sprite.$.sheetindex || sprite.$.SheetIndex || '0,0').split(',').map(val => parseFloat(val.trim()));
-                        // Get Head sprite size from ragdoll (160x228)
+                        // Get Head sprite size from ragdoll SourceRect
                         const headLimb = Object.values(parsedLimbs).find(l => l.type === 'Head');
-                        const headSize = headLimb ? headLimb.size : { width: 160, height: 228 };
-                        baseSize = [headSize.width, headSize.height];
+                        let headWidth = 128, headHeight = 128; // Default fallback
+                        if (headLimb && headLimb.sourceRect) {
+                            headWidth = headLimb.sourceRect[2];
+                            headHeight = headLimb.sourceRect[3];
+                        }
+                        baseSize = [headWidth, headHeight];
                         sourceRect = [
-                            sheetIndex[0] * headSize.width,
-                            sheetIndex[1] * headSize.height,
-                            headSize.width,
-                            headSize.height
+                            sheetIndex[0] * headWidth,
+                            sheetIndex[1] * headHeight,
+                            headWidth,
+                            headHeight
                         ];
                         // Use the head limb's origin when using sheetindex (since attachment doesn't have its own origin)
                         origin = headLimb ? [headLimb.origin.x, headLimb.origin.y] : [0.5, 0.5];
@@ -157,7 +200,7 @@ const Editor = () => {
                         sourceRect = (sprite.$.sourcerect || sprite.$.SourceRect).split(',').map(val => parseFloat(val.trim()));
                         origin = (sprite.$.origin || sprite.$.Origin || '0.5,0.5').split(',').map(val => parseFloat(val.trim()));
                         baseSize = [sourceRect[2], sourceRect[3]];
-                        sheetIndex = [0, 0]; // Not used when using SourceRect
+                        sheetIndex = null; // Not used when using SourceRect
                     } else {
                         // Fallback
                         sheetIndex = [0, 0];
@@ -169,7 +212,7 @@ const Editor = () => {
                     const texturePath = processAttachmentTexturePath(sprite.$.texture || sprite.$.Texture, gender);
 
                     const attachmentData = {
-                        id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
+                        id: `${wearable.$.type}-${sprite.$.name}`,
                         name: sprite.$.name,
                         texture: texturePath,
                         sheetIndex: sheetIndex,
@@ -177,6 +220,7 @@ const Editor = () => {
                         origin: origin,
                         baseSize: baseSize,
                         type: wearable.$.type,
+                        tags: wearable.$.tags,
                     };
                     newHeadAttachments[type].push(attachmentData);
                 }
@@ -212,11 +256,19 @@ const Editor = () => {
                 headName = 'Head Unknown';
               }
               
+              // Get Head limb size from parsed limbs
+              const headLimb = Object.values(parsedLimbs).find(l => l.type === 'Head');
+              let headWidth = 128, headHeight = 128; // Default fallback
+              if (headLimb && headLimb.sourceRect) {
+                headWidth = headLimb.sourceRect[2];
+                headHeight = headLimb.sourceRect[3];
+              }
+              
               return {
                 name: headName,
                 texture: convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender), // Use the heads texture from XML
                 sheetIndex: (head.$.sheetindex || head.$.SheetIndex || '0,0').split(',').map(val => parseFloat(val.trim())),
-                baseSize: [160, 228], // Use actual head sprite size from ragdoll
+                baseSize: [headWidth, headHeight], // Use actual head sprite size from ragdoll SourceRect
               };
             });
           setHeadSprites(parsedHeadSprites);
@@ -256,7 +308,7 @@ const Editor = () => {
         const rootLimb = Object.values(parsedLimbs).find(l => l.type === 'Torso');
         if (rootLimb) {
             calculatedLimbPositions[rootLimb.id] = {
-                position: { x: 450, y: 200 },
+                position: { x: 350, y: 200 },
                 rotation: rootLimb.rotation,
             };
 
@@ -411,15 +463,19 @@ const Editor = () => {
                       if (hasSheetIndex) {
                           // Use SheetIndex - calculate based on Head sprite size from ragdoll
                           sheetIndex = (sprite.$.sheetindex || sprite.$.SheetIndex || '0,0').split(',').map(val => parseFloat(val.trim()));
-                          // Get Head sprite size from ragdoll (160x228)
+                          // Get Head sprite size from ragdoll SourceRect
                           const headLimb = Object.values(parsedLimbs).find(l => l.type === 'Head');
-                          const headSize = headLimb ? headLimb.size : { width: 160, height: 228 };
-                          baseSize = [headSize.width, headSize.height];
+                          let headWidth = 128, headHeight = 128; // Default fallback
+                          if (headLimb && headLimb.sourceRect) {
+                              headWidth = headLimb.sourceRect[2];
+                              headHeight = headLimb.sourceRect[3];
+                          }
+                          baseSize = [headWidth, headHeight];
                           sourceRect = [
-                              sheetIndex[0] * headSize.width,
-                              sheetIndex[1] * headSize.height,
-                              headSize.width,
-                              headSize.height
+                              sheetIndex[0] * headWidth,
+                              sheetIndex[1] * headHeight,
+                              headWidth,
+                              headHeight
                           ];
                           // Use the head limb's origin when using sheetindex (since attachment doesn't have its own origin)
                           origin = headLimb ? [headLimb.origin.x, headLimb.origin.y] : [0.5, 0.5];
@@ -428,7 +484,7 @@ const Editor = () => {
                           sourceRect = (sprite.$.sourcerect || sprite.$.SourceRect).split(',').map(val => parseFloat(val.trim()));
                           origin = (sprite.$.origin || sprite.$.Origin || '0.5,0.5').split(',').map(val => parseFloat(val.trim()));
                           baseSize = [sourceRect[2], sourceRect[3]];
-                          sheetIndex = [0, 0]; // Not used when using SourceRect
+                          sheetIndex = null; // Not used when using SourceRect
                       } else {
                           // Fallback
                           sheetIndex = [0, 0];
@@ -437,15 +493,18 @@ const Editor = () => {
                           origin = [0.5, 0.5];
                       }
 
+                      const texturePath = processAttachmentTexturePath(sprite.$.texture || sprite.$.Texture, gender);
+
                       const attachmentData = {
-                          id: `${wearable.$.type}-${sprite.$.name}-${wearable.$.tags}`,
+                          id: `${wearable.$.type}-${sprite.$.name}`,
                           name: sprite.$.name,
-                          texture: processAttachmentTexturePath(sprite.$.texture || sprite.$.Texture, gender),
+                          texture: texturePath,
                           sheetIndex: sheetIndex,
                           sourceRect: sourceRect,
                           origin: origin,
                           baseSize: baseSize,
                           type: wearable.$.type,
+                          tags: wearable.$.tags,
                       };
                       newHeadAttachments[type].push(attachmentData);
                   }
@@ -481,11 +540,19 @@ const Editor = () => {
                   headName = 'Head Unknown';
                 }
                 
+                // Get Head limb size from parsed limbs
+                const headLimb = Object.values(parsedLimbs).find(l => l.type === 'Head');
+                let headWidth = 128, headHeight = 128; // Default fallback
+                if (headLimb && headLimb.sourceRect) {
+                  headWidth = headLimb.sourceRect[2];
+                  headHeight = headLimb.sourceRect[3];
+                }
+                
                 return {
                   name: headName,
                   texture: convertTexturePath('Content/Characters/Human/Human_[GENDER]_heads.png', gender), // Use the heads texture from XML
                   sheetIndex: (head.$.sheetindex || head.$.SheetIndex || '0,0').split(',').map(val => parseFloat(val.trim())),
-                  baseSize: [160, 228], // Use actual head sprite size from ragdoll
+                  baseSize: [headWidth, headHeight], // Use actual head sprite size from ragdoll SourceRect
                 };
               });
             setHeadSprites(parsedHeadSprites);
@@ -589,7 +656,9 @@ const Editor = () => {
       }
     };
 
-    parseXMLAndCalculatePose(gender);
+    if (gender) {
+      parseXMLAndCalculatePose(gender);
+    }
   }, [gender]); 
 
   const handleUpdateLimb = (updatedLimb) => {
@@ -623,6 +692,8 @@ const Editor = () => {
 
   const handleGenderChange = (newGender) => {
     setGender(newGender);
+    // Reset selected attachments when gender changes
+    setSelectedAttachments({});
   };
 
   const handleHeadChange = (headName) => {
@@ -783,7 +854,7 @@ const Editor = () => {
         onStop={(e, data) => setGenderPanelPosition({ x: data.x, y: data.y })}
       >
         <div ref={genderPanelRef} style={{ position: 'absolute', left: 0, top: '50px', zIndex: 2000, backgroundColor: '#2D2D2D' }}>
-          <GenderPanel onGenderChange={handleGenderChange} currentGender={gender} />
+          <GenderPanel onGenderChange={handleGenderChange} currentGender={gender} availableGenders={availableGenders} />
         </div>
       </Draggable>
       <SpriteSheetViewer 

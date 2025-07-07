@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const GenderPanel = ({ onGenderChange, currentGender }) => {
+const GenderPanel = ({ onGenderChange, currentGender, availableGenders }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -24,34 +24,23 @@ const GenderPanel = ({ onGenderChange, currentGender }) => {
       </h3>
       {!isCollapsed && (
         <div style={{ display: 'flex', gap: '8px' }}>
-        <button
-          onClick={() => onGenderChange('male')}
-          style={{
-            backgroundColor: currentGender === 'male' ? '#4CAF50' : '#555',
-            color: 'white',
-            border: 'none',
-            padding: '6px 10px',
-            cursor: 'pointer',
-            flex: '1',
-            fontSize: '10px'
-          }}
-        >
-          Male
-        </button>
-        <button
-          onClick={() => onGenderChange('female')}
-          style={{
-            backgroundColor: currentGender === 'female' ? '#4CAF50' : '#555',
-            color: 'white',
-            border: 'none',
-            padding: '6px 10px',
-            cursor: 'pointer',
-            flex: '1',
-            fontSize: '10px'
-          }}
-        >
-          Female
-        </button>
+        {availableGenders.map(gender => (
+          <button
+            key={gender}
+            onClick={() => onGenderChange(gender)}
+            style={{
+              backgroundColor: currentGender === gender ? '#4CAF50' : '#555',
+              color: 'white',
+              border: 'none',
+              padding: '6px 10px',
+              cursor: 'pointer',
+              flex: '1',
+              fontSize: '10px'
+            }}
+          >
+            {gender.charAt(0).toUpperCase() + gender.slice(1)}
+          </button>
+        ))}
       </div>
       )}
     </div>

@@ -1,0 +1,9 @@
+node_modules
+src
+public/index.html
+public/electron.js
+public/preload.js
+.env
+.git
+.gitignore
+README.md 

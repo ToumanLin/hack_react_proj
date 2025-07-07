@@ -1,14 +1,26 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Draggable from 'react-draggable';
-import { convertTexturePath } from '../utils/textureUtils';
+import { convertTexturePath, convertTexturePathToBlobUrl } from '../utils/textureUtils';
 
 const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
   const [selectedTexture, setSelectedTexture] = useState('');
+  const [processedSelectedTexture, setProcessedSelectedTexture] = useState('');
   const [sprites, setSprites] = useState({});
   const [hoveredSprite, setHoveredSprite] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const imageRef = useRef(null);
   const draggableRef = useRef(null);
+
+  // Process selected texture for Electron production environment
+  useEffect(() => {
+    const processTexture = async () => {
+      if (selectedTexture) {
+        const processed = await convertTexturePathToBlobUrl(selectedTexture);
+        setProcessedSelectedTexture(processed);
+      }
+    };
+    processTexture();
+  }, [selectedTexture]);
 
   // Process data when props change
   React.useEffect(() => {
@@ -92,26 +104,37 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
 
   return (
     <Draggable nodeRef={draggableRef}>
-      <div style={{ 
-        position: 'absolute', 
-        top: '0px', 
-        left: '800px', 
-        zIndex: 2000, 
-        backgroundColor: '#2a2a2a',
-        border: '1px solid #555',
-        borderRadius: '5px',
-        minWidth: '200px',
-        color: 'white',
-        padding: '8px',
-        fontSize: '8px',
-      }} ref={draggableRef}>
-        <div style={{ padding: '5px', cursor: 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold', marginRight: '5px' }}>Head Sprites</span>
-          <select onChange={handleTextureChange} value={selectedTexture} style={{ flex: 1, marginRight: '5px' }}>
-            {textureOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+      <div 
+        ref={draggableRef}
+        style={{
+          position: 'absolute',
+          top: '0px',
+          left: '600px',
+          zIndex: 2000,
+          backgroundColor: '#2a2a2a',
+          border: '1px solid #555',
+          borderRadius: '5px',
+          width: '600px',
+          maxWidth: '600px',
+          maxHeight: '400px',
+          color: 'white',
+          padding: '8px',
+          fontSize: '8px',
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          padding: '8px',
+          cursor: 'default',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid #555',
+          backgroundColor: '#3a3a3a',
+          fontSize: '12px',
+          fontWeight: 'bold',
+        }}>
+          <span>Head Sprites</span>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             style={{
@@ -128,39 +151,81 @@ const HeadSheetViewer = ({ gender, headAttachments, headSprites }) => {
           </button>
         </div>
         {!isCollapsed && (
-          <div style={{ position: 'relative', cursor: 'move' }}>
-            {selectedTexture && <img ref={imageRef} src={selectedTexture} alt="Sprite Sheet" />}
-            {currentSprites.map((sprite, index) => (
-              <div
-                key={index}
-                onMouseEnter={() => setHoveredSprite(sprite)}
-                onMouseLeave={() => setHoveredSprite(null)}
+          <div style={{ padding: '8px 0 0 0' }}>
+            {/* Dropdown menu */}
+            <div style={{ marginBottom: '8px' }}>
+              <select 
+                onChange={handleTextureChange} 
+                value={selectedTexture} 
                 style={{
-                  position: 'absolute',
-                  border: `1px solid ${hoveredSprite === sprite ? 'yellow' : 'red'}`,
-                  left: sprite.rect.x,
-                  top: sprite.rect.y,
-                  width: sprite.rect.width,
-                  height: sprite.rect.height,
+                  width: '100%',
+                  padding: '4px',
+                  fontSize: '10px',
+                  backgroundColor: '#3a3a3a',
+                  border: '1px solid #555',
+                  borderRadius: '3px',
+                  color: 'white'
                 }}
               >
-                {hoveredSprite === sprite && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '-20px',
-                    left: '0px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    color: 'white',
-                    padding: '2px 5px',
-                    borderRadius: '3px',
-                    whiteSpace: 'nowrap',
-                    fontSize: '12px',
-                  }}>
-                    {sprite.name}
-                  </div>
+                {textureOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sprite sheet viewer with scroll */}
+            <div style={{ 
+              position: 'relative', 
+              maxHeight: '300px',
+              overflow: 'auto',
+              border: '1px solid #555',
+              borderRadius: '3px',
+              backgroundColor: '#808080',
+              textAlign: 'left', // 使内容向左对齐
+            }}>
+              <div style={{ position: 'relative', display: 'inline-block', minWidth: 0 }}>
+                {processedSelectedTexture && (
+                  <img
+                    ref={imageRef}
+                    src={processedSelectedTexture}
+                    alt="Sprite Sheet"
+                    style={{ display: 'block', position: 'relative', left: 0 }}
+                  />
                 )}
+                {currentSprites.map((sprite, index) => (
+                  <div
+                    key={index}
+                    onMouseEnter={() => setHoveredSprite(sprite)}
+                    onMouseLeave={() => setHoveredSprite(null)}
+                    style={{
+                      position: 'absolute',
+                      border: `1px solid ${hoveredSprite === sprite ? 'yellow' : 'red'}`,
+                      left: sprite.rect.x,
+                      top: sprite.rect.y,
+                      width: sprite.rect.width,
+                      height: sprite.rect.height,
+                    }}
+                  >
+                    {hoveredSprite === sprite && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '-20px',
+                        left: '0px',
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        color: 'white',
+                        padding: '2px 5px',
+                        borderRadius: '3px',
+                        whiteSpace: 'nowrap',
+                        fontSize: '12px',
+                        zIndex: 1000,
+                      }}>
+                        {sprite.name}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         )}
       </div>

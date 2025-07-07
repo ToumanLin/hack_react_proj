@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
+import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
 
 const OVERRIDE_ORDER = {
   'hair': 7,
@@ -12,8 +13,58 @@ const OVERRIDE_ORDER = {
 
 const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clothingSprites = [], allLimbs }) => {
   const [x, y, width, height] = limb.sourceRect;
-  const texturePath = limb.texture; // Use the texture path directly as it's already processed in Editor.js
+  const [processedTexturePath, setProcessedTexturePath] = useState(limb.texture);
+  const [processedTextureCache, setProcessedTextureCache] = useState({});
   const nodeRef = useRef(null);
+
+  // Process texture path for Electron production environment
+  useEffect(() => {
+    const processTexture = async () => {
+      if (limb.texture) {
+        const processed = await convertTexturePathToBlobUrl(limb.texture);
+        setProcessedTexturePath(processed);
+      }
+    };
+    processTexture();
+  }, [limb.texture]);
+
+  // Process all texture paths for overlays
+  useEffect(() => {
+    const processAllTextures = async () => {
+      const cache = {};
+      
+      // Process clothing sprites textures
+      for (const sprite of clothingSprites) {
+        if (sprite.texturePath && sprite.texturePath.startsWith('assets://') && !cache[sprite.texturePath]) {
+          try {
+            cache[sprite.texturePath] = await convertTexturePathToBlobUrl(sprite.texturePath);
+          } catch (error) {
+            console.error('Error processing clothing texture:', error);
+            cache[sprite.texturePath] = sprite.texturePath;
+          }
+        }
+      }
+      
+      // Process attachment textures
+      if (limb.name.includes('Head')) {
+        Object.keys(limb).filter(key => key.startsWith('selected')).forEach(key => {
+          const attachment = limb[key];
+          if (attachment && attachment.texture && attachment.texture.startsWith('assets://') && !cache[attachment.texture]) {
+            convertTexturePathToBlobUrl(attachment.texture).then(processed => {
+              cache[attachment.texture] = processed;
+            }).catch(error => {
+              console.error('Error processing attachment texture:', error);
+              cache[attachment.texture] = attachment.texture;
+            });
+          }
+        });
+      }
+      
+      setProcessedTextureCache(cache);
+    };
+    
+    processAllTextures();
+  }, [clothingSprites, limb]);
 
   // calculate z-index then addjust order
   const baseZIndex = Math.round((1 - limb.depth) * 1000);
@@ -28,7 +79,7 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clot
   const innerStyle = {
     width: `${width}px`,
     height: `${height}px`,
-    backgroundImage: `url(${texturePath})`,
+    backgroundImage: `url(${processedTexturePath})`,
     backgroundPosition: `-${x}px -${y}px`,
     outline: isSelected ? '2px solid red' : 'none',
     cursor: 'move',
@@ -44,10 +95,12 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clot
     let sourceRect, origin, scale, depth, texturePath, zIndex;
     const isAttachment = type !== null; // Check if it's an attachment or clothing
 
+
+
     if (isAttachment) {
       // Attachment logic
       // Check if this attachment uses sheetindex (has sheetIndex and baseSize)
-      if (overlayItem.sheetIndex && overlayItem.baseSize) {
+      if (overlayItem.sheetIndex !== null && overlayItem.sheetIndex !== undefined && overlayItem.baseSize) {
         // Use SheetIndex calculation
         const [attX, attY] = overlayItem.sheetIndex;
         const [attBaseWidth, attBaseHeight] = overlayItem.baseSize;
@@ -151,11 +204,14 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected, joints, selectedLimb, clot
     // Calculate total rotation: limb rotation + wearable rotation
     const totalRotation = (limb.rotation || 0) + ( - overlayItem.rotation || 0); // CCW
     
+    // Use processed texture path if available
+    const finalTexturePath = processedTextureCache[texturePath] || texturePath;
+    
     const overlayStyle = {
       position: 'absolute',
       width: `${sourceRect[2]}px`,
       height: `${sourceRect[3]}px`,
-      backgroundImage: `url(${texturePath})`,
+      backgroundImage: `url(${finalTexturePath})`,
       backgroundPosition: `-${sourceRect[0]}px -${sourceRect[1]}px`,
       zIndex: zIndex,
       // Make wearable's origin point the same as limb's origin point

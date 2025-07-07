@@ -101,6 +101,7 @@ const HeadPanel = ({
                       onChange={(e) => {
                         const selected = attachments.find(att => att.id === e.target.value);
                         onAttachmentChange(type, selected);
+                        // console.log(type, selected);
                       }}
                       style={{
                         flex: 1,
