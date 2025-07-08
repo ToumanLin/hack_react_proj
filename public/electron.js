@@ -25,7 +25,7 @@ async function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
   }
 
-  // --- 解决应用无法完全退出的问题 ---
+  // --- solve the problem of the application not exiting completely ---
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -35,7 +35,7 @@ app.whenReady().then(async () => {
   const isDev = (await import('electron-is-dev')).default;
   createWindow();
 
-  // --- 解决 asarUnpack 的路径问题 ---
+  // --- solve the problem of the asarUnpack path ---
   const assetsPath = isDev
     ? path.join(__dirname, 'assets')
     // In production, the 'assets' directory is expected to be at the same level as the executable.
@@ -55,7 +55,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('get-assets-path', () => assetsPath);
 });
 
-// --- 解决应用无法完全退出的问题 ---
+// --- solve the problem of the application not exiting completely ---
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
