@@ -1,0 +1,79 @@
+.cloth-sheet-viewer-container {
+  width: 580px;
+}
+
+.texture-selector {
+  margin-bottom: 8px;
+}
+
+.texture-select {
+  width: 100%;
+  padding: 4px;
+  font-size: 10px;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: white;
+}
+
+.sprite-sheet-container {
+  position: relative;
+  cursor: move;
+  border: 1px solid #555;
+  background-color: #808080;
+  overflow: auto;
+  max-height: 600px;
+}
+
+.sprite-sheet-image {
+  display: block;
+}
+
+.sprite-overlay {
+  position: absolute;
+  border: 1px solid red;
+  pointer-events: auto;
+}
+
+.sprite-overlay.hovered {
+  border-color: yellow;
+}
+
+.sprite-tooltip {
+  position: absolute;
+  top: -25px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  font-size: 11px;
+  z-index: 1000;
+}
+
+.sprite-tooltip .name {
+  font-weight: bold;
+}
+
+.sprite-tooltip .limb {
+  font-size: 9px;
+  color: #ccc;
+}
+
+.sprite-tooltip .rect {
+  font-size: 9px;
+  color: #aaa;
+}
+
+.sprite-tooltip .inherited {
+  font-size: 9px;
+  color: #888;
+}
+
+.no-clothing-message {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 11px;
+}

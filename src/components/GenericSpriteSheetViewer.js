@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Draggable from 'react-draggable';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
+import './GenericSpriteSheetViewer.css';
 
 const GenericSpriteSheetViewer = ({ 
   title,
@@ -38,66 +39,28 @@ const GenericSpriteSheetViewer = ({
   };
 
   return (
-    <Draggable nodeRef={draggableRef} defaultPosition={position}>
+    <Draggable nodeRef={draggableRef} defaultPosition={position} handle=".panel-header">
       <div 
         ref={draggableRef}
-        style={{
-          position: 'absolute',
-          zIndex: 2000,
-          backgroundColor: '#2a2a2a',
-          border: '1px solid #555',
-          borderRadius: '5px',
-          width: '600px',
-          maxWidth: '600px',
-          maxHeight: '400px',
-          color: 'white',
-          padding: '8px',
-          fontSize: '8px',
-        }}
+        className="sprite-sheet-viewer"
       >
-        <div style={{
-          padding: '8px',
-          cursor: 'default',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #555',
-          backgroundColor: '#3a3a3a',
-          fontSize: '12px',
-          fontWeight: 'bold',
-        }}>
+        <div className="panel-header">
           <span>{title}</span>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            style={{
-              background: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              fontSize: '10px',
-            }}
+            className="panel-toggle-button"
           >
             {isCollapsed ? '+' : '-'}
           </button>
         </div>
         {!isCollapsed && (
-          <div style={{ padding: '8px 0 0 0' }}>
+          <div className="panel-content">
             {textureOptions.length > 1 && (
               <div style={{ marginBottom: '8px' }}>
                 <select 
                   onChange={onTextureChange} 
                   value={selectedTexture} 
-                  style={{
-                    width: '100%',
-                    padding: '4px',
-                    fontSize: '10px',
-                    backgroundColor: '#3a3a3a',
-                    border: '1px solid #555',
-                    borderRadius: '3px',
-                    color: 'white'
-                  }}
+                  className="head-panel-select"
                 >
                   {textureOptions.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -108,15 +71,7 @@ const GenericSpriteSheetViewer = ({
             {!processedTexture && <div style={{ padding: '10px', textAlign: 'center' }}>No texture available</div>}
             {processedTexture && (
               <div
-                style={{
-                  position: 'relative',
-                  cursor: 'move',
-                  maxHeight: '300px',
-                  overflow: 'auto',
-                  border: '1px solid #555',
-                  borderRadius: '3px',
-                  backgroundColor: '#808080'
-                }}
+                className="sprite-sheet-container"
               >
                 <img
                   ref={imageRef}
@@ -124,13 +79,7 @@ const GenericSpriteSheetViewer = ({
                   alt={`${title} Sprite Sheet`}
                   onLoad={handleImageLoad}
                   onError={handleImageError}
-                  style={{
-                    display: 'block',
-                    width: imageSize.width ? imageSize.width : 'auto',
-                    height: imageSize.height ? imageSize.height : 'auto',
-                    maxWidth: 'none',
-                    maxHeight: 'none',
-                  }}
+                  className="sprite-sheet-image"
                   draggable={false}
                 />
                 {imageSize.width > 0 && imageSize.height > 0 && sprites.map((sprite, index) => (
@@ -138,30 +87,16 @@ const GenericSpriteSheetViewer = ({
                     key={index}
                     onMouseEnter={() => setHoveredSprite(sprite)}
                     onMouseLeave={() => setHoveredSprite(null)}
+                    className={`sprite-overlay ${hoveredSprite && hoveredSprite.name === sprite.name ? 'hovered' : ''}`}
                     style={{
-                      position: 'absolute',
-                      border: `1px solid ${hoveredSprite && hoveredSprite.name === sprite.name ? 'yellow' : 'red'}`,
                       left: sprite.rect.x,
                       top: sprite.rect.y,
                       width: sprite.rect.width,
                       height: sprite.rect.height,
-                      zIndex: 2000,
-                      pointerEvents: 'auto',
                     }}
                   >
                     {hoveredSprite && hoveredSprite.name === sprite.name && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '-20px',
-                        left: '0px',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        color: 'white',
-                        padding: '2px 5px',
-                        borderRadius: '3px',
-                        whiteSpace: 'nowrap',
-                        fontSize: '11px',
-                        zIndex: 2000,
-                      }}>
+                      <div className="sprite-tooltip">
                         {sprite.name}
                       </div>
                     )}

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
 import useCharacterStore from '../store/characterStore';
+import './Limb.css';
 
 const OVERRIDE_ORDER = {
   'hair': 7,
@@ -87,8 +88,6 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
     height: `${height}px`,
     backgroundImage: `url(${processedTexturePath})`,
     backgroundPosition: `-${x}px -${y}px`,
-    outline: isSelected ? '2px solid red' : 'none',
-    cursor: 'move',
     transform: `rotate(${limb.rotation}deg) scale(${limb.scale})`,
     transformOrigin: `${limb.origin.x * 100}% ${limb.origin.y * 100}%`,
     opacity: shouldHideLimb ? 0 : 1,
@@ -101,13 +100,9 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
     let sourceRect, origin, scale, depth, texturePath, zIndex;
     const isAttachment = type !== null; // Check if it's an attachment or clothing
 
-
-
     if (isAttachment) {
       // Attachment logic
-      // Check if this attachment uses sheetindex (has sheetIndex and baseSize)
       if (overlayItem.sheetIndex !== null && overlayItem.sheetIndex !== undefined && overlayItem.baseSize) {
-        // Use SheetIndex calculation
         const [attX, attY] = overlayItem.sheetIndex;
         const [attBaseWidth, attBaseHeight] = overlayItem.baseSize;
         sourceRect = [
@@ -116,25 +111,19 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
             attBaseWidth,
             attBaseHeight
         ];
-        origin = [limb.origin.x, limb.origin.y] || [0.5, 0.5]; // sheet index origin inherit from head
-        // console.log('Attachment using sheetindex:', overlayItem.name, 'sourceRect:', sourceRect, 'origin:', origin);
+        origin = [limb.origin.x, limb.origin.y] || [0.5, 0.5];
       } else if (overlayItem.sourceRect) {
-        // Use SourceRect directly
         sourceRect = overlayItem.sourceRect;
         origin = overlayItem.origin || [0.5, 0.5];
-        // console.log('Attachment using sourceRect:', overlayItem.name, 'sourceRect:', sourceRect, 'origin:', origin);
       } else {
-        // Fallback
         sourceRect = [0, 0, 128, 128];
         origin = [0.5, 0.5];
-        // console.log('Attachment fallback:', overlayItem.name, 'sourceRect:', sourceRect, 'origin:', origin);
       }
       texturePath = overlayItem.texture;
       scale = limb.scale;
       zIndex = calculatedZIndex + (OVERRIDE_ORDER[type] || 0);
     } else {
       // Clothing logic
-      // Determine source rectangle
       if (overlayItem.inheritSourceRect) {
         sourceRect = limb.sourceRect;
       } else if (overlayItem.sourceRect) {
@@ -143,7 +132,6 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
         sourceRect = [0, 0, 128, 128];
       }
 
-      // Determine origin
       if (overlayItem.inheritOrigin) {
         origin = [limb.origin.x, limb.origin.y];
       } else if (overlayItem.origin) {
@@ -152,13 +140,9 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
         origin = [0.5, 0.5];
       }
 
-      // Determine scale
-      // overlayItem.scale Default is 0.5
       scale = overlayItem.scale;
       
-      // based on the useLegacyScaleLogic attribute, determine the scale
       if (overlayItem.useLegacyScaleLogic) {
-        // old version logic: only when inheritTextureScale is true, multiply by 1.0
         if (overlayItem.inheritTextureScale) {
           scale *= 1.0;
           if (!overlayItem.ignoreRagdollScale) {
@@ -169,7 +153,6 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
           scale *= limb.scale;
         }
       } else {
-        // new version logic: use inheritScale attribute
         if (overlayItem.inheritScale) {
           if (!overlayItem.ignoreLimbScale) {
             scale *= limb.scale;
@@ -181,10 +164,8 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
       }
       scale = scale * 2.0;
 
-      // Determine depth
       if (overlayItem.inheritLimbDepth) {
         if (overlayItem.depthLimb) {
-          // Find the limb specified by depthLimb
           const targetLimb = allLimbs?.find(l => l.type === overlayItem.depthLimb || l.name === overlayItem.depthLimb);
           if (targetLimb) {
             depth = targetLimb.depth - 0.01;
@@ -207,21 +188,16 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
     const limbOriginX = limb.origin.x;
     const limbOriginY = limb.origin.y;
 
-    // Calculate total rotation: limb rotation + wearable rotation
-    const totalRotation = (limb.rotation || 0) + ( - overlayItem.rotation || 0); // CCW
+    const totalRotation = (limb.rotation || 0) + ( - overlayItem.rotation || 0);
     
-    // Use processed texture path if available
     const finalTexturePath = processedTextureCache[texturePath] || texturePath;
     
     const overlayStyle = {
-      position: 'absolute',
       width: `${sourceRect[2]}px`,
       height: `${sourceRect[3]}px`,
       backgroundImage: `url(${finalTexturePath})`,
       backgroundPosition: `-${sourceRect[0]}px -${sourceRect[1]}px`,
       zIndex: zIndex,
-      // Make wearable's origin point the same as limb's origin point
-      // origin is not the center of the rect, but the origin of the texture defined in the xml file, it is not 50%, 50%
       left: `calc(100% * ${limbOriginX})`,
       top: `calc(100% * ${limbOriginY})`,
       transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
@@ -229,7 +205,7 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
     };
 
     const key = isAttachment ? overlayItem.id : overlayItem.name;
-    return <div key={key} style={overlayStyle} />;
+    return <div key={key} className="limb-overlay" style={overlayStyle} />;
   };
 
   return (
@@ -250,37 +226,19 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
       }}
       onStart={() => onSelect(limb)}
     >
-      <div ref={nodeRef} style={{ position: 'absolute', zIndex: calculatedZIndex }} onClick={() => onSelect(limb)}>
-        {/* {isSelected && (
-            <div style={{
-                position: 'absolute',
-                top: `${-25 - (limb.size.height * limb.origin.y)}px`, // Position above the limb
-                left: `${-limb.size.width * limb.origin.x}px`,
-                color: 'white',
-                background: 'rgba(0, 0, 0, 0.7)',
-                padding: '2px 5px',
-                borderRadius: '3px',
-                fontSize: '12px',
-                whiteSpace: 'nowrap',
-            }}>
-                {`x: ${limb.position.x.toFixed(0)}, y: ${limb.position.y.toFixed(0)}`}
-            </div>
-        )} */}
-        <div style={innerStyle} />
+      <div ref={nodeRef} className="limb-container" style={{ zIndex: calculatedZIndex }} onClick={() => onSelect(limb)}>
+        <div className={`limb-inner ${isSelected ? 'selected' : ''}`} style={innerStyle} />
         <div title={`Limb Position: (${limb.position.x.toFixed(0)}, ${limb.position.y.toFixed(0)})`} />
-        {/* {renderJointAnchors()} */}
         {limb.name.includes('Head') && (
             <>
                 {Object.keys(limb).filter(key => key.startsWith('selected')).map(key => {
                     const type = key.replace('selected', '').toLowerCase();
                     
-                    // Check if this attachment should be hidden by clothing
                     const shouldHideAttachment = clothingSprites.some(clothingSprite => 
                       clothingSprite.limb === limb.type && 
                       clothingSprite.hideOtherWearables === true
                     );
                     
-                    // Check if this attachment should be hidden by specific wearable types
                     const shouldHideByType = clothingSprites.some(clothingSprite => 
                       clothingSprite.limb === limb.type && 
                       clothingSprite.hideWearablesOfType && 
@@ -297,10 +255,8 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
         )}
         {clothingSprites
           .filter(clothingSprite => {
-            // Basic limb matching
             if (clothingSprite.limb !== limb.type) return false;
             
-            // Check if this clothing should be hidden by other wearables
             const shouldHideThis = clothingSprites.some(otherSprite => 
               otherSprite.limb === limb.type && 
               otherSprite.hideOtherWearables === true &&
@@ -309,7 +265,6 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
             
             if (shouldHideThis) return false;
             
-            // Check if this clothing should be hidden by specific wearable types
             const shouldHideByType = clothingSprites.some(otherSprite => 
               otherSprite.limb === limb.type && 
               otherSprite.hideWearablesOfType && 

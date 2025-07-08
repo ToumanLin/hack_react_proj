@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { parseSpriteAttributes } from '../utils/xmlUtils';
 import { loadItemFilesFromFilelist, processClothingTexturePath } from '../utils/pathUtils';
 import useCharacterStore from '../store/characterStore';
 import Panel from './Panel';
+import './ClothingManager.css';
 
 // Read filelist.xml and get all Item file paths
 const getItemFilesFromFilelist = async () => {
@@ -205,7 +206,6 @@ const ClothingManager = () => {
       const selectedItemData = availableItems.find(item => item.identifier === selectedItem);
       if (selectedItemData && !selectedItemXmlPath) {
         // Only set XML path if it's not already set (initial load case)
-        // console.log('useEffect: Initial load', { selectedItem, xmlPath: selectedItemData.xmlPath });
         setSelectedItemXmlPath(selectedItemData.xmlPath);
         setItemIdentifier(selectedItemData.identifier);
         loadClothing(selectedItemData.identifier, selectedItemData.xmlPath);
@@ -219,11 +219,6 @@ const ClothingManager = () => {
     if (searchTerm && filteredItems.length === 1 && filteredItems[0].identifier !== selectedItem) {
       // When search results in exactly one item and it's different from current selection
       const singleItem = filteredItems[0];
-      // console.log('useEffect: Single filtered item detected', { 
-      //   singleItem: singleItem.identifier, 
-      //   currentSelected: selectedItem,
-      //   searchTerm 
-      // });
       setSelectedItem(singleItem.identifier);
       setSelectedItemXmlPath(singleItem.xmlPath);
       setItemIdentifier(singleItem.identifier);
@@ -252,7 +247,7 @@ const ClothingManager = () => {
 
   return (
     <Panel title="Clothing Manager" isOpenInitially={false} position={{ x: 230, y: 500 }}>
-      <div style={{width: '230px'}}>
+      <div className="clothing-manager-container">
         {/* Search and dropdown menu */}
         <div style={{ marginBottom: '8px' }}>
           <input
@@ -260,16 +255,7 @@ const ClothingManager = () => {
             placeholder="Search clothing..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '4px',
-              fontSize: '10px',
-              backgroundColor: '#3a3a3a',
-              border: '1px solid #555',
-              borderRadius: '3px',
-              color: 'white',
-              marginBottom: '4px'
-            }}
+            className="clothing-search-input"
           />
           <select
             value={selectedItem}
@@ -277,31 +263,14 @@ const ClothingManager = () => {
               const newSelectedItem = e.target.value;
               setSelectedItem(newSelectedItem);
               
-              // Immediately find and load the selected item
               const selectedItemData = availableItems.find(item => item.identifier === newSelectedItem);
               if (selectedItemData) {
-                // console.log('select onChange: Loading item', { 
-                //   newSelectedItem, 
-                //   xmlPath: selectedItemData.xmlPath,
-                //   searchTerm,
-                //   filteredItemsCount: filteredItems.length
-                // });
                 setSelectedItemXmlPath(selectedItemData.xmlPath);
                 setItemIdentifier(selectedItemData.identifier);
                 loadClothing(selectedItemData.identifier, selectedItemData.xmlPath);
-              } else {
-                // console.warn('select onChange: Item not found', { newSelectedItem, availableItemsCount: availableItems.length });
               }
             }}
-            style={{
-              width: '100%',
-              padding: '4px',
-              fontSize: '10px',
-              backgroundColor: '#3a3a3a',
-              border: '1px solid #555',
-              borderRadius: '3px',
-              color: 'white'
-            }}
+            className="clothing-select"
           >
             {filteredItems.map(item => (
               <option key={item.identifier} value={item.identifier}>
@@ -311,71 +280,41 @@ const ClothingManager = () => {
           </select>
         </div>
 
-        <div style={{ fontSize: '10px', fontWeight: 'bold', marginBottom: '6px' }}>
-          Item: <span style={{ fontWeight: 'normal', fontSize: '10px' }}>{itemIdentifier}</span>
+        <div className="clothing-info">
+          Item: <span>{itemIdentifier}</span>
           <br />
-          <span style={{ fontWeight: 'normal', fontSize: '8px', color: '#aaa' }}>
-            From: {selectedItemXmlPath}
-          </span>
+          <span className="path">From: {selectedItemXmlPath}</span>
           <br />
           <button
             onClick={() => loadClothing()}
             disabled={isLoading}
-            style={{
-              background: isLoading ? '#666' : '#4CAF50',
-              color: 'white',
-              border: 'none',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              padding: '2px 4px',
-              borderRadius: '3px',
-              fontSize: '9px',
-              float: 'center',
-              marginLeft: '4px',
-            }}
+            className={`clothing-button reload ${isLoading ? 'disabled' : ''}`}
           >
             {isLoading ? 'Loading...' : 'Reload'}
           </button>
           <button
             onClick={removeClothing}
-            style={{
-              background: '#f44336',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '2px 4px',
-              borderRadius: '3px',
-              fontSize: '9px',
-              float: 'center',
-            }}
+            className="clothing-button remove"
           >
             Remove
           </button>
           <br/>
         </div>
         {/* Compact 2-column sprite info table */}
-        <div style={{ width: '100%', marginTop: '4px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px' }}>
+        <div className="clothing-sprite-table">
+          <table>
             <tbody>
               {getSpriteRows(clothingSprites).map((row, rowIdx) => (
                 <tr key={rowIdx}>
                   {row.map((sprite, colIdx) =>
                     sprite ? (
-                      <td
-                        key={colIdx}
-                        style={{
-                          borderBottom: '1px solid #444',
-                          padding: '2px 2px',
-                          verticalAlign: 'top',
-                          wordBreak: 'break-all',
-                          width: '50%',
-                        }}
-                      >
-                        <div style={{ fontWeight: 'bold', fontSize: '9px' }}>{sprite.name}</div>
-                        <div style={{ color: '#aaa', fontSize: '8px' }}>{sprite.limb}</div>
-                        <div style={{ color: '#ccc', fontSize: '8px' }}>{sprite.texturePath.split('/').pop()}</div>
+                      <td key={colIdx}>
+                        <div className="clothing-sprite-name">{sprite.name}</div>
+                        <div className="clothing-sprite-limb">{sprite.limb}</div>
+                        <div className="clothing-sprite-texture">{sprite.texturePath.split('/').pop()}</div>
                       </td>
                     ) : (
-                      <td key={colIdx} style={{ width: '50%' }} />
+                      <td key={colIdx} />
                     )
                   )}
                 </tr>

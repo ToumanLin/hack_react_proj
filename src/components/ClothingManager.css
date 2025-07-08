@@ -1,0 +1,94 @@
+.clothing-manager-container {
+  width: 230px;
+}
+
+.clothing-search-input {
+  width: 100%;
+  padding: 4px;
+  font-size: 10px;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.clothing-select {
+  width: 100%;
+  padding: 4px;
+  font-size: 10px;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: white;
+}
+
+.clothing-info {
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.clothing-info span {
+  font-weight: normal;
+  font-size: 10px;
+}
+
+.clothing-info .path {
+  font-size: 8px;
+  color: #aaa;
+}
+
+.clothing-button {
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 9px;
+  float: center;
+  margin-left: 4px;
+}
+
+.clothing-button.reload {
+  background-color: #4CAF50;
+}
+
+.clothing-button.reload:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.clothing-button.remove {
+  background-color: #f44336;
+}
+
+.clothing-sprite-table {
+  width: 100%;
+  margin-top: 4px;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+
+.clothing-sprite-table td {
+  border-bottom: 1px solid #444;
+  padding: 2px 2px;
+  vertical-align: top;
+  word-break: break-all;
+  width: 50%;
+}
+
+.clothing-sprite-name {
+  font-weight: bold;
+  font-size: 9px;
+}
+
+.clothing-sprite-limb {
+  color: #aaa;
+  font-size: 8px;
+}
+
+.clothing-sprite-texture {
+  color: #ccc;
+  font-size: 8px;
+}

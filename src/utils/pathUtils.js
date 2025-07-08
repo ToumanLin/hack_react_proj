@@ -12,6 +12,23 @@ const removeModDirPrefix = (path) => {
   return path.replace(/^%moddir(?::\d+)?%\//i, '');
 };
 
+const readFile = async (path) => {
+  if (isElectronProduction()) {
+    if (window.electronAPI && window.electronAPI.readFile) {
+      const relativePath = path.startsWith('assets://') ? path.substring('assets://'.length) : path;
+      return await window.electronAPI.readFile(relativePath);
+    } else {
+      throw new Error('Electron API not available');
+    }
+  } else {
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
+    }
+    return await response.text();
+  }
+};
+
 /**
  * Converts a game path to a web-compatible path
  * @param {string} path - The original game path
@@ -24,10 +41,6 @@ export const convertGamePathToWebPath = (path) => {
   
   // Handle %ModDir%/ prefix (case-insensitive) - convert to proper web path
   convertedPath = removeModDirPrefix(convertedPath);
-  
-  // Check if we're in Electron production environment
-  const isElectron = window && window.electronAPI;
-  const isProduction = window.location.protocol === 'file:' || window.location.href.includes('file://');
   
   // Convert to web path
   if (convertedPath.startsWith('Content/')) {
@@ -79,9 +92,6 @@ export const resolveRagdollsFolderPath = (character, humanXmlPath) => {
     // Handle %ModDir%/ prefix for ragdolls folder (case-insensitive)
     ragdollsFolder = removeModDirPrefix(ragdollsFolder);
     
-    // Check if we're in Electron production environment
-    
-    
     // Convert the ragdolls folder path
     if (ragdollsFolder.startsWith('Content/')) {
       if (isElectronProduction()) {
@@ -100,27 +110,7 @@ export const resolveRagdollsFolderPath = (character, humanXmlPath) => {
  * @returns {Promise<Object>} - Object containing humanXmlPath and filelistResult
  */
 export const loadFilelistAndFindHumanXml = async () => {
-  // Check if we're in Electron production environment
-  
-  
-  let filelistXmlText;
-  
-  if (isElectronProduction()) {
-    // Use Electron API to read file
-    if (window.electronAPI && window.electronAPI.readFile) {
-      filelistXmlText = await window.electronAPI.readFile('filelist.xml');
-    } else {
-      throw new Error('Electron API not available');
-    }
-  } else {
-    // Use fetch for development
-    const filelistResponse = await fetch('/assets/filelist.xml');
-    if (!filelistResponse.ok) {
-      throw new Error(`Failed to load filelist.xml: ${filelistResponse.status} ${filelistResponse.statusText}`);
-    }
-    filelistXmlText = await filelistResponse.text();
-  }
-  
+  const filelistXmlText = await readFile(isElectronProduction() ? 'filelist.xml' : '/assets/filelist.xml');
   const filelistParser = new xml2js.Parser({ explicitArray: false });
   const filelistResult = await filelistParser.parseStringPromise(filelistXmlText);
   
@@ -142,28 +132,7 @@ export const loadFilelistAndFindHumanXml = async () => {
  * @returns {Promise<Object>} - Object containing character data and ragdolls folder path
  */
 export const loadHumanXmlAndGetRagdollsPath = async (humanXmlPath) => {
-  // Check if we're in Electron production environment
-  
-  
-  let characterXmlText;
-  
-  if (isElectronProduction()) {
-    // Extract the relative path from the full path
-    const relativePath = humanXmlPath.replace('assets://', '');
-    if (window.electronAPI && window.electronAPI.readFile) {
-      characterXmlText = await window.electronAPI.readFile(relativePath);
-    } else {
-      throw new Error('Electron API not available');
-    }
-  } else {
-    // Use fetch for development
-    const characterResponse = await fetch(humanXmlPath);
-    if (!characterResponse.ok) {
-      throw new Error(`Failed to load Human.xml: ${characterResponse.status} ${characterResponse.statusText}`);
-    }
-    characterXmlText = await characterResponse.text();
-  }
-  
+  const characterXmlText = await readFile(humanXmlPath);
   const characterParser = new xml2js.Parser({ explicitArray: false });
   const characterResult = await characterParser.parseStringPromise(characterXmlText);
   
@@ -185,29 +154,8 @@ export const loadHumanXmlAndGetRagdollsPath = async (humanXmlPath) => {
  * @returns {Promise<Object>} - Parsed ragdoll data
  */
 export const loadRagdollXml = async (ragdollsFolder) => {
-  // Check if we're in Electron production environment
-  
-  
   const ragdollPath = `${ragdollsFolder}/HumanDefaultRagdoll.xml`;
-  let ragdollXmlText;
-  
-  if (isElectronProduction()) {
-    // Extract the relative path from the full path
-    const relativePath = ragdollPath.replace('assets://', '');
-    if (window.electronAPI && window.electronAPI.readFile) {
-      ragdollXmlText = await window.electronAPI.readFile(relativePath);
-    } else {
-      throw new Error('Electron API not available');
-    }
-  } else {
-    // Use fetch for development
-    const ragdollResponse = await fetch(ragdollPath);
-    if (!ragdollResponse.ok) {
-      throw new Error(`Failed to load HumanDefaultRagdoll.xml: ${ragdollResponse.status} ${ragdollResponse.statusText}`);
-    }
-    ragdollXmlText = await ragdollResponse.text();
-  }
-  
+  const ragdollXmlText = await readFile(ragdollPath);
   const ragdollParser = new xml2js.Parser({ explicitArray: false });
   const ragdollResult = await ragdollParser.parseStringPromise(ragdollXmlText);
   
@@ -287,31 +235,8 @@ export const loadCharacterData = async (gender) => {
  */
 export const loadCharacterDataFallback = async (gender) => {
   try {
-    // Check if we're in Electron production environment
-    
-    
-    let ragdollXmlText, characterXmlText;
-    
-    if (isElectronProduction()) {
-      // Use Electron API to read files
-      if (window.electronAPI && window.electronAPI.readFile) {
-        ragdollXmlText = await window.electronAPI.readFile('Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
-        characterXmlText = await window.electronAPI.readFile('Content/Characters/Human/Human.xml');
-      } else {
-        throw new Error('Electron API not available');
-      }
-    } else {
-      // Use fetch for development
-      const ragdollResponse = await fetch('/assets/Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
-      const characterResponse = await fetch('/assets/Content/Characters/Human/Human.xml');
-      
-      if (!ragdollResponse.ok || !characterResponse.ok) {
-        throw new Error('Failed to load fallback files');
-      }
-      
-      ragdollXmlText = await ragdollResponse.text();
-      characterXmlText = await characterResponse.text();
-    }
+    const ragdollXmlText = await readFile(isElectronProduction() ? 'Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml' : '/assets/Content/Characters/Human/Ragdolls/HumanDefaultRagdoll.xml');
+    const characterXmlText = await readFile(isElectronProduction() ? 'Content/Characters/Human/Human.xml' : '/assets/Content/Characters/Human/Human.xml');
     
     const parser = new xml2js.Parser({ explicitArray: false });
     const ragdollResult = await parser.parseStringPromise(ragdollXmlText);
@@ -342,27 +267,7 @@ export const loadCharacterDataFallback = async (gender) => {
  */
 export const loadItemFilesFromFilelist = async () => {
   try {
-    // Check if we're in Electron production environment
-    
-    
-    let xmlText;
-    
-    if (isElectronProduction()) {
-      // Use Electron API to read file
-      if (window.electronAPI && window.electronAPI.readFile) {
-        xmlText = await window.electronAPI.readFile('filelist.xml');
-      } else {
-        throw new Error('Electron API not available');
-      }
-    } else {
-      // Use fetch for development
-      const response = await fetch('/assets/filelist.xml');
-      if (!response.ok) {
-        throw new Error(`Failed to load filelist.xml: ${response.status} ${response.statusText}`);
-      }
-      xmlText = await response.text();
-    }
-    
+    const xmlText = await readFile(isElectronProduction() ? 'filelist.xml' : '/assets/filelist.xml');
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
     
@@ -414,9 +319,6 @@ export const processClothingTexturePath = (texturePath, gender, xmlPath) => {
   }
   
   // Case 3: Relative to assets without %ModDir% (e.g., "Content/Items/Jobgear/Assistant/artiedolittle_2.png")
-  // Check if we're in Electron production environment
-  
-  
   if (isElectronProduction()) {
     return `assets://${convertedPath}`;
   } else {
@@ -438,4 +340,4 @@ export const processAttachmentTexturePath = (texturePath, gender) => {
   processedPath = removeModDirPrefix(processedPath);
   
   return convertTexturePathWithFallback(processedPath, gender);
-}; 
+};

@@ -1,0 +1,16 @@
+.limb-container {
+  position: absolute;
+}
+
+.limb-inner {
+  outline: 2px solid transparent;
+  cursor: move;
+}
+
+.limb-inner.selected {
+  outline-color: red;
+}
+
+.limb-overlay {
+  position: absolute;
+}

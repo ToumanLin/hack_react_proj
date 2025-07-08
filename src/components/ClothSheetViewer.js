@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
 import useCharacterStore from '../store/characterStore';
 import Panel from './Panel';
+import './ClothSheetViewer.css';
 
 const ClothSheetViewer = () => {
   const {
@@ -106,22 +107,14 @@ const ClothSheetViewer = () => {
 
   return (
     <Panel title="Clothing Sprites" isOpenInitially={false} position={{ x: 600, y: 100 }}>
-      <div style={{width: '580px'}}>
+      <div className="cloth-sheet-viewer-container">
         {/* Texture selector */}
         {textureGroups.length > 1 && (
-          <div style={{ marginBottom: '8px' }}>
+          <div className="texture-selector">
             <select
               value={selectedTexture || ''}
               onChange={(e) => setSelectedTexture(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '4px',
-                fontSize: '10px',
-                backgroundColor: '#3a3a3a',
-                border: '1px solid #555',
-                borderRadius: '3px',
-                color: 'white'
-              }}
+              className="texture-select"
             >
               {textureGroups.map(group => (
                 <option key={group.texturePath} value={group.texturePath}>
@@ -134,18 +127,11 @@ const ClothSheetViewer = () => {
 
         {/* Sprite sheet viewer with sourcerect highlighting */}
         {selectedGroup && (
-          <div style={{ 
-            position: 'relative', 
-            cursor: 'move',
-            border: '1px solid #555',
-            backgroundColor: '#808080',
-            overflow: 'auto',
-            maxHeight: '600px'
-          }}>
+          <div className="sprite-sheet-container">
             <img 
               src={processedSelectedTexture || selectedGroup.texturePath} 
               alt="Clothing Sprite Sheet" 
-              style={{ display: 'block' }}
+              className="sprite-sheet-image"
             />
             {/* Sourcerect overlays */}
             {selectedGroup.sprites.map((sprite, index) => (
@@ -154,36 +140,23 @@ const ClothSheetViewer = () => {
                   key={index}
                   onMouseEnter={() => setHoveredSprite(sprite)}
                   onMouseLeave={() => setHoveredSprite(null)}
+                  className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''}`}
                   style={{
-                    position: 'absolute',
-                    border: `1px solid ${hoveredSprite === sprite ? '#ffff00' : '#ff0000'}`,
                     left: sprite.rect.x,
                     top: sprite.rect.y,
                     width: sprite.rect.width,
                     height: sprite.rect.height,
-                    pointerEvents: 'auto',
                   }}
                 >
                   {hoveredSprite === sprite && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '-25px',
-                      left: '0px',
-                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                      color: 'white',
-                      padding: '3px 6px',
-                      borderRadius: '3px',
-                      whiteSpace: 'nowrap',
-                      fontSize: '11px',
-                      zIndex: 1000,
-                    }}>
-                      <div style={{ fontWeight: 'bold' }}>{sprite.name}</div>
-                      <div style={{ fontSize: '9px', color: '#ccc' }}>Limb: {sprite.limb}</div>
-                      <div style={{ fontSize: '9px', color: '#aaa' }}>
+                    <div className="sprite-tooltip">
+                      <div className="name">{sprite.name}</div>
+                      <div className="limb">Limb: {sprite.limb}</div>
+                      <div className="rect">
                         Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
                       </div>
                       {sprite.inheritSourceRect && (
-                        <div style={{ fontSize: '9px', color: '#888' }}>(Inherited from limb)</div>
+                        <div className="inherited">(Inherited from limb)</div>
                       )}
                     </div>
                   )}
@@ -195,12 +168,7 @@ const ClothSheetViewer = () => {
 
         {/* No clothing message */}
         {textureGroups.length === 0 && (
-          <div style={{ 
-            padding: '20px', 
-            textAlign: 'center', 
-            color: '#888',
-            fontSize: '11px'
-          }}>
+          <div className="no-clothing-message">
             No clothing sprites loaded
           </div>
         )}

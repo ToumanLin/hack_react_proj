@@ -1,0 +1,54 @@
+.sprite-sheet-viewer {
+  position: absolute;
+  z-index: 2000;
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 5px;
+  width: 600px;
+  max-width: 600px;
+  max-height: 400px;
+  color: white;
+  padding: 8px;
+  font-size: 8px;
+}
+
+.sprite-sheet-container {
+  position: relative;
+  cursor: move;
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid #555;
+  border-radius: 3px;
+  background-color: #808080;
+}
+
+.sprite-sheet-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+}
+
+.sprite-overlay {
+  position: absolute;
+  border: 1px solid red;
+  pointer-events: auto;
+}
+
+.sprite-overlay.hovered {
+  border-color: yellow;
+}
+
+.sprite-tooltip {
+  position: absolute;
+  top: -20px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  font-size: 11px;
+  z-index: 2000;
+}

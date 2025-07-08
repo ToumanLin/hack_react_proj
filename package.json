@@ -35,7 +35,8 @@
     "electron-pack": "npm run build && electron-builder",
     "dist": "electron-builder",
     "test-electron": "electron test-electron.js",
-    "quick-test": "npm run build && electron-builder --dir"
+    "quick-test": "npm run build && electron-builder --dir",
+    "lint": "eslint src/"
   },
   "eslintConfig": {
     "extends": [
@@ -73,8 +74,7 @@
       "build/**/*",
       "public/electron.js",
       "public/preload.js",
-      "public/assets/**/*",
-      "node_modules/**/*"
+      "public/assets/**/*"
     ],
     "asar": false,
     "win": {

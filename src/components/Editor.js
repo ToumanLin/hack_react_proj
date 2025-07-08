@@ -14,13 +14,12 @@ const Editor = () => {
   const {
     limbs,
     selectedLimb,
-    headAttachments,
-    headSprites,
     mainTexture,
     gender,
     loadCharacter,
     setSelectedLimb,
     setLimbs,
+    getSpriteData,
   } = useCharacterStore();
 
   const [headSheetTexture, setHeadSheetTexture] = useState('');
@@ -62,62 +61,7 @@ const Editor = () => {
     }
   };
 
-  const bodySprites = limbs
-    .filter(limb => limb.type !== 'Head')
-    .map((limb) => ({
-      name: limb.name,
-      rect: {
-        x: limb.sourceRect[0],
-        y: limb.sourceRect[1],
-        width: limb.sourceRect[2],
-        height: limb.sourceRect[3],
-      }
-    }));
-
-  const headSpriteData = {};
-  if (headAttachments) {
-    for (const type in headAttachments) {
-      headAttachments[type].forEach(attachment => {
-        if (!headSpriteData[attachment.texture]) {
-          headSpriteData[attachment.texture] = [];
-        }
-        let rect;
-        if (attachment.sourceRect) {
-          rect = {
-            x: attachment.sourceRect[0],
-            y: attachment.sourceRect[1],
-            width: attachment.sourceRect[2],
-            height: attachment.sourceRect[3],
-          };
-        } else {
-          rect = {
-            x: attachment.sheetIndex[0] * attachment.baseSize[0],
-            y: attachment.sheetIndex[1] * attachment.baseSize[1],
-            width: attachment.baseSize[0],
-            height: attachment.baseSize[1],
-          };
-        }
-        headSpriteData[attachment.texture].push({ name: attachment.name, rect });
-      });
-    }
-  }
-
-  if (headSprites && headSprites.length > 0) {
-    headSprites.forEach(sprite => {
-      if (!headSpriteData[sprite.texture]) {
-        headSpriteData[sprite.texture] = [];
-      }
-      headSpriteData[sprite.texture].push({
-        name: sprite.name,
-        rect: {
-          x: sprite.sheetIndex[0] * sprite.baseSize[0],
-          y: sprite.sheetIndex[1] * sprite.baseSize[1],
-          width: sprite.baseSize[0],
-          height: sprite.baseSize[1],
-        }
-      });
-    });
-  }
+  const { bodySprites, headSpriteData } = getSpriteData();
 
   const headTextureOptions = Object.keys(headSpriteData).map(texture => ({
     value: texture,
