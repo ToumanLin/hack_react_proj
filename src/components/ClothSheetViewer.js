@@ -46,8 +46,17 @@ const ClothSheetViewer = () => {
         };
       }
       
-      // Calculate sourcerect position
+      // Calculate sourcerect and origin
       let rect = null;
+      let displayOrigin = sprite.origin; // Default to sprite's own origin
+
+      if (sprite.inheritOrigin && sprite.limb && limbs) {
+        const targetLimb = limbs.find(l => l.type === sprite.limb || l.name === sprite.limb);
+        if (targetLimb) {
+          displayOrigin = [targetLimb.origin.x, targetLimb.origin.y];
+        }
+      }
+
       if (sprite.sourceRect && sprite.sourceRect.length === 4) {
         // Use direct sourceRect if available
         rect = {
@@ -88,7 +97,8 @@ const ClothSheetViewer = () => {
       
       groups[texturePath].sprites.push({
         ...sprite,
-        rect: rect
+        rect: rect,
+        displayOrigin: displayOrigin
       });
     });
 
@@ -152,12 +162,26 @@ const ClothSheetViewer = () => {
                     <div className="sprite-tooltip">
                       <div className="name">{sprite.name}</div>
                       <div className="limb">Limb: {sprite.limb}</div>
-                      <div className="rect">
+                      <div className="rect" >
                         Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
+                        {sprite.inheritSourceRect && (
+                          <span className="inherited">(inherited)</span>
+                        )}
                       </div>
-                      {sprite.inheritSourceRect && (
-                        <div className="inherited">(Inherited from limb)</div>
+                      {sprite.displayOrigin && (
+                        <div className="rect">
+                          Origin: [{sprite.displayOrigin[0]}, {sprite.displayOrigin[1]}]
+                          {sprite.inheritOrigin && (
+                            <span className="inherited">(inherited)</span>
+                          )}
+                        </div>
                       )}
+                      <div className="rect">
+                        Calculated Scale: [{sprite.scale}]
+                        {sprite.inheritScale && (
+                          <span className="inherited">(inherited)</span>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

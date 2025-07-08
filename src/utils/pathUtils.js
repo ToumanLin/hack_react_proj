@@ -127,7 +127,7 @@ export const resolveRagdollsFolderPath = (character, humanXmlPath) => {
     // Convert the ragdolls folder path
     if (ragdollsFolder.startsWith('Content/')) {
       if (isElectronProduction()) {
-        ragdollsFolder = ragdollsFolder.replace('Content/', 'assets://Content/');
+        ragdollsFolder = ragdollsFolder;
       } else {
         ragdollsFolder = `/assets/${ragdollsFolder}`;
       }

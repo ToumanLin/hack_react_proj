@@ -64,11 +64,13 @@
 .sprite-tooltip .rect {
   font-size: 9px;
   color: #aaa;
+  white-space: nowrap;
 }
 
 .sprite-tooltip .inherited {
   font-size: 9px;
   color: #888;
+  margin-left: 4px;
 }
 
 .no-clothing-message {
