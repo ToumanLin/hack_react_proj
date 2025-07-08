@@ -669,6 +669,16 @@ const useCharacterStore = create((set, get) => ({
   },
   setAvailableGenders: (availableGenders) => set({ availableGenders }),
 
+  updateClothingSprite: (spriteName, updatedAttributes) => {
+    set(state => ({
+      clothingSprites: state.clothingSprites.map(sprite => 
+        sprite.name === spriteName 
+          ? { ...sprite, ...updatedAttributes } 
+          : sprite
+      )
+    }));
+  },
+
   // Async action for loading character data
   loadCharacter: async (gender) => {
     logInfo('CharacterLoad', 'Starting character loading process', { gender });

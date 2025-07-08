@@ -2,18 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
 import useCharacterStore from '../store/characterStore';
 import Panel from './Panel';
+import SpriteEditorPanel from './SpriteEditorPanel'; // Import the new editor panel
 import './ClothSheetViewer.css';
 
 const ClothSheetViewer = () => {
   const {
     clothingSprites,
     limbs,
+    updateClothingSprite, // Get the update action from the store
   } = useCharacterStore();
 
   const [textureGroups, setTextureGroups] = useState([]);
   const [hoveredSprite, setHoveredSprite] = useState(null);
   const [selectedTexture, setSelectedTexture] = useState(null);
   const [processedSelectedTexture, setProcessedSelectedTexture] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingSprite, setEditingSprite] = useState(null);
 
   // Process selected texture for Electron production environment
   useEffect(() => {
@@ -25,7 +29,6 @@ const ClothSheetViewer = () => {
     };
     processTexture();
   }, [selectedTexture]);
-
 
   // Group sprites by texture file and calculate sourcerect positions
   useEffect(() => {
@@ -46,9 +49,8 @@ const ClothSheetViewer = () => {
         };
       }
       
-      // Calculate sourcerect and origin
       let rect = null;
-      let displayOrigin = sprite.origin; // Default to sprite's own origin
+      let displayOrigin = sprite.origin;
 
       if (sprite.inheritOrigin && sprite.limb && limbs) {
         const targetLimb = limbs.find(l => l.type === sprite.limb || l.name === sprite.limb);
@@ -58,7 +60,6 @@ const ClothSheetViewer = () => {
       }
 
       if (sprite.sourceRect && sprite.sourceRect.length === 4) {
-        // Use direct sourceRect if available
         rect = {
           x: sprite.sourceRect[0],
           y: sprite.sourceRect[1],
@@ -66,7 +67,6 @@ const ClothSheetViewer = () => {
           height: sprite.sourceRect[3],
         };
       } else if (sprite.inheritSourceRect && sprite.limb && limbs) {
-        // If inheriting from limb, find the corresponding limb and use its sourcerect
         const targetLimb = limbs.find(l => l.type === sprite.limb || l.name === sprite.limb);
         if (targetLimb && targetLimb.sourceRect) {
           rect = {
@@ -74,23 +74,6 @@ const ClothSheetViewer = () => {
             y: targetLimb.sourceRect[1],
             width: targetLimb.sourceRect[2],
             height: targetLimb.sourceRect[3],
-          };
-        } else {
-          // Fallback to default sizes if limb not found
-          const defaultSizes = {
-            'head': { width: 160, height: 228 },
-            'torso': { width: 64, height: 64 },
-            'legs': { width: 32, height: 64 },
-            'arms': { width: 32, height: 32 },
-            'hands': { width: 16, height: 16 },
-            'feet': { width: 16, height: 16 },
-          };
-          const defaultSize = defaultSizes[sprite.limb] || { width: 32, height: 32 };
-          rect = {
-            x: 0,
-            y: 0,
-            width: defaultSize.width,
-            height: defaultSize.height,
           };
         }
       }
@@ -105,99 +88,127 @@ const ClothSheetViewer = () => {
     const groupsArray = Object.values(groups);
     setTextureGroups(groupsArray);
     
-    // Always select the first texture when clothing changes
     if (groupsArray.length > 0) {
       setSelectedTexture(groupsArray[0].texturePath);
     }
   }, [clothingSprites, limbs]);
 
+  const handleSpriteClick = (sprite) => {
+    if (isEditMode) {
+      setEditingSprite(sprite);
+    }
+  };
 
+  const handleSaveSprite = (updatedAttributes) => {
+    if (editingSprite) {
+      updateClothingSprite(editingSprite.name, updatedAttributes); // Assuming name is a unique identifier for the sprite within the clothing item
+      setEditingSprite(null);
+    }
+  };
 
   const selectedGroup = textureGroups.find(group => group.texturePath === selectedTexture);
 
   return (
-    <Panel title="Clothing Sprites" isOpenInitially={true} position={{ x: 600, y: 100 }} collapsedWidth="600px">
-      <div className="cloth-sheet-viewer-container">
-        {/* Texture selector */}
-        {textureGroups.length > 1 && (
-          <div className="texture-selector">
-            <select
-              value={selectedTexture || ''}
-              onChange={(e) => setSelectedTexture(e.target.value)}
-              className="texture-select"
-            >
-              {textureGroups.map(group => (
-                <option key={group.texturePath} value={group.texturePath}>
-                  {group.fileName} ({group.sprites.length} sprites)
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+    <>
+      <Panel 
+        title="Clothing Sprites" 
+        isOpenInitially={true} 
+        position={{ x: 600, y: 100 }} 
+        collapsedWidth="600px"
+        headerContent={
+          <button onClick={() => setIsEditMode(!isEditMode)} className={`header-button ${isEditMode ? 'active' : ''}`}>
+            {isEditMode ? 'Edit On' : 'Edit Off'}
+          </button>
+        }
+      >
+        <div className="cloth-sheet-viewer-container">
+          {textureGroups.length > 1 && (
+            <div className="texture-selector">
+              <select
+                value={selectedTexture || ''}
+                onChange={(e) => setSelectedTexture(e.target.value)}
+                className="texture-select"
+              >
+                {textureGroups.map(group => (
+                  <option key={group.texturePath} value={group.texturePath}>
+                    {group.fileName} ({group.sprites.length} sprites)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-        {/* Sprite sheet viewer with sourcerect highlighting */}
-        {selectedGroup && (
-          <div className="sprite-sheet-container">
-            <img 
-              src={processedSelectedTexture || selectedGroup.texturePath} 
-              alt="Clothing Sprite Sheet" 
-              className="sprite-sheet-image"
-            />
-            {/* Sourcerect overlays */}
-            {selectedGroup.sprites.map((sprite, index) => (
-              sprite.rect && (
-                <div
-                  key={index}
-                  onMouseEnter={() => setHoveredSprite(sprite)}
-                  onMouseLeave={() => setHoveredSprite(null)}
-                  className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''}`}
-                  style={{
-                    left: sprite.rect.x,
-                    top: sprite.rect.y,
-                    width: sprite.rect.width,
-                    height: sprite.rect.height,
-                  }}
-                >
-                  {hoveredSprite === sprite && (
-                    <div className="sprite-tooltip">
-                      <div className="name">{sprite.name}</div>
-                      <div className="limb">Limb: {sprite.limb}</div>
-                      <div className="rect" >
-                        Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
-                        {sprite.inheritSourceRect && (
-                          <span className="inherited">(inherited)</span>
-                        )}
-                      </div>
-                      {sprite.displayOrigin && (
-                        <div className="rect">
-                          Origin: [{sprite.displayOrigin[0]}, {sprite.displayOrigin[1]}]
-                          {sprite.inheritOrigin && (
+          {selectedGroup && (
+            <div className="sprite-sheet-container">
+              <img 
+                src={processedSelectedTexture || selectedGroup.texturePath} 
+                alt="Clothing Sprite Sheet" 
+                className="sprite-sheet-image"
+              />
+              {selectedGroup.sprites.map((sprite, index) => (
+                sprite.rect && (
+                  <div
+                    key={index}
+                    onClick={() => handleSpriteClick(sprite)}
+                    onMouseEnter={() => setHoveredSprite(sprite)}
+                    onMouseLeave={() => setHoveredSprite(null)}
+                    className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''} ${isEditMode ? 'editable' : ''}`}
+                    style={{
+                      left: sprite.rect.x,
+                      top: sprite.rect.y,
+                      width: sprite.rect.width,
+                      height: sprite.rect.height,
+                    }}
+                  >
+                    {hoveredSprite === sprite && !editingSprite && (
+                      <div className="sprite-tooltip">
+                        <div className="name">{sprite.name}</div>
+                        <div className="limb">Limb: {sprite.limb}</div>
+                        <div className="rect" >
+                          Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
+                          {sprite.inheritSourceRect && (
                             <span className="inherited">(inherited)</span>
                           )}
                         </div>
-                      )}
-                      <div className="rect">
-                        Calculated Scale: [{sprite.scale}]
-                        {sprite.inheritScale && (
-                          <span className="inherited">(inherited)</span>
+                        {sprite.displayOrigin && (
+                          <div className="rect">
+                            Origin: [{sprite.displayOrigin[0]}, {sprite.displayOrigin[1]}]
+                            {sprite.inheritOrigin && (
+                              <span className="inherited">(inherited)</span>
+                            )}
+                          </div>
                         )}
+                        <div className="rect">
+                          Calculated Scale: [{sprite.scale}]
+                          {/* {sprite.inheritScale && (
+                            <span className="inherited">(inherited)</span>
+                          )} */}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )
-            ))}
-          </div>
-        )}
+                    )}
+                  </div>
+                )
+              ))}
+            </div>
+          )}
 
-        {/* No clothing message */}
-        {textureGroups.length === 0 && (
-          <div className="no-clothing-message">
-            No clothing sprites loaded
-          </div>
-        )}
-      </div>
-    </Panel>
+          {textureGroups.length === 0 && (
+            <div className="no-clothing-message">
+              No clothing sprites loaded
+            </div>
+          )}
+        </div>
+      </Panel>
+      {editingSprite && (
+        <SpriteEditorPanel 
+          sprite={editingSprite}
+          limbs={limbs}
+          onSave={handleSaveSprite}
+          onClose={() => setEditingSprite(null)}
+          position={{ x: 600, y: 300 }}
+        />
+      )}
+    </>
   );
 };
 

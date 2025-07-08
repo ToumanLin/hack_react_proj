@@ -1,0 +1,111 @@
+.sprite-editor-panel {
+  position: absolute;
+  z-index: 2100;
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 5px;
+  width: 280px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  color: #e0e0e0;
+  font-family: sans-serif;
+}
+
+.sprite-editor-header {
+  padding: 8px;
+  background-color: #3a3a3a;
+  cursor: move;
+  border-bottom: 1px solid #555;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.close-button {
+  cursor: pointer;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.sprite-editor-content {
+  padding: 12px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 6px;
+  background-color: #252525;
+  border: 1px solid #4f4f4f;
+  color: #e0e0e0;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.sprite-editor-footer {
+  padding: 8px 12px;
+  background-color: #3a3a3a;
+  border-top: 1px solid #555;
+  display: flex;
+  justify-content: flex-end;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.action-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.action-button.save {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.action-button.reset {
+  background-color: #666;
+  color: #e0e0e0;
+}
+
+.input-with-button {
+  display: flex;
+}
+
+.input-with-button input {
+  flex-grow: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.inherit-button {
+  padding: 6px 10px;
+  background-color: #555;
+  color: #e0e0e0;
+  border: 1px solid #4f4f4f;
+  border-left: none;
+  cursor: pointer;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  font-weight: bold;
+}
