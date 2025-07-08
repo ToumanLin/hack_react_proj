@@ -90,7 +90,7 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
         }
       }
 
-      const scale = parseFloat(limb.$.Scale || limb.$.scale || 1);
+      let scale = parseFloat(limb.$.Scale || limb.$.scale || 1);
       if (isNaN(scale)) {
         logWarn('LimbParsing', `Invalid scale value for limb ${limbName}, using default`, { 
           scaleValue: limb.$.Scale || limb.$.scale,

@@ -169,10 +169,20 @@ const ClothingManager = () => {
       // Parse Wearable sprites
       const sprites = await parseClothingXML(xmlPath, itemIdentifier);
       if (sprites) {
-        const processedSprites = sprites.map(sprite => ({
-          ...sprite,
-          texturePath: processTexturePath(sprite.texture, gender, xmlPath)
-        }));
+        const processedSprites = sprites.map(sprite => {
+          const originalData = {
+            sourceRect: sprite.sourceRect,
+            origin: sprite.origin,
+            scale: sprite.scale,
+            inheritSourceRect: sprite.inheritSourceRect,
+            inheritOrigin: sprite.inheritOrigin,
+          };
+          return {
+            ...sprite,
+            texturePath: processTexturePath(sprite.texture, gender, xmlPath),
+            original: originalData,
+          }
+        });
         setClothingSprites(processedSprites);
       }
     } catch (error) {

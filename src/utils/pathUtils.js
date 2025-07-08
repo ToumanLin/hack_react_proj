@@ -1,7 +1,7 @@
 import xml2js from 'xml2js';
 import { convertTexturePathWithFallback } from './textureUtils';
 import { isElectronProduction } from './envUtils';
-import { logger, logInfo, logError, logFileError, logXmlError } from './logger';
+import { logInfo, logError, logFileError, logXmlError } from './logger';
 
 /**
  * Utility functions for parsing and resolving file paths in the Barotrauma character system
@@ -127,7 +127,7 @@ export const resolveRagdollsFolderPath = (character, humanXmlPath) => {
     // Convert the ragdolls folder path
     if (ragdollsFolder.startsWith('Content/')) {
       if (isElectronProduction()) {
-        ragdollsFolder = ragdollsFolder;
+        // ragdollsFolder is already correct, no change needed.
       } else {
         ragdollsFolder = `/assets/${ragdollsFolder}`;
       }

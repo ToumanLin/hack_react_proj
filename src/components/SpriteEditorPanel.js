@@ -3,13 +3,8 @@ import Draggable from 'react-draggable';
 import './SpriteEditorPanel.css';
 
 const SpriteEditorPanel = ({ sprite, limbs, onSave, onClose, position }) => {
-  const [formData, setFormData] = useState({
-    sourceRect: '',
-    origin: '',
-    scale: '1.0',
-    inheritSourceRect: false,
-    inheritOrigin: false,
-  });
+  // const [initialState, setInitialState] = useState(null);
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     if (sprite) {
@@ -23,24 +18,26 @@ const SpriteEditorPanel = ({ sprite, limbs, onSave, onClose, position }) => {
         ? [targetLimb.origin.x, targetLimb.origin.y]
         : sprite.origin;
 
-      setFormData({
+      const state = {
         sourceRect: effectiveSourceRect ? effectiveSourceRect.join(', ') : '',
         origin: effectiveOrigin ? effectiveOrigin.join(', ') : '',
         scale: sprite.scale || '1.0',
         inheritSourceRect: sprite.inheritSourceRect,
         inheritOrigin: sprite.inheritOrigin,
-      });
+      };
+      
+      // setInitialState(state);
+      setFormData(state);
     }
   }, [sprite, limbs]);
 
-  if (!sprite) return null;
+  if (!formData) return null;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value,
-      // If user types manually, they are no longer inheriting
       ...(name === 'sourceRect' && { inheritSourceRect: false }),
       ...(name === 'origin' && { inheritOrigin: false }),
     }));
@@ -74,20 +71,18 @@ const SpriteEditorPanel = ({ sprite, limbs, onSave, onClose, position }) => {
       inheritOrigin: formData.inheritOrigin,
     };
     onSave(updatedAttributes);
-    onClose();
   };
 
   const handleReset = () => {
-    // Re-run the effect logic to reset to initial state
     const targetLimb = limbs.find(l => l.type === sprite.limb || l.name === sprite.limb);
-    const effectiveSourceRect = sprite.inheritSourceRect && targetLimb ? targetLimb.sourceRect : sprite.sourceRect;
-    const effectiveOrigin = sprite.inheritOrigin && targetLimb ? [targetLimb.origin.x, targetLimb.origin.y] : sprite.origin;
+    const effectiveSourceRect = sprite.original.inheritSourceRect && targetLimb ? targetLimb.sourceRect : sprite.original.sourceRect;
+    const effectiveOrigin = sprite.original.inheritOrigin && targetLimb ? [targetLimb.origin.x, targetLimb.origin.y] : sprite.original.origin;
     setFormData({
       sourceRect: effectiveSourceRect ? effectiveSourceRect.join(', ') : '',
       origin: effectiveOrigin ? effectiveOrigin.join(', ') : '',
-      scale: sprite.scale || '1.0',
-      inheritSourceRect: sprite.inheritSourceRect,
-      inheritOrigin: sprite.inheritOrigin,
+      scale: sprite.original.scale || '1.0',
+      inheritSourceRect: sprite.original.inheritSourceRect,
+      inheritOrigin: sprite.original.inheritOrigin,
     });
   };
 
@@ -126,7 +121,7 @@ const SpriteEditorPanel = ({ sprite, limbs, onSave, onClose, position }) => {
             </div>
           </div>
           <div className="form-group">
-            <label>Scale</label>
+            <label>Calculated Scale</label>
             <input
               type="text"
               name="scale"

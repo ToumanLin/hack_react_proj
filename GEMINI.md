@@ -4,7 +4,7 @@ This file provides guidance to Gemini CLI (gemini.google.com/code) when working 
 
 ## Project Overview
 
-This is a React-based character editor for the game Barotrauma. It allows users to view and edit character sprites, including limbs, attachments, and clothing. The application loads character data from XML files and renders the character using React components. It is built as a desktop application using Electron.
+This is a React-based character editor for the game Barotrauma. It allows users to view and edit character sprites, including limbs, attachments, and clothing. A key feature is the ability to edit clothing sprite properties (`sourceRect`, `origin`, `scale`) directly within the application via a visual editor. The application loads character data from XML files and renders the character using React components. It is built as a desktop application using Electron.
 
 ## Commands
 
@@ -18,15 +18,16 @@ This is a React-based character editor for the game Barotrauma. It allows users 
 
 The application's architecture has been refactored to use a centralized state management approach with **Zustand**. This has significantly simplified the component structure and improved data flow throughout the application.
 
-- **State Management:** All application state is managed in a central Zustand store located at `src/store/characterStore.js`. This includes character data (limbs, joints, etc.), UI state (selected items), and all data-loading and manipulation logic.
+- **State Management:** All application state is managed in a central Zustand store located at `src/store/characterStore.js`. This includes character data (limbs, joints, etc.), UI state (selected items), and all data-loading and manipulation logic. It also includes actions for updating character properties, such as `updateClothingSprite`.
 
 - **Main Component (`src/components/Editor.js`):** The `Editor.js` component has been streamlined. It is now primarily responsible for orchestrating the layout of the various UI panels and the main character display. It fetches all its data directly from the `characterStore`.
 
 - **Core Components (`src/components/`):**
     - **`Limb.js`**: Renders an individual character limb and its associated overlays (clothing, attachments). It sources its data from the `characterStore`.
-    - **`Panel.js`**: A new generic, reusable component that provides the basic structure for all draggable and collapsible UI panels.
-    - **`GenericSpriteSheetViewer.js`**: A new generic, reusable component for displaying sprite sheets with highlighted regions. It has replaced the previous `SpriteSheetViewer.js` and `HeadSheetViewer.js`.
+    - **`Panel.js`**: A generic, reusable component that provides the basic structure for all draggable and collapsible UI panels. It accepts a `headerContent` prop to allow for custom buttons or content in the header.
+    - **`GenericSpriteSheetViewer.js`**: A generic, reusable component for displaying sprite sheets with highlighted regions. It has replaced the previous `SpriteSheetViewer.js` and `HeadSheetViewer.js`.
     - **UI Panels (`PropertiesPanel.js`, `GenderPanel.js`, `JointsPanel.js`, `HeadPanel.js`, `ClothingManager.js`, `ClothSheetViewer.js`):** All UI panels have been refactored to be more modular. They now use the generic `Panel` component for their structure and connect directly to the `characterStore` for data and actions, eliminating the need for prop drilling.
+    - **`SpriteEditorPanel.js`**: A draggable panel for editing the properties of a clothing sprite. It allows the user to modify `sourceRect`, `origin`, and `scale`, and intelligently handles values inherited from the parent limb.
 
 - **Styling:** The project is moving away from inline styles. All refactored panel components now have their styles defined in separate `.css` files (e.g., `Panel.css`, `GenderPanel.css`), improving maintainability and separation of concerns.
 
@@ -38,7 +39,7 @@ The application's architecture has been refactored to use a centralized state ma
 2.  The `characterStore` action (`loadCharacter`) is responsible for fetching and parsing all necessary XML files (`filelist.xml`, `Human.xml`, etc.) using the utility functions.
 3.  Once the data is parsed, it is processed and used to update the state within the `characterStore`.
 4.  React components, which are subscribed to the `characterStore`, automatically re-render with the new data.
-5.  User interactions (e.g., selecting a different gender, choosing a piece of clothing) call actions directly on the `characterStore`, which updates the state and triggers a re-render of the affected components.
+5.  User interactions (e.g., selecting a different gender, choosing a piece of clothing, editing a sprite) call actions directly on the `characterStore`, which updates the state and triggers a re-render of the affected components.
 
 This new architecture is more scalable, easier to debug, and promotes better code organization and reusability.
 
@@ -60,7 +61,7 @@ This new architecture is more scalable, easier to debug, and promotes better cod
 
 ### `src/store/characterStore.js`
 
-*   **Summary:** This file is the heart of the application's state management, implemented using Zustand. It centralizes all character-related data, including limbs, joints, attachments, and clothing, as well as UI state like the current gender and selected items. Crucially, it contains the asynchronous `loadCharacter` action, which encapsulates the entire complex data-loading pipeline—from fetching XML files to parsing them and calculating the initial character pose. Actions like `setGender` are designed to automatically trigger this data-reloading process.
+*   **Summary:** This file is the heart of the application's state management, implemented using Zustand. It centralizes all character-related data, including limbs, joints, attachments, and clothing, as well as UI state like the current gender and selected items. Crucially, it contains the asynchronous `loadCharacter` action, which encapsulates the entire complex data-loading pipeline—from fetching XML files to parsing them and calculating the initial character pose. It also contains the `updateClothingSprite` action to modify sprite properties.
 *   **Improvement Suggestions:**
     1.  **Refactor `loadCharacter` Action:** The `loadCharacter` function is very large and handles multiple distinct parsing steps. It should be broken down into smaller, more specialized helper functions (e.g., `parseLimbs`, `parseHeadAttachments`, `calculateInitialPose`). This would make the code more readable, testable, and easier to maintain.
     2.  **Improve Error Handling:** The current error handling only logs issues to the console. A more robust solution would be to add an `error` state to the store. When a data-loading error occurs, this state would be updated, allowing UI components to subscribe to it and display a user-friendly error message (e.g., using a toast notification).
@@ -81,7 +82,7 @@ This new architecture is more scalable, easier to debug, and promotes better cod
 
 ### `src/components/Panel.js`
 
-*   **Summary:** This is a generic, reusable presentational component created during the refactoring process. It provides the standard UI for a draggable and collapsible panel, with a consistent header style and toggle button. It uses `react-draggable` for its drag-and-drop functionality and accepts a `title` and `children` as props, allowing it to wrap any content.
+*   **Summary:** This is a generic, reusable presentational component created during the refactoring process. It provides the standard UI for a draggable and collapsible panel, with a consistent header style and toggle button. It uses `react-draggable` for its drag-and-drop functionality and accepts a `title`, `children`, and `headerContent` as props, allowing it to wrap any content and include custom controls in the header.
 *   **Improvement Suggestions:**
     *   This component is clean, reusable, and serves its purpose well. No further changes are needed at this time.
 
@@ -100,10 +101,16 @@ This new architecture is more scalable, easier to debug, and promotes better cod
 
 ### `src/components/ClothSheetViewer.js`
 
-*   **Summary:** This component is responsible for displaying the sprite sheets for the currently selected clothing item. It takes the `clothingSprites` from the central store, groups them by their texture path, and then calculates the correct `sourceRect` for each sprite, handling cases where the rectangle is inherited from a character's limb. It is built using the generic `Panel` component.
+*   **Summary:** This component is responsible for displaying the sprite sheets for the currently selected clothing item. It takes the `clothingSprites` from the central store, groups them by their texture path, and then calculates the correct `sourceRect` for each sprite, handling cases where the rectangle is inherited from a character's limb. It features an "Edit" mode that allows the user to click on a sprite to open the `SpriteEditorPanel` and modify its properties.
 *   **Improvement Suggestions:**
     1.  **Extract Data Logic:** The logic for grouping sprites and calculating their source rectangles is complex and currently resides within a `useEffect` hook. This logic should be extracted into a custom hook (e.g., `useTextureGroups(clothingSprites, limbs)`) to make the component cleaner and more focused on rendering.
     2.  **Merge with Generic Viewer:** This component shares a lot of functionality with the `GenericSpriteSheetViewer`. In a future refactoring, it might be possible to merge them into a single, more powerful sprite sheet viewer that can handle different data structures.
+
+### `src/components/SpriteEditorPanel.js`
+
+*   **Summary:** This is a draggable panel for editing the properties of a single clothing sprite. It is opened from the `ClothSheetViewer`. The panel allows the user to modify the `sourceRect`, `origin`, and `scale` of a sprite. It intelligently handles inherited values, allowing the user to view the inherited `sourceRect` or `origin` from the parent limb and providing "Inherit" buttons to easily apply those values.
+*   **Improvement Suggestions:**
+    *   The component is new and serves its purpose well. No immediate changes are needed.
 
 ### `src/utils/pathUtils.js`
 

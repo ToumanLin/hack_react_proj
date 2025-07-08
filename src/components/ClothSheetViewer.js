@@ -101,8 +101,7 @@ const ClothSheetViewer = () => {
 
   const handleSaveSprite = (updatedAttributes) => {
     if (editingSprite) {
-      updateClothingSprite(editingSprite.name, updatedAttributes); // Assuming name is a unique identifier for the sprite within the clothing item
-      setEditingSprite(null);
+      updateClothingSprite(editingSprite.name, updatedAttributes);
     }
   };
 
@@ -152,7 +151,7 @@ const ClothSheetViewer = () => {
                     onClick={() => handleSpriteClick(sprite)}
                     onMouseEnter={() => setHoveredSprite(sprite)}
                     onMouseLeave={() => setHoveredSprite(null)}
-                    className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''} ${isEditMode ? 'editable' : ''}`}
+                    className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''}`}
                     style={{
                       left: sprite.rect.x,
                       top: sprite.rect.y,
