@@ -9,6 +9,7 @@ import ClothingManager from './ClothingManager';
 import ClothSheetViewer from './ClothSheetViewer';
 import useCharacterStore from '../store/characterStore';
 import { convertTexturePath } from '../utils/textureUtils';
+import { logInfo, logError } from '../utils/logger';
 
 const Editor = () => {
   const {
@@ -25,7 +26,15 @@ const Editor = () => {
   const [headSheetTexture, setHeadSheetTexture] = useState('');
 
   useEffect(() => {
-    loadCharacter(gender);
+    logInfo('Editor', 'Loading character in Editor component', { gender });
+    try {
+      loadCharacter(gender);
+    } catch (error) {
+      logError('Editor', error, { 
+        context: 'loadCharacter in useEffect',
+        gender 
+      });
+    }
   }, [loadCharacter, gender]);
 
   useEffect(() => {
@@ -34,21 +43,40 @@ const Editor = () => {
   }, [gender]);
 
   const handleUpdateLimb = (updatedLimb) => {
-    let finalLimb = { ...updatedLimb };
+    try {
+      logInfo('Editor', 'Updating limb', { 
+        limbId: updatedLimb.id, 
+        limbName: updatedLimb.name 
+      });
+      
+      let finalLimb = { ...updatedLimb };
 
-    if (finalLimb.name.includes('Head')) {
-        const [baseWidth, baseHeight] = finalLimb.baseSize;
-        finalLimb.sourceRect = [
-            finalLimb.sheetIndex[0] * baseWidth,
-            finalLimb.sheetIndex[1] * baseHeight,
-            baseWidth,
-            baseHeight
-        ];
-        finalLimb.size = { width: baseWidth, height: baseHeight }; 
+      if (finalLimb.name.includes('Head')) {
+          const [baseWidth, baseHeight] = finalLimb.baseSize;
+          finalLimb.sourceRect = [
+              finalLimb.sheetIndex[0] * baseWidth,
+              finalLimb.sheetIndex[1] * baseHeight,
+              baseWidth,
+              baseHeight
+          ];
+          finalLimb.size = { width: baseWidth, height: baseHeight }; 
+          
+          logInfo('Editor', 'Updated head limb sourceRect', { 
+            limbId: finalLimb.id,
+            sourceRect: finalLimb.sourceRect,
+            baseSize: [baseWidth, baseHeight]
+          });
+      }
+
+      setSelectedLimb(finalLimb);
+      setLimbs(limbs.map(limb => limb.id === finalLimb.id ? finalLimb : limb));
+    } catch (error) {
+      logError('Editor', error, { 
+        context: 'handleUpdateLimb',
+        limbId: updatedLimb?.id,
+        limbName: updatedLimb?.name 
+      });
     }
-
-    setSelectedLimb(finalLimb);
-    setLimbs(limbs.map(limb => limb.id === finalLimb.id ? finalLimb : limb));
   };
 
   const handleSelectLimb = (limb) => {
