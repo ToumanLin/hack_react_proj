@@ -84,12 +84,12 @@ const JointsPanel = () => {
       position={{ x: 0, y: 0 }}
       headerContent={
         <button onClick={onConstructAll} className="construct-all-button header-button">
-          build
+          build All
         </button>
       }
     >
       <div className="joints-panel-container">
-        <ul className="joints-list">
+        <ul className="joints-list" >
           {joints.map((joint, index) => (
             <li
               key={index}
@@ -97,9 +97,14 @@ const JointsPanel = () => {
               onMouseEnter={() => setHoveredJoint(joint)}
               onMouseLeave={() => setHoveredJoint(null)}
             >
-              <span>{`Joint ${joint.$.Limb1 || joint.$.limb1}-${joint.$.Limb2 || joint.$.limb2}`}</span>
+              <span>
+                <span className="joint-names">
+                  {limbs.find(l => l.id === (joint.$.Limb1 || joint.$.limb1))?.name}-{
+                  limbs.find(l => l.id === (joint.$.Limb2 || joint.$.limb2))?.name}
+                </span>
+              </span>
               <button onClick={() => onConstruct(joint)} className="construct-button">
-                Construct
+                build
               </button>
               {hoveredJoint === joint && (
                 <div className="joint-info">

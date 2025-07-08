@@ -131,7 +131,7 @@ const Editor = () => {
       />
       <HeadPanel />
       <ClothingManager />
-      <ClothSheetViewer />
+      <ClothSheetViewer isOpenInitially={true} />
     </div>
   );
 };

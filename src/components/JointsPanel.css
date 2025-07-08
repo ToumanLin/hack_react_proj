@@ -15,12 +15,17 @@
 .joints-list {
   padding-left: 0;
   list-style: none;
+  text-align: left;
+  padding-left: 0;
 }
 
 .joint-item {
   margin-bottom: 4px;
   position: relative;
   font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .construct-button {
@@ -31,6 +36,7 @@
   color: white;
   cursor: pointer;
   font-size: 10px;
+  margin-left: auto;
 }
 
 .joint-info {
@@ -41,4 +47,8 @@
   padding: 5px;
   z-index: 1;
   font-size: 10px;
+}
+
+.joint-names {
+  font-size: 9px;
 }
