@@ -63,7 +63,7 @@
     "wait-on": "^8.0.3"
   },
   "author": "Your Name",
-  "description": "A React-based character editor for the game Barotrauma",
+  "description": "A React-based character viewer for the game Barotrauma",
   "build": {
     "appId": "com.yourcompany.barotrauma-editor",
     "productName": "Barotrauma Character Editor",
@@ -73,10 +73,17 @@
     "files": [
       "build/**/*",
       "public/electron.js",
-      "public/preload.js",
-      "public/assets/**/*"
+      "public/preload.js"
     ],
-    "asar": true,
+    "extraFiles": [
+      {
+        "from": "public/assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "win": {
       "target": "portable"
     },

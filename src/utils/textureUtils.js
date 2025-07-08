@@ -6,21 +6,19 @@ const processPath = (path, gender) => {
   let convertedPath = path.replace(/\[gender\]/gi, gender);
   convertedPath = convertedPath.replace(/^%moddir(?::\d+)?%\//i, '');
 
-  if (convertedPath.startsWith('Content/')) {
-    if (isElectronProduction()) {
-      convertedPath = convertedPath.replace('Content/', 'assets://Content/');
-    } else {
-      convertedPath = convertedPath.replace('Content/', '/assets/Content/');
+  if (isElectronProduction()) {
+    // In prod, we need the path relative to the assets dir, e.g., "Content/Characters/Human/Human_male.png"
+    return convertedPath;
+  } else {
+    // In dev, we need a web-accessible URL
+    if (convertedPath.startsWith('Content/')) {
+      return `/assets/${convertedPath}`;
+    } else if (!convertedPath.startsWith('/assets/')) {
+      // Fallback for paths that might not have the Content/ prefix but should be in assets
+      return `/assets/${convertedPath}`;
     }
-  } else if (!convertedPath.startsWith('/assets/') && !convertedPath.startsWith('assets://') && convertedPath.includes('Content/')) {
-    if (isElectronProduction()) {
-      convertedPath = `assets://${convertedPath}`;
-    } else {
-      convertedPath = `/assets/${convertedPath}`;
-    }
+    return convertedPath;
   }
-  
-  return convertedPath;
 };
 
 export const convertTexturePath = (texturePath, gender) => {
@@ -42,24 +40,24 @@ export const convertTexturePathWithFallback = (texturePath, gender) => {
 export const convertTexturePathToBlobUrl = async (texturePath) => {
   if (!texturePath) return '';
   
-  if (isElectronProduction() && texturePath.startsWith('assets://')) {
+  // In production, texturePath should be a relative path inside the assets directory
+  if (isElectronProduction()) {
     try {
-      const relativePath = texturePath.replace('assets://', '');
-      
       if (window.electronAPI && window.electronAPI.readFileAsBuffer) {
-        const bufferArray = await window.electronAPI.readFileAsBuffer(relativePath);
-        const buffer = new Uint8Array(bufferArray);
+        // Pass the relative path directly to the API
+        const buffer = await window.electronAPI.readFileAsBuffer(texturePath);
         const blob = new Blob([buffer], { type: 'image/png' });
         return URL.createObjectURL(blob);
       } else {
-        console.error('Electron API not available for reading binary files');
-        return texturePath;
+        console.error('Electron API for reading binary files is not available.');
+        return ''; // Return empty to avoid broken image icons
       }
     } catch (error) {
-      console.error('Error converting texture path to blob URL:', error);
-      return texturePath;
+      console.error(`Error converting texture path "${texturePath}" to blob URL:`, error);
+      return '';
     }
   }
   
+  // In development, texturePath is a direct URL
   return texturePath;
 };

@@ -12,15 +12,17 @@ const removeModDirPrefix = (path) => {
   return path.replace(/^%moddir(?::\d+)?%\//i, '');
 };
 
-const readFile = async (path) => {
+export const readFile = async (path) => {
   if (isElectronProduction()) {
     if (window.electronAPI && window.electronAPI.readFile) {
-      const relativePath = path.startsWith('assets://') ? path.substring('assets://'.length) : path;
-      return await window.electronAPI.readFile(relativePath);
+      // In production, paths passed here are relative to the 'assets' root inside app.asar
+      // e.g., 'filelist.xml' or 'Content/Characters/Human/Human.xml'
+      return await window.electronAPI.readFile(path);
     } else {
-      throw new Error('Electron API not available');
+      throw new Error('Electron API not available in production environment');
     }
   } else {
+    // In development, path is a full URL like '/assets/filelist.xml'
     const response = await fetch(path);
     if (!response.ok) {
       throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
@@ -38,20 +40,18 @@ export const convertGamePathToWebPath = (path) => {
   if (!path) return '';
   
   let convertedPath = path;
-  
-  // Handle %ModDir%/ prefix (case-insensitive) - convert to proper web path
   convertedPath = removeModDirPrefix(convertedPath);
   
-  // Convert to web path
-  if (convertedPath.startsWith('Content/')) {
-    if (isElectronProduction()) {
-      convertedPath = convertedPath.replace('Content/', 'assets://Content/');
-    } else {
-      convertedPath = `/assets/${convertedPath}`;
+  // In production, we want a path relative to the assets dir, e.g., "Content/Characters/Human.xml"
+  // In development, we want a web-accessible path, e.g., "/assets/Content/Characters/Human.xml"
+  if (isElectronProduction()) {
+    return convertedPath;
+  } else {
+    if (convertedPath.startsWith('Content/')) {
+        return `/assets/${convertedPath}`;
     }
+    return convertedPath; // Should already be a web path in dev
   }
-  
-  return convertedPath;
 };
 
 /**
@@ -301,28 +301,19 @@ export const loadItemFilesFromFilelist = async () => {
 export const processClothingTexturePath = (texturePath, gender, xmlPath) => {
   if (!texturePath) return '';
   
-  // Replace [GENDER] or [gender] (case-insensitive) placeholder with actual gender
   let convertedPath = texturePath.replace(/\[gender\]/gi, gender);
   
-  // Case 1: Just filename (e.g., "artiedolittle_2.png" or "Human_[GENDER].png") - same directory as XML
   if (convertedPath.includes('.png') && !convertedPath.includes('/')) {
-    // Extract the directory from the XML path (xmlPath is already /assets/Content/...)
     const xmlDir = xmlPath.substring(0, xmlPath.lastIndexOf('/'));
     return `${xmlDir}/${convertedPath}`;
   }
   
-  // Case 2: With %ModDir% prefix (e.g., "%ModDir%/Content/Items/Jobgear/Assistant/artiedolittle_2.png")
-  // Support %ModDir% and %ModDir:xxxxxxxx% (case-insensitive, optional colon and digits)
-  if (/%moddir(?::\d+)?%/i.test(convertedPath)) {
-    const cleanPath = convertedPath.replace(/^%moddir(?::\d+)?%\//i, '');
-    return `/assets/${cleanPath}`;
-  }
-  
-  // Case 3: Relative to assets without %ModDir% (e.g., "Content/Items/Jobgear/Assistant/artiedolittle_2.png")
+  convertedPath = removeModDirPrefix(convertedPath);
+
   if (isElectronProduction()) {
-    return `assets://${convertedPath}`;
+      return convertedPath; // e.g. Content/Items/Jobgear/bandana.png
   } else {
-    return `/assets/${convertedPath}`;
+      return `/assets/${convertedPath}`; // e.g. /assets/Content/Items/Jobgear/bandana.png
   }
 };
 

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { convertTexturePathToBlobUrl } from '../utils/textureUtils';
+import { isElectronProduction } from '../utils/envUtils';
 import useCharacterStore from '../store/characterStore';
 import './Limb.css';
 
@@ -42,7 +43,7 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
       
       // Process clothing sprites textures
       for (const sprite of clothingSprites) {
-        if (sprite.texturePath && sprite.texturePath.startsWith('assets://') && !cache[sprite.texturePath]) {
+        if (sprite.texturePath && isElectronProduction() && !cache[sprite.texturePath]) {
           try {
             cache[sprite.texturePath] = await convertTexturePathToBlobUrl(sprite.texturePath);
           } catch (error) {
@@ -54,17 +55,18 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
       
       // Process attachment textures
       if (limb.name.includes('Head')) {
-        Object.keys(limb).filter(key => key.startsWith('selected')).forEach(key => {
+        for (const key of Object.keys(limb).filter(key => key.startsWith('selected'))) {
           const attachment = limb[key];
-          if (attachment && attachment.texture && attachment.texture.startsWith('assets://') && !cache[attachment.texture]) {
-            convertTexturePathToBlobUrl(attachment.texture).then(processed => {
+          if (attachment && attachment.texture && isElectronProduction() && !cache[attachment.texture]) {
+            try {
+              const processed = await convertTexturePathToBlobUrl(attachment.texture);
               cache[attachment.texture] = processed;
-            }).catch(error => {
+            } catch (error) {
               console.error('Error processing attachment texture:', error);
               cache[attachment.texture] = attachment.texture;
-            });
+            }
           }
-        });
+        }
       }
       
       setProcessedTextureCache(cache);

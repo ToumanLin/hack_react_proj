@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { parseSpriteAttributes } from '../utils/xmlUtils';
-import { loadItemFilesFromFilelist, processClothingTexturePath } from '../utils/pathUtils';
+import { loadItemFilesFromFilelist, processClothingTexturePath, readFile } from '../utils/pathUtils';
 import useCharacterStore from '../store/characterStore';
 import Panel from './Panel';
 import './ClothingManager.css';
@@ -14,12 +14,11 @@ const getItemFilesFromFilelist = async () => {
 const parseClothingItemsFromFile = async (xmlPath) => {
   try {
     // xmlPath is already a full web path (e.g., /assets/Content/Items/...)
-    const response = await fetch(xmlPath);
-    if (!response.ok) {
-      console.warn(`Failed to load ${xmlPath}: ${response.status} ${response.statusText}`);
+    const xmlText = await readFile(xmlPath);
+    if (!xmlText) {
+      console.warn(`Failed to load ${xmlPath}`);
       return [];
     }
-    const xmlText = await response.text();
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
     
@@ -80,11 +79,10 @@ const parseAllClothingItems = async () => {
 const parseClothingXML = async (xmlPath, selectedItemIdentifier) => {
   try {
     // xmlPath is already a full web path (e.g., /assets/Content/Items/...)
-    const response = await fetch(xmlPath);
-    if (!response.ok) {
-      throw new Error(`Failed to load ${xmlPath}: ${response.status} ${response.statusText}`);
+    const xmlText = await readFile(xmlPath);
+    if (!xmlText) {
+      throw new Error(`Failed to load ${xmlPath}`);
     }
-    const xmlText = await response.text();
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
     
