@@ -7,7 +7,6 @@ import {
   getAttribute, 
   getXml2jsAttribute, 
   parseNumberArray, 
-  parseBoolean, 
   parseFloat,
   parseSpriteAttributes,
   parseSpriteAttributesFromXml2js 

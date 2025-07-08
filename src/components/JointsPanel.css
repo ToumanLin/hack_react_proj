@@ -3,15 +3,13 @@
 }
 
 .construct-all-button {
-  margin-bottom: 8px;
-  display: block;
-  width: 100%;
-  padding: 6px 10px;
+  padding: 3px 8px;
   border: none;
   background-color: #555;
   color: white;
   cursor: pointer;
   font-size: 10px;
+  border-radius: 3px;
 }
 
 .joints-list {

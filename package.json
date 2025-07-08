@@ -76,7 +76,7 @@
       "public/preload.js",
       "public/assets/**/*"
     ],
-    "asar": false,
+    "asar": true,
     "win": {
       "target": "portable"
     },

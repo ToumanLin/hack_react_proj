@@ -78,11 +78,17 @@ const JointsPanel = () => {
   };
 
   return (
-    <Panel title="Joints" isOpenInitially={false} position={{ x: 0, y: 0 }}>
-      <div className="joints-panel-container">
-        <button onClick={onConstructAll} className="construct-all-button">
-          Construct All Based on Torso
+    <Panel 
+      title="Joints" 
+      isOpenInitially={false} 
+      position={{ x: 0, y: 0 }}
+      headerContent={
+        <button onClick={onConstructAll} className="construct-all-button header-button">
+          build
         </button>
+      }
+    >
+      <div className="joints-panel-container">
         <ul className="joints-list">
           {joints.map((joint, index) => (
             <li

@@ -89,14 +89,14 @@ const Editor = () => {
         texture={mainTexture}
         sprites={bodySprites}
         isOpenInitially={false}
-        position={{x: 600, y: 50}}
+        position={{x: 600, y: 0}}
       />
       <GenericSpriteSheetViewer 
         title="Head Sprites"
         texture={headSheetTexture}
         sprites={headSpriteData[headSheetTexture] || []}
-        isOpenInitially={true}
-        position={{x: 600, y: 400}}
+        isOpenInitially={false}
+        position={{x: 600, y: 50}}
         textureOptions={headTextureOptions}
         selectedTexture={headSheetTexture}
         onTextureChange={(e) => setHeadSheetTexture(e.target.value)}

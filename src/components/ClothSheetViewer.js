@@ -106,7 +106,7 @@ const ClothSheetViewer = () => {
   const selectedGroup = textureGroups.find(group => group.texturePath === selectedTexture);
 
   return (
-    <Panel title="Clothing Sprites" isOpenInitially={false} position={{ x: 600, y: 100 }}>
+    <Panel title="Clothing Sprites" isOpenInitially={false} position={{ x: 600, y: 100 }} collapsedWidth="600px">
       <div className="cloth-sheet-viewer-container">
         {/* Texture selector */}
         {textureGroups.length > 1 && (

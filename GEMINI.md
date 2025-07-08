@@ -77,8 +77,7 @@ This new architecture is more scalable, easier to debug, and promotes better cod
 *   **Improvement Suggestions:**
     1.  **Component Extraction:** The `renderOverlay` function is a prime candidate for extraction into its own `Overlay.js` component. This would significantly simplify the `Limb` component and isolate the complex overlay rendering logic.
     2.  **Performance:** The `useEffect` hooks for processing textures could be optimized. Instead of processing all textures every time `clothingSprites` or `limb` changes, a more sophisticated caching or memoization strategy could be employed to prevent unnecessary re-renders.
-    3.  **Styling:** The component still relies heavily on inline styles. These should be moved to a dedicated `Limb.css` file to improve readability and maintainability.
-    4.  **Direct State Updates:** The `onUpdate` and `onSelect` props are passed down from `Editor.js`. To further decouple the components, `Limb.js` could directly call the relevant actions (`setSelectedLimb`, `setLimbs`) from the `characterStore`.
+    3.  **Direct State Updates:** The `onUpdate` and `onSelect` props are passed down from `Editor.js`. To further decouple the components, `Limb.js` could directly call the relevant actions (`setSelectedLimb`, `setLimbs`) from the `characterStore`.
 
 ### `src/components/Panel.js`
 
@@ -90,8 +89,7 @@ This new architecture is more scalable, easier to debug, and promotes better cod
 
 *   **Summary:** This reusable component was created to replace the duplicated logic in the old `SpriteSheetViewer` and `HeadSheetViewer`. It is responsible for displaying a texture (sprite sheet) and rendering highlighted rectangles for each sprite. It is draggable and collapsible, and it can optionally display a dropdown menu to switch between different textures.
 *   **Improvement Suggestions:**
-    1.  **Styling:** The component currently uses inline styles. These should be extracted into a dedicated `GenericSpriteSheetViewer.css` file to improve maintainability and consistency.
-    2.  **Custom Hook for Texture Processing:** The `useEffect` hook that processes the texture path into a blob URL could be extracted into a custom hook (e.g., `useProcessedTexture(texture)`) to make the component's logic cleaner and more focused on rendering.
+    1.  **Custom Hook for Texture Processing:** The `useEffect` hook that processes the texture path into a blob URL could be extracted into a custom hook (e.g., `useProcessedTexture(texture)`) to make the component's logic cleaner and more focused on rendering.
 
 ### `src/components/ClothingManager.js`
 
@@ -99,15 +97,13 @@ This new architecture is more scalable, easier to debug, and promotes better cod
 *   **Improvement Suggestions:**
     1.  **Extract Data Logic:** The extensive logic for finding, fetching, and parsing clothing items is currently co-located with the UI code. This should be extracted into a dedicated custom hook (e.g., `useClothingItems()`) or moved into the `characterStore` to separate concerns.
     2.  **Centralize State:** The component's local state (e.g., `isLoading`, `availableItems`, `searchTerm`, `selectedItem`) should be moved into the `characterStore` to provide a single source of truth for all application data.
-    3.  **Styling:** The component uses inline styles, which should be moved to a dedicated `ClothingManager.css` file.
 
 ### `src/components/ClothSheetViewer.js`
 
 *   **Summary:** This component is responsible for displaying the sprite sheets for the currently selected clothing item. It takes the `clothingSprites` from the central store, groups them by their texture path, and then calculates the correct `sourceRect` for each sprite, handling cases where the rectangle is inherited from a character's limb. It is built using the generic `Panel` component.
 *   **Improvement Suggestions:**
     1.  **Extract Data Logic:** The logic for grouping sprites and calculating their source rectangles is complex and currently resides within a `useEffect` hook. This logic should be extracted into a custom hook (e.g., `useTextureGroups(clothingSprites, limbs)`) to make the component cleaner and more focused on rendering.
-    2.  **Styling:** The component still contains several inline styles. These should be moved to a dedicated `ClothSheetViewer.css` file.
-    3.  **Merge with Generic Viewer:** This component shares a lot of functionality with the `GenericSpriteSheetViewer`. In a future refactoring, it might be possible to merge them into a single, more powerful sprite sheet viewer that can handle different data structures.
+    2.  **Merge with Generic Viewer:** This component shares a lot of functionality with the `GenericSpriteSheetViewer`. In a future refactoring, it might be possible to merge them into a single, more powerful sprite sheet viewer that can handle different data structures.
 
 ### `src/utils/pathUtils.js`
 
