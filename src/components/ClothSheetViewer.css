@@ -16,13 +16,19 @@
   color: white;
 }
 
+.sprite-sheet-viewport {
+  width: 600px;
+  height: 600px;
+  max-width: 600px;
+  max-height: 800px;
+  overflow: auto;
+  border: 1px solid #555;
+  background-color: #808080;
+}
+
 .sprite-sheet-container {
   position: relative;
   cursor: move;
-  border: 1px solid #555;
-  background-color: #808080;
-  overflow: auto;
-  max-height: 600px;
 }
 
 .sprite-sheet-image {
@@ -41,15 +47,15 @@
 
 .sprite-tooltip {
   position: absolute;
-  top: -25px;
-  left: 0px;
+  top: 50px;
+  left: 10px;
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
   white-space: nowrap;
   font-size: 11px;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .sprite-tooltip .name {
@@ -96,4 +102,16 @@
   padding: 3px 8px;
   border-radius: 3px;
   font-size: 10px;
+}
+
+.cloth-sheet-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.zoom-slider {
+  margin-left: 8px;
+  width: 150px;
 }

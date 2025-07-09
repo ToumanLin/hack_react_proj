@@ -18,6 +18,8 @@ const ClothSheetViewer = () => {
   const [processedSelectedTexture, setProcessedSelectedTexture] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingSprite, setEditingSprite] = useState(null);
+  const [zoom, setZoom] = useState(1);
+  const imageRef = React.useRef(null);
 
   // Process selected texture for Electron production environment
   useEffect(() => {
@@ -120,6 +122,18 @@ const ClothSheetViewer = () => {
           </button>
         }
       >
+        <div className="cloth-sheet-controls">
+          <label>Zoom: {Math.round(zoom * 100)}%</label>
+          <input
+            type="range"
+            min="0.1"
+            max="2"
+            step="0.1"
+            value={zoom}
+            onChange={(e) => setZoom(parseFloat(e.target.value))}
+            className="zoom-slider"
+          />
+        </div>
         <div className="cloth-sheet-viewer-container">
           {textureGroups.length > 1 && (
             <div className="texture-selector">
@@ -138,56 +152,73 @@ const ClothSheetViewer = () => {
           )}
 
           {selectedGroup && (
-            <div className="sprite-sheet-container">
-              <img 
-                src={processedSelectedTexture || selectedGroup.texturePath} 
-                alt="Clothing Sprite Sheet" 
-                className="sprite-sheet-image"
-              />
-              {selectedGroup.sprites.map((sprite, index) => (
-                sprite.rect && (
-                  <div
-                    key={index}
-                    onClick={() => handleSpriteClick(sprite)}
-                    onMouseEnter={() => setHoveredSprite(sprite)}
-                    onMouseLeave={() => setHoveredSprite(null)}
-                    className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''}`}
-                    style={{
-                      left: sprite.rect.x,
-                      top: sprite.rect.y,
-                      width: sprite.rect.width,
-                      height: sprite.rect.height,
-                    }}
-                  >
-                    {hoveredSprite === sprite && !editingSprite && (
-                      <div className="sprite-tooltip">
-                        <div className="name">{sprite.name}</div>
-                        <div className="limb">Limb: {sprite.limb}</div>
-                        <div className="rect" >
-                          Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
-                          {sprite.inheritSourceRect && (
-                            <span className="inherited">(inherited)</span>
-                          )}
-                        </div>
-                        {sprite.displayOrigin && (
-                          <div className="rect">
-                            Origin: [{sprite.displayOrigin[0]}, {sprite.displayOrigin[1]}]
-                            {sprite.inheritOrigin && (
+            <div className="sprite-sheet-viewport">
+              <div 
+                className="sprite-sheet-container"
+                style={{
+                  width: imageRef.current ? imageRef.current.naturalWidth * zoom : 0,
+                  height: imageRef.current ? imageRef.current.naturalHeight * zoom : 0,
+                }}
+              >
+                <img 
+                  ref={imageRef}
+                  src={processedSelectedTexture || selectedGroup.texturePath} 
+                  alt="Clothing Sprite Sheet" 
+                  className="sprite-sheet-image"
+                  onLoad={() => {
+                    // Force a re-render to update the container size
+                    setZoom(zoom);
+                  }}
+                  style={{ 
+                    transform: `scale(${zoom})`, 
+                    transformOrigin: 'top left' 
+                  }}
+                />
+                {selectedGroup.sprites.map((sprite, index) => (
+                  sprite.rect && (
+                    <div
+                      key={index}
+                      onClick={() => handleSpriteClick(sprite)}
+                      onMouseEnter={() => setHoveredSprite(sprite)}
+                      onMouseLeave={() => setHoveredSprite(null)}
+                      className={`sprite-overlay ${hoveredSprite === sprite ? 'hovered' : ''}`}
+                      style={{
+                        left: sprite.rect.x * zoom,
+                        top: sprite.rect.y * zoom,
+                        width: sprite.rect.width * zoom,
+                        height: sprite.rect.height * zoom,
+                      }}
+                    >
+                      {hoveredSprite === sprite && !editingSprite && (
+                        <div className="sprite-tooltip">
+                          <div className="name">{sprite.name}</div>
+                          <div className="limb">Limb: {sprite.limb}</div>
+                          <div className="rect" >
+                            Rect: [{sprite.rect.x}, {sprite.rect.y}, {sprite.rect.width}, {sprite.rect.height}]
+                            {sprite.inheritSourceRect && (
                               <span className="inherited">(inherited)</span>
                             )}
                           </div>
-                        )}
-                        <div className="rect">
-                          Calculated Scale: [{sprite.scale}]
-                          {/* {sprite.inheritScale && (
-                            <span className="inherited">(inherited)</span>
-                          )} */}
+                          {sprite.displayOrigin && (
+                            <div className="rect">
+                              Origin: [{sprite.displayOrigin[0]}, {sprite.displayOrigin[1]}]
+                              {sprite.inheritOrigin && (
+                                <span className="inherited">(inherited)</span>
+                              )}
+                            </div>
+                          )}
+                          <div className="rect">
+                            Calculated Scale: [{sprite.scale}]
+                            {/* {sprite.inheritScale && (
+                              <span className="inherited">(inherited)</span>
+                            )} */}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                )
-              ))}
+                      )}
+                    </div>
+                  )
+                ))}
+              </div>
             </div>
           )}
 

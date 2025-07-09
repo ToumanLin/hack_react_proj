@@ -96,7 +96,11 @@ const createAttributeParser = (attributeGetter) => (element) => {
     ignoreRagdollScale: parseBoolean(get('ignoreragdollscale', 'false')),
     inheritScale: hasInheritScale ? parseBoolean(get('inheritscale', 'true')) : true,
     hideOtherWearables: parseBoolean(get('hideotherwearables', 'false')),
-    hideWearablesOfType: get('hidewearablesoftype', ''),
+    hideWearablesOfType: (() => {
+      const value = get('hidewearablesoftype', null);
+      if (value === null) return null;
+      return value.split(',').map(s => s.trim().toLowerCase());
+    })(),
     rotation: parseFloat(get('rotation', '0')),
     useLegacyScaleLogic: !hasInheritScale,
   };

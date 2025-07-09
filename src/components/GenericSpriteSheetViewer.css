@@ -6,7 +6,7 @@
   border-radius: 5px;
   width: 600px;
   max-width: 600px;
-  max-height: 400px;
+  max-height: 800px;
   color: white;
   padding: 8px;
   font-size: 8px;
@@ -15,11 +15,27 @@
 .sprite-sheet-container {
   position: relative;
   cursor: move;
-  max-height: 300px;
-  overflow: auto;
   border: 1px solid #555;
   border-radius: 3px;
   background-color: #808080;
+}
+
+.sprite-sheet-viewport {
+  overflow: auto;
+  border: 1px solid #555;
+  border-radius: 3px;
+}
+
+.generic-sheet-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.zoom-slider {
+  margin-left: 8px;
+  width: 150px;
 }
 
 .sprite-sheet-image {

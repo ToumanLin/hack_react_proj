@@ -14,7 +14,7 @@ const removeModDirPrefix = (path) => {
 };
 
 export const readFile = async (path) => {
-  logInfo('FileRead', `Attempting to read file: ${path}`);
+  // logInfo('FileRead', `Attempting to read file: ${path}`);
   
   try {
     if (isElectronProduction()) {
@@ -22,7 +22,7 @@ export const readFile = async (path) => {
         // In production, paths passed here are relative to the 'assets' root inside app.asar
         // e.g., 'filelist.xml' or 'Content/Characters/Human/Human.xml'
         const content = await window.electronAPI.readFile(path);
-        logInfo('FileRead', `Successfully read file: ${path}`, { contentLength: content?.length || 0 });
+        // logInfo('FileRead', `Successfully read file: ${path}`, { contentLength: content?.length || 0 });
         return content;
       } else {
         const error = new Error('Electron API not available in production environment');
@@ -42,7 +42,7 @@ export const readFile = async (path) => {
         throw error;
       }
       const content = await response.text();
-      logInfo('FileRead', `Successfully read file: ${path}`, { contentLength: content?.length || 0 });
+      // logInfo('FileRead', `Successfully read file: ${path}`, { contentLength: content?.length || 0 });
       return content;
     }
   } catch (error) {
