@@ -9,25 +9,25 @@ import { convertTexturePath } from '../utils/textureUtils';
 import { logInfo, logError, logWarn, logLimbError } from '../utils/logger';
 
 const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
-  logInfo('LimbParsing', 'Starting to parse and prepare character data', { gender });
+  // logInfo('LimbParsing', 'Starting to parse and prepare character data', { gender });
   
   const parsedLimbs = {};
   const limbs = Array.isArray(ragdoll.limb) ? ragdoll.limb : [ragdoll.limb];
   
-  logInfo('LimbParsing', 'Processing limbs', { 
-    totalLimbs: limbs.length,
-    isArray: Array.isArray(ragdoll.limb)
-  });
+  // logInfo('LimbParsing', 'Processing limbs', { 
+  //   totalLimbs: limbs.length,
+  //   isArray: Array.isArray(ragdoll.limb)
+  // });
   
   limbs.forEach((limb, index) => {
     const limbId = limb.$.ID || limb.$.id;
     const limbName = limb.$.Name || limb.$.name;
     
-    logInfo('LimbParsing', `Processing limb ${index + 1}/${limbs.length}`, { 
-      limbId, 
-      limbName,
-      limbType: limb.$.Type || limb.$.type 
-    });
+    // logInfo('LimbParsing', `Processing limb ${index + 1}/${limbs.length}`, { 
+    //   limbId, 
+    //   limbName,
+    //   limbType: limb.$.Type || limb.$.type 
+    // });
     
     try {
       const sprite = limb.sprite;
@@ -122,20 +122,20 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
         limbData.selectedBeard = null;
         limbData.selectedFaceAttachment = null;
         
-        logInfo('LimbParsing', `Processed head limb`, { 
-          limbId, 
-          limbName,
-          baseSize: [width, height]
-        });
+        // logInfo('LimbParsing', `Processed head limb`, { 
+        //   limbId, 
+        //   limbName,
+        //   baseSize: [width, height]
+        // });
       } else {
         limbData.sourceRect = sourceRect;
         
-        logInfo('LimbParsing', `Processed regular limb`, { 
-          limbId, 
-          limbName,
-          sourceRect,
-          size: { width, height }
-        });
+        // logInfo('LimbParsing', `Processed regular limb`, { 
+        //   limbId, 
+        //   limbName,
+        //   sourceRect,
+        //   size: { width, height }
+        // });
       }
       
       parsedLimbs[limbData.id] = limbData;
@@ -149,10 +149,10 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
     }
   });
 
-  logInfo('LimbParsing', 'Processing head attachments', { 
-    hasHeadAttachments: !!character.HeadAttachments,
-    hasWearables: !!(character.HeadAttachments && character.HeadAttachments.Wearable)
-  });
+  // logInfo('LimbParsing', 'Processing head attachments', { 
+  //   hasHeadAttachments: !!character.HeadAttachments,
+  //   hasWearables: !!(character.HeadAttachments && character.HeadAttachments.Wearable)
+  // });
   
   const newHeadAttachments = {};
   if (character.HeadAttachments && character.HeadAttachments.Wearable) {
@@ -160,27 +160,27 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
           ? character.HeadAttachments.Wearable 
           : [character.HeadAttachments.Wearable];
 
-      logInfo('LimbParsing', 'Processing wearables', { 
-        totalWearables: wearables.length,
-        isArray: Array.isArray(character.HeadAttachments.Wearable)
-      });
+      // logInfo('LimbParsing', 'Processing wearables', { 
+      //   totalWearables: wearables.length,
+      //   isArray: Array.isArray(character.HeadAttachments.Wearable)
+      // });
 
       wearables.forEach((wearable, index) => {
           const type = wearable.$.type ? wearable.$.type.toLowerCase() : '';
           const tags = wearable.$.tags ? wearable.$.tags.split(',') : [];
 
-          logInfo('LimbParsing', `Processing wearable ${index + 1}/${wearables.length}`, { 
-            type, 
-            tags,
-            wearableId: wearable.$.type 
-          });
+          // logInfo('LimbParsing', `Processing wearable ${index + 1}/${wearables.length}`, { 
+          //   type, 
+          //   tags,
+          //   wearableId: wearable.$.type 
+          // });
 
           if (tags.length > 0 && !tags.includes(gender)) {
-              logInfo('LimbParsing', `Skipping wearable due to gender mismatch`, { 
-                type, 
-                tags, 
-                gender 
-              });
+          //     logInfo('LimbParsing', `Skipping wearable due to gender mismatch`, { 
+          //       type, 
+          //       tags, 
+          //       gender 
+          //     });
               return;
           }
 
@@ -225,12 +225,12 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
                       ];
                       origin = headLimb ? [headLimb.origin.x, headLimb.origin.y] : [0.5, 0.5];
                       
-                      logInfo('LimbParsing', `Processed wearable with sheetIndex`, { 
-                          type, 
-                          sheetIndex, 
-                          baseSize, 
-                          sourceRect 
-                      });
+                      // logInfo('LimbParsing', `Processed wearable with sheetIndex`, { 
+                      //     type, 
+                      //     sheetIndex, 
+                      //     baseSize, 
+                      //     sourceRect 
+                      // });
                   } else if (hasSourceRect) {
                       try {
                           sourceRect = (sprite.$.sourcerect || sprite.$.SourceRect).split(',').map(val => parseFloat(val.trim()));
@@ -247,12 +247,12 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
                           baseSize = [sourceRect[2], sourceRect[3]];
                           sheetIndex = null;
                           
-                          logInfo('LimbParsing', `Processed wearable with sourceRect`, { 
-                              type, 
-                              sourceRect, 
-                              origin, 
-                              baseSize 
-                          });
+                          // logInfo('LimbParsing', `Processed wearable with sourceRect`, { 
+                          //     type, 
+                          //     sourceRect, 
+                          //     origin, 
+                          //     baseSize 
+                          // });
                       } catch (parseError) {
                           logWarn('LimbParsing', `Failed to parse sourceRect for wearable ${type}, using defaults`, { 
                               sourceRectStr: sprite.$.sourcerect || sprite.$.SourceRect,
@@ -269,13 +269,13 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
                       sourceRect = [0, 0, 128, 128];
                       origin = [0.5, 0.5];
                       
-                      logInfo('LimbParsing', `Using default values for wearable ${type}`, { 
-                          type, 
-                          sheetIndex, 
-                          baseSize, 
-                          sourceRect, 
-                          origin 
-                      });
+                      // logInfo('LimbParsing', `Using default values for wearable ${type}`, { 
+                      //     type, 
+                      //     sheetIndex, 
+                      //     baseSize, 
+                      //     sourceRect, 
+                      //     origin 
+                      // });
                   }
 
                   const texturePath = processAttachmentTexturePath(sprite.$.texture || sprite.$.Texture, gender);
@@ -293,11 +293,11 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
                   };
                   newHeadAttachments[type].push(attachmentData);
                   
-                  logInfo('LimbParsing', `Successfully processed wearable`, { 
-                      type, 
-                      attachmentId: attachmentData.id,
-                      attachmentName: attachmentData.name 
-                  });
+                  // logInfo('LimbParsing', `Successfully processed wearable`, { 
+                  //     type, 
+                  //     attachmentId: attachmentData.id,
+                  //     attachmentName: attachmentData.name 
+                  // });
               } catch (error) {
                   logError('LimbParsing', error, { 
                       wearableType: type, 
@@ -314,37 +314,37 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       });
   }
 
-  logInfo('LimbParsing', 'Processing head sprites', { 
-    hasHeads: !!character.Heads,
-    hasHeadData: !!(character.Heads && character.Heads.Head)
-  });
+  // logInfo('LimbParsing', 'Processing head sprites', { 
+  //   hasHeads: !!character.Heads,
+  //   hasHeadData: !!(character.Heads && character.Heads.Head)
+  // });
   
   const parsedHeadSprites = [];
   if (character.Heads && character.Heads.Head) {
     const heads = Array.isArray(character.Heads.Head) ? character.Heads.Head : [character.Heads.Head];
     
-    logInfo('LimbParsing', 'Processing heads', { 
-      totalHeads: heads.length,
-      isArray: Array.isArray(character.Heads.Head)
-    });
+    // logInfo('LimbParsing', 'Processing heads', { 
+    //   totalHeads: heads.length,
+    //   isArray: Array.isArray(character.Heads.Head)
+    // });
     
     heads
       .filter(head => {
         if (head.$.tags) {
           const matches = head.$.tags.includes(gender);
-          logInfo('LimbParsing', `Filtering head by tags`, { 
-            tags: head.$.tags, 
-            gender, 
-            matches 
-          });
+          // logInfo('LimbParsing', `Filtering head by tags`, { 
+          //   tags: head.$.tags, 
+          //   gender, 
+          //   matches 
+          // });
           return matches;
         } else if (head.$.gender) {
           const matches = head.$.gender === gender;
-          logInfo('LimbParsing', `Filtering head by gender`, { 
-            headGender: head.$.gender, 
-            currentGender: gender, 
-            matches 
-          });
+          // logInfo('LimbParsing', `Filtering head by gender`, { 
+          //   headGender: head.$.gender, 
+          //   currentGender: gender, 
+          //   matches 
+          // });
           return matches;
         }
         logWarn('LimbParsing', `Head has no tags or gender, skipping`, { 
@@ -364,11 +364,11 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
             headName = 'Head Unknown';
           }
           
-          logInfo('LimbParsing', `Processing head ${index + 1}`, { 
-            headName, 
-            headId: head.$.id,
-            headTags: head.$.tags 
-          });
+          // logInfo('LimbParsing', `Processing head ${index + 1}`, { 
+          //   headName, 
+          //   headId: head.$.id,
+          //   headTags: head.$.tags 
+          // });
           
           const headLimb = Object.values(parsedLimbs).find(l => l.type === 'Head');
           let headWidth = 128, headHeight = 128;
@@ -400,11 +400,11 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
           
           parsedHeadSprites.push(headSprite);
           
-          logInfo('LimbParsing', `Successfully processed head sprite`, { 
-            headName, 
-            sheetIndex, 
-            baseSize: [headWidth, headHeight] 
-          });
+          // logInfo('LimbParsing', `Successfully processed head sprite`, { 
+          //   headName, 
+          //   sheetIndex, 
+          //   baseSize: [headWidth, headHeight] 
+          // });
           
           return headSprite;
         } catch (error) {
@@ -417,14 +417,14 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       });
   }
 
-  logInfo('LimbParsing', 'Setting up head limb attachments');
+  // logInfo('LimbParsing', 'Setting up head limb attachments');
   
   const headLimb = Object.values(parsedLimbs).find(l => l.name.includes('Head'));
   if (headLimb) {
-      logInfo('LimbParsing', 'Found head limb, setting up attachments', { 
-        headLimbId: headLimb.id,
-        headLimbName: headLimb.name 
-      });
+      // logInfo('LimbParsing', 'Found head limb, setting up attachments', { 
+      //   headLimbId: headLimb.id,
+      //   headLimbName: headLimb.name 
+      // });
       
       const exceptions = ['hair', 'beard', 'moustache'];
       for (const type in newHeadAttachments) {
@@ -432,13 +432,13 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
               const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
               if (exceptions.includes(type.toLowerCase())) {
                   headLimb[`selected${capitalizedType}`] = newHeadAttachments[type][0];
-                  logInfo('LimbParsing', `Set default ${type} attachment for head`, { 
-                    type,
-                    attachmentId: newHeadAttachments[type][0].id 
-                  });
+                  // logInfo('LimbParsing', `Set default ${type} attachment for head`, { 
+                  //   type,
+                  //   attachmentId: newHeadAttachments[type][0].id 
+                  // });
               } else {
                   headLimb[`selected${capitalizedType}`] = null;
-                  logInfo('LimbParsing', `Set ${type} attachment to null for head`, { type });
+                  // logInfo('LimbParsing', `Set ${type} attachment to null for head`, { type });
               }
           }
       }
@@ -446,14 +446,14 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       logWarn('LimbParsing', 'No head limb found, cannot set up attachments');
   }
 
-  logInfo('LimbParsing', 'Processing ragdoll joints');
+  // logInfo('LimbParsing', 'Processing ragdoll joints');
   
   const ragdollJoints = Array.isArray(ragdoll.joint) ? ragdoll.joint : [ragdoll.joint];
   
-  logInfo('LimbParsing', 'Processing joints', { 
-    totalJoints: ragdollJoints.length,
-    isArray: Array.isArray(ragdoll.joint)
-  });
+  // logInfo('LimbParsing', 'Processing joints', { 
+  //   totalJoints: ragdollJoints.length,
+  //   isArray: Array.isArray(ragdoll.joint)
+  // });
   
   const limbGraph = {};
   ragdollJoints.forEach((joint, index) => {
@@ -474,11 +474,11 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       if (!limbGraph[limb1Id]) limbGraph[limb1Id] = [];
       limbGraph[limb1Id].push({ joint, childId: limb2Id });
       
-      logInfo('LimbParsing', `Processed joint ${index + 1}/${ragdollJoints.length}`, { 
-        jointIndex: index,
-        limb1Id, 
-        limb2Id 
-      });
+      // logInfo('LimbParsing', `Processed joint ${index + 1}/${ragdollJoints.length}`, { 
+      //   jointIndex: index,
+      //   limb1Id, 
+      //   limb2Id 
+      // });
     } catch (error) {
       logError('LimbParsing', error, { 
         jointIndex: index,
@@ -487,16 +487,16 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
     }
   });
 
-  logInfo('LimbParsing', 'Calculating limb positions');
+  // logInfo('LimbParsing', 'Calculating limb positions');
   
   const calculatedLimbPositions = {};
   const rootLimb = Object.values(parsedLimbs).find(l => l.type === 'Torso');
   
   if (rootLimb) {
-      logInfo('LimbParsing', 'Found root limb (Torso)', { 
-        rootLimbId: rootLimb.id,
-        rootLimbName: rootLimb.name 
-      });
+      // logInfo('LimbParsing', 'Found root limb (Torso)', { 
+      //   rootLimbId: rootLimb.id,
+      //   rootLimbName: rootLimb.name 
+      // });
       
       calculatedLimbPositions[rootLimb.id] = {
           position: { x: 350, y: 200 },
@@ -507,18 +507,18 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       const visited = new Set();
       visited.add(rootLimb.id);
 
-      logInfo('LimbParsing', 'Starting position calculation traversal');
+      // logInfo('LimbParsing', 'Starting position calculation traversal');
 
       while (queue.length > 0) {
           const parentLimbId = queue.shift();
           const parentLimb = parsedLimbs[parentLimbId];
           const parentTransform = calculatedLimbPositions[parentLimbId];
 
-          logInfo('LimbParsing', `Processing parent limb for position calculation`, { 
-            parentLimbId,
-            parentLimbName: parentLimb.name,
-            parentPosition: parentTransform.position 
-          });
+          // logInfo('LimbParsing', `Processing parent limb for position calculation`, { 
+          //   parentLimbId,
+          //   parentLimbName: parentLimb.name,
+          //   parentPosition: parentTransform.position 
+          // });
 
           if (limbGraph[parentLimbId]) {
               limbGraph[parentLimbId].forEach(({ joint, childId }) => {
@@ -574,12 +574,12 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
                               rotation: childLimb.rotation,
                           };
                           
-                          logInfo('LimbParsing', `Calculated position for child limb`, { 
-                            childId,
-                            childLimbName: childLimb.name,
-                            position: { x: childPosX, y: childPosY },
-                            parentLimbId 
-                          });
+                          // logInfo('LimbParsing', `Calculated position for child limb`, { 
+                            // childId,
+                          //   childLimbName: childLimb.name,
+                          //   position: { x: childPosX, y: childPosY },
+                          //   parentLimbId 
+                          // });
                           
                           queue.push(childId);
                           visited.add(childId);
@@ -595,14 +595,14 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
           }
       }
       
-      logInfo('LimbParsing', 'Completed position calculation', { 
-        calculatedPositions: Object.keys(calculatedLimbPositions).length 
-      });
+      // logInfo('LimbParsing', 'Completed position calculation', { 
+      //   calculatedPositions: Object.keys(calculatedLimbPositions).length 
+      // });
   } else {
       logWarn('LimbParsing', 'No root limb (Torso) found, cannot calculate positions');
   }
 
-  logInfo('LimbParsing', 'Creating final limbs with calculated positions');
+  // logInfo('LimbParsing', 'Creating final limbs with calculated positions');
   
   const finalLimbs = Object.values(parsedLimbs).map(limb => {
       const calculated = calculatedLimbPositions[limb.id];
@@ -613,11 +613,11 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       };
       
       if (calculated) {
-          logInfo('LimbParsing', `Applied calculated position to limb`, { 
-            limbId: limb.id,
-            limbName: limb.name,
-            calculatedPosition: calculated.position 
-          });
+          // logInfo('LimbParsing', `Applied calculated position to limb`, { 
+          //   limbId: limb.id,
+          //   limbName: limb.name,
+          //   calculatedPosition: calculated.position 
+          // });
       } else {
           logWarn('LimbParsing', `No calculated position for limb, using default`, { 
             limbId: limb.id,
@@ -629,12 +629,12 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       return finalLimb;
   });
 
-  logInfo('LimbParsing', 'Successfully completed character data parsing', {
-    totalLimbs: finalLimbs.length,
-    totalJoints: ragdollJoints.length,
-    totalHeadAttachments: Object.keys(newHeadAttachments).length,
-    totalHeadSprites: parsedHeadSprites.length
-  });
+  // logInfo('LimbParsing', 'Successfully completed character data parsing', {
+  //   totalLimbs: finalLimbs.length,
+  //   totalJoints: ragdollJoints.length,
+  //   totalHeadAttachments: Object.keys(newHeadAttachments).length,
+  //   totalHeadSprites: parsedHeadSprites.length
+  // });
 
   return { finalLimbs, ragdollJoints, newHeadAttachments, parsedHeadSprites };
 };
@@ -681,21 +681,21 @@ const useCharacterStore = create((set, get) => ({
 
   // Async action for loading character data
   loadCharacter: async (gender) => {
-    logInfo('CharacterLoad', 'Starting character loading process', { gender });
+    // logInfo('CharacterLoad', 'Starting character loading process', { gender });
     
     try {
-      logInfo('CharacterLoad', 'Attempting to load character data using primary method');
+      // logInfo('CharacterLoad', 'Attempting to load character data using primary method');
       const { character, ragdoll, mainTexture } = await loadCharacterData(gender);
       
-      logInfo('CharacterLoad', 'Successfully loaded character data, parsing and preparing');
+      // logInfo('CharacterLoad', 'Successfully loaded character data, parsing and preparing');
       const { finalLimbs, ragdollJoints, newHeadAttachments, parsedHeadSprites } = parseAndPrepareCharacterData(character, ragdoll, gender);
       
-      logInfo('CharacterLoad', 'Successfully parsed character data, updating store', {
-        limbsCount: finalLimbs.length,
-        jointsCount: ragdollJoints.length,
-        headAttachmentsCount: Object.keys(newHeadAttachments).length,
-        headSpritesCount: parsedHeadSprites.length
-      });
+      // logInfo('CharacterLoad', 'Successfully parsed character data, updating store', {
+      //   limbsCount: finalLimbs.length,
+      //   jointsCount: ragdollJoints.length,
+      //   headAttachmentsCount: Object.keys(newHeadAttachments).length,
+      //   headSpritesCount: parsedHeadSprites.length
+      // });
       
       set({ 
         mainTexture, 
@@ -705,7 +705,7 @@ const useCharacterStore = create((set, get) => ({
         headSprites: parsedHeadSprites 
       });
       
-      logInfo('CharacterLoad', 'Successfully loaded character using primary method', { gender });
+      // logInfo('CharacterLoad', 'Successfully loaded character using primary method', { gender });
     } catch (error) {
       logError('CharacterLoad', error, { 
         gender, 
@@ -714,18 +714,18 @@ const useCharacterStore = create((set, get) => ({
       });
       
       try {
-        logInfo('CharacterLoad', 'Primary method failed, attempting fallback method');
+        // logInfo('CharacterLoad', 'Primary method failed, attempting fallback method');
         const { character, ragdoll, mainTexture } = await loadCharacterDataFallback(gender);
         
-        logInfo('CharacterLoad', 'Successfully loaded character data using fallback, parsing and preparing');
+        // logInfo('CharacterLoad', 'Successfully loaded character data using fallback, parsing and preparing');
         const { finalLimbs, ragdollJoints, newHeadAttachments, parsedHeadSprites } = parseAndPrepareCharacterData(character, ragdoll, gender);
         
-        logInfo('CharacterLoad', 'Successfully parsed character data using fallback, updating store', {
-          limbsCount: finalLimbs.length,
-          jointsCount: ragdollJoints.length,
-          headAttachmentsCount: Object.keys(newHeadAttachments).length,
-          headSpritesCount: parsedHeadSprites.length
-        });
+        // logInfo('CharacterLoad', 'Successfully parsed character data using fallback, updating store', {
+        //   limbsCount: finalLimbs.length,
+        //   jointsCount: ragdollJoints.length,
+        //   headAttachmentsCount: Object.keys(newHeadAttachments).length,
+        //   headSpritesCount: parsedHeadSprites.length
+        // });
         
         set({ 
           mainTexture, 
@@ -735,7 +735,7 @@ const useCharacterStore = create((set, get) => ({
           headSprites: parsedHeadSprites 
         });
         
-        logInfo('CharacterLoad', 'Successfully loaded character using fallback method', { gender });
+        // logInfo('CharacterLoad', 'Successfully loaded character using fallback method', { gender });
       } catch (fallbackError) {
         logError('CharacterLoad', fallbackError, { 
           gender, 

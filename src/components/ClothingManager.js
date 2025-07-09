@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { parseSpriteAttributes } from '../utils/xmlUtils';
+import { parseSpriteAttributes, createAttributeGetter } from '../utils/xmlUtils';
 import { loadItemFilesFromFilelist, processClothingTexturePath, readFile } from '../utils/pathUtils';
 import useCharacterStore from '../store/characterStore';
 import Panel from './Panel';
@@ -100,6 +100,9 @@ const parseClothingXML = async (xmlPath, selectedItemIdentifier) => {
       return null;
     }
 
+    const getWearableAttribute = createAttributeGetter(wearableElement);
+    const wearableType = getWearableAttribute('type');
+
     const sprites = [];
     const spriteElements = wearableElement.querySelectorAll('sprite');
     
@@ -110,6 +113,11 @@ const parseClothingXML = async (xmlPath, selectedItemIdentifier) => {
       if (!spriteData || !spriteData.limb) {
         console.error(`Sprite ${spriteData?.name || 'unknown'} missing limb attribute`);
         return;
+      }
+
+      // Assign the type from the parent Wearable to each sprite
+      if (wearableType) {
+        spriteData.type = wearableType;
       }
 
       sprites.push(spriteData);

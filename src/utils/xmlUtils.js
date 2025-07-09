@@ -12,6 +12,9 @@ const getAttributeVariants = (baseName) => {
     baseName.charAt(0).toLowerCase() + baseName.slice(1),
   ];
 
+  if (baseName.toLowerCase().includes('hidewearablesoftype')) {
+    variants.push('hidewearablesoftype', 'HideWearablesOfType', 'HIDEWEARABLESOFTYPE');
+  }
   if (baseName.includes('source') && baseName.includes('rect')) {
     variants.push('sourceRect', 'SourceRect', 'sourcerect', 'SourceRect');
   }
@@ -28,7 +31,7 @@ const getAttributeVariants = (baseName) => {
   return [...new Set(variants)];
 };
 
-const createAttributeGetter = (element) => (baseName, defaultValue = null) => {
+export const createAttributeGetter = (element) => (baseName, defaultValue = null) => {
   if (!element) return defaultValue;
   const variants = getAttributeVariants(baseName);
   for (const variant of variants) {
@@ -97,7 +100,7 @@ const createAttributeParser = (attributeGetter) => (element) => {
     inheritScale: hasInheritScale ? parseBoolean(get('inheritscale', 'true')) : true,
     hideOtherWearables: parseBoolean(get('hideotherwearables', 'false')),
     hideWearablesOfType: (() => {
-      const value = get('hidewearablesoftype', null);
+      const value = get('hideWearablesOfType', null);
       if (value === null) return null;
       return value.split(',').map(s => s.trim().toLowerCase());
     })(),

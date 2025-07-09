@@ -21,11 +21,11 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
   } = useCharacterStore();
 
   // DEBUG: Log clothing sprites
-  useEffect(() => {
-    if (clothingSprites.length > 0) {
-      console.log('Clothing Sprites received by Limb.js:', JSON.parse(JSON.stringify(clothingSprites)));
-    }
-  }, [clothingSprites]);
+  // useEffect(() => {
+  //   if (clothingSprites.length > 0) {
+  //     console.log('Clothing Sprites received by Limb.js:', JSON.parse(JSON.stringify(clothingSprites)));
+  //   }
+  // }, [clothingSprites]);
 
   const [x, y, width, height] = limb.sourceRect;
   const [processedTexturePath, setProcessedTexturePath] = useState(limb.texture);
@@ -243,12 +243,24 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
                 {Object.keys(limb).filter(key => key.startsWith('selected')).map(key => {
                     const type = key.replace('selected', '').toLowerCase();
                     
-                    console.log(`[Debug] Checking attachment of type: "${type}"`);
+                    const attachment = limb[key];
 
-                    const shouldHideAttachment = clothingSprites.some(clothingSprite => 
-                      clothingSprite.limb === limb.type && 
-                      clothingSprite.hideOtherWearables === true
-                    );
+                    if (!attachment) return null;
+                    
+                    const isHidden = clothingSprites.some(hidingSprite => {
+                      if (hidingSprite.name === attachment.name || hidingSprite.limb !== limb.type) {
+                        return false;
+                      }
+                      // Rule 1: HideOtherWearables takes precedence
+                      if (hidingSprite.hideOtherWearables) {
+                        return true;
+                      }
+                      // Rule 2: If not, check HideWearablesOfType by direct type comparison
+                      if (Array.isArray(hidingSprite.hideWearablesOfType) && hidingSprite.hideWearablesOfType.includes(type)) {
+                        return true;
+                      }
+                      return false;
+                    });
 
                     const hideAllAttachments = clothingSprites.some(cs => 
                       cs.limb === limb.type && 
@@ -257,19 +269,7 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
                       cs.hideWearablesOfType[0] === ''
                     );
                     
-                    const shouldHideByType = clothingSprites.some(clothingSprite =>
-                      clothingSprite.limb === limb.type && 
-                      clothingSprite.hideWearablesOfType && 
-                      clothingSprite.hideWearablesOfType.includes(type)
-                    );
-                    
-                    console.log(`[Debug] For type "${type}":`, {
-                      shouldHideAttachment,
-                      hideAllAttachments,
-                      shouldHideByType
-                    });
-
-                    if (shouldHideAttachment || shouldHideByType || hideAllAttachments) return null;
+                    if (isHidden || hideAllAttachments) return null;
                     
                     return renderOverlay(limb[key], type);
                 })}
@@ -292,9 +292,8 @@ const Limb = ({ limb, onUpdate, onSelect, isSelected }) => {
               otherSprite.limb === limb.type &&
               otherSprite.hideWearablesOfType &&
               Array.isArray(otherSprite.hideWearablesOfType) &&
-              otherSprite.hideWearablesOfType.some(typeToHide =>
-                clothingSprite.name && clothingSprite.name.toLowerCase().includes(typeToHide.toLowerCase())
-              )
+              clothingSprite.type &&
+              otherSprite.hideWearablesOfType.includes(clothingSprite.type.toLowerCase())
             );
             
             return !shouldHideByType;
