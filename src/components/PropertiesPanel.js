@@ -12,7 +12,7 @@ const PropertiesPanel = () => {
 
   if (!selectedLimb) {
     return (
-      <Panel title="Limb" isOpenInitially={true} position={{ x: 0, y: 360 }}>
+      <Panel title="Limb" isOpenInitially={true} position={{ x: 0, y: 330 }}>
         <div className="properties-panel-container" style={{color: '#ccc', marginTop: '10px', fontSize: '12px'}}>
           Select a limb to edit properties.
         </div>
@@ -45,9 +45,9 @@ const PropertiesPanel = () => {
   };
 
   return (
-    <Panel title={selectedLimb.name} isOpenInitially={true} position={{ x: 0, y: 360 }}>
+    <Panel title={selectedLimb.name} isOpenInitially={true} position={{ x: 0, y: 200 }}>
       <div className="properties-panel-container">
-        <div className="property-row">
+        {/* <div className="property-row">
           <label className="property-label">Position X:</label>
           <input
             type="number"
@@ -66,7 +66,7 @@ const PropertiesPanel = () => {
             onChange={handleChange}
             className="property-input"
           />
-        </div>
+        </div> */}
         <div className="property-row">
           <label className="property-label">Depth (z-index):</label>
           <input

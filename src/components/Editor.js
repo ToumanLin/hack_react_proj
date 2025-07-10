@@ -6,6 +6,8 @@ import GenderPanel from './GenderPanel';
 import GenericSpriteSheetViewer from './GenericSpriteSheetViewer';
 import HeadPanel from './HeadPanel';
 import ClothingManager from './ClothingManager';
+import Title from './Title';
+import ZesenZhang from './ZesenZhang';
 import ClothSheetViewer from './ClothSheetViewer';
 import useCharacterStore from '../store/characterStore';
 import { convertTexturePath } from '../utils/textureUtils';
@@ -129,9 +131,11 @@ const Editor = () => {
         selectedTexture={headSheetTexture}
         onTextureChange={(e) => setHeadSheetTexture(e.target.value)}
       />
+      <Title />
       <HeadPanel />
       <ClothingManager />
-      <ClothSheetViewer isOpenInitially={true} />
+      <ClothSheetViewer />
+      <ZesenZhang />
     </div>
   );
 };

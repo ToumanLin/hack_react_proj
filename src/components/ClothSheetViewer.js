@@ -113,7 +113,7 @@ const ClothSheetViewer = () => {
     <>
       <Panel 
         title="Clothing Sprites" 
-        isOpenInitially={true} 
+        isOpenInitially={false} 
         position={{ x: 600, y: 100 }} 
         collapsedWidth="600px"
         headerContent={

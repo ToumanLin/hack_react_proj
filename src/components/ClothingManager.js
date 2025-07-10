@@ -262,7 +262,7 @@ const ClothingManager = () => {
   };
 
   return (
-    <Panel title="Clothing Manager" isOpenInitially={true} position={{ x: 230, y: 500 }}>
+    <Panel title="Clothing Manager" isOpenInitially={true} position={{ x: 0, y: 550 }}>
       <div className="clothing-manager-container">
         {/* Search and dropdown menu */}
         <div style={{ marginBottom: '8px' }}>

@@ -499,7 +499,7 @@ const parseAndPrepareCharacterData = (character, ragdoll, gender) => {
       // });
       
       calculatedLimbPositions[rootLimb.id] = {
-          position: { x: 350, y: 200 },
+          position: { x: 400, y: 250 },
           rotation: rootLimb.rotation,
       };
 

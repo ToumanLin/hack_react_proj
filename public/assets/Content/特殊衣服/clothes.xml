@@ -1,0 +1,914 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Override>
+  <Items>
+    <!--hat-->
+    <Item name="仪仗帽（男）" identifier="Extra_hat_male" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" cargocontaineridentifier="metalcrate" description="" scale="0.35">
+      <PreferredContainer primary="crewcab" amount="1" spawnprobability="0.1" notcampaign="true" />
+      <Price baseprice="75">
+        <Price storeidentifier="merchantoutpost" minavailable="1" />
+        <Price storeidentifier="merchantcity" multiplier="0.9" minavailable="1" />
+        <Price storeidentifier="merchantresearch" minavailable="1" />
+        <Price storeidentifier="merchantmilitary" minavailable="1" />
+        <Price storeidentifier="merchantmine" minavailable="1" />
+      </Price>
+      <Deconstruct time="10" />
+      <Sprite name="Ceremonial hat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="6,113,100,60" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <sprite name="Ceremonial hat Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.67" hidelimb="false" sourcerect="6,113,100,60" origin="0.493,1.15" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <SkillModifier skillidentifier="weapons" skillvalue="15" />
+      </Wearable>
+    </Item>
+    <Item name="仪仗帽（女）" identifier="Extra_hat_female" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" cargocontaineridentifier="metalcrate" description="" scale="0.35">
+      <PreferredContainer primary="crewcab" amount="1" spawnprobability="0.1" notcampaign="true" />
+      <Price baseprice="75">
+        <Price storeidentifier="merchantoutpost" minavailable="1" />
+        <Price storeidentifier="merchantcity" multiplier="0.9" minavailable="1" />
+        <Price storeidentifier="merchantresearch" minavailable="1" />
+        <Price storeidentifier="merchantmilitary" minavailable="1" />
+        <Price storeidentifier="merchantmine" minavailable="1" />
+      </Price>
+      <Deconstruct time="10" />
+      <Sprite name="Ceremonial hat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="6,12,101,55" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <sprite name="Ceremonial hat Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.6" hidelimb="false" sourcerect="6,12,101,55" origin="0.48,1.1" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <SkillModifier skillidentifier="weapons" skillvalue="15" />
+      </Wearable>
+    </Item>
+    <Item name="海盗军帽" identifier="piratearmycat" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" impactsoundtag="impact_metal_heavy" scale="0.4" cargocontaineridentifier="metalcrate">
+      <Price baseprice="175" soldeverywhere="true">
+        <Price locationtype="outpost" sold="true" />
+        <Price locationtype="city" sold="true" />
+        <Price locationtype="research" sold="true" />
+        <Price locationtype="military" multiplier="1.3" sold="true" />
+        <Price locationtype="mine" sold="true" />
+      </Price>
+      <Sprite name="pirate army cat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="108,112,104,60" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <sprite name="pirate army cat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.65" hidelimb="false" sourcerect="108,112,104,60" origin="0.49,1.2" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="concussion" damagemultiplier="0.70" />
+      </Wearable>
+    </Item>
+    <Item name="面罩" identifier="aw_mask" subcategory="abysswaifu" category="Equipment" cargocontaineridentifier="metalcrate" tags="smallitem,clothing,separatists" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Price baseprice="68">
+        <Price storeidentifier="merchantoutpost" minavailable="1" />
+        <Price storeidentifier="merchantcity" multiplier="0.9" minavailable="1" />
+        <Price storeidentifier="merchantresearch" minavailable="1" />
+        <Price storeidentifier="merchantmilitary" minavailable="1" />
+        <Price storeidentifier="merchantmine" minavailable="1" />
+      </Price>
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="1" />
+        <RequiredItem identifier="plastic" amount="1" />
+        <RequiredItem identifier="silicon" amount="1" />
+      </Fabricate>
+      <Deconstruct time="5">
+        <RequiredItem identifier="organicfiber" amount="1" />
+      </Deconstruct>
+      <Sprite texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="126,202,71,54" origin="0.5,0.5" scale="0.5" />
+      <Body width="20" radius="15" density="12" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <sprite texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.6" sourcerect="126,202,71,54" origin="0.48,0.20" />
+        <damagemodifier afflictionidentifiers="gunshotwound" armorsector="0.0,360.0" damagemultiplier="0.90" />
+        <damagemodifier afflictionidentifiers="lacerations" armorsector="0.0,360.0" damagemultiplier="0.80" />
+        <damagemodifier afflictionidentifiers="blunttrauma" armorsector="0.0,360.0" damagemultiplier="0.95" />
+        <damagemodifier afflictionidentifiers="bitewounds" armorsector="0.0,360.0" damagemultiplier="0.80" />
+        <SkillModifier skillidentifier="weapons" skillvalue="3" />
+        <SkillModifier skillidentifier="medical" skillvalue="3" />
+        <SkillModifier skillidentifier="mechanical" skillvalue="5" />
+        <SkillModifier skillidentifier="electrical" skillvalue="5" />
+      </Wearable>
+    </Item>
+    <Item name="重型呼吸面罩" identifier="aw_divingmask" subcategory="abysswaifu" scale="0.2" category="Diving,Equipment" Tags="smallitem,diving,lightdiving" cargocontaineridentifier="metalcrate" description="" impactsoundtag="impact_metal_light">
+      <Price baseprice="222">
+        <Price storeidentifier="merchantoutpost" multiplier="0.9" minavailable="5" />
+        <Price storeidentifier="merchantcity" multiplier="0.85" minavailable="7" />
+        <Price storeidentifier="merchantresearch" minavailable="5" />
+        <Price storeidentifier="merchantmilitary" minavailable="6" />
+        <Price storeidentifier="merchantmine" multiplier="1.25" minavailable="15" />
+      </Price>
+      <PreferredContainer secondary="respawncontainer" amount="2" notcampaign="true" />
+      <PreferredContainer primary="divingcab" amount="2" allowtransfershere="false" />
+      <PreferredContainer primary="supplycab" amount="1" transferonlyonepercontainer="true" />
+      <PreferredContainer secondary="wrecksupplycab,beaconsupplycab" amount="1" spawnprobability="0.1" />
+      <PreferredContainer secondary="outpostsupplycab" amount="1" spawnprobability="0.5" />
+      <Deconstruct time="10">
+        <Item identifier="plastic" />
+        <Item identifier="rubber" />
+      </Deconstruct>
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredSkill identifier="mechanical" level="30" />
+        <RequiredItem identifier="plastic" />
+        <RequiredItem identifier="plastic" />
+        <RequiredItem identifier="rubber" />
+        <RequiredItem identifier="rubber" />
+      </Fabricate>
+      <InventoryIcon texture="%ModDir%/Content/特殊衣服/Extra-hat.png" sourcerect="360,17,123,144" origin="0.5,0.5" />
+      <Sprite name="Heavy Diving Mask" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.55" sourcerect="360,17,123,144" origin="0.5,0.5" />
+      <Body width="40" height="35" density="15" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect" displaycontainedstatus="true">
+        <damagemodifier afflictionidentifiers="stun" armorsector="0.0,360.0" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="weapons" skillvalue="5" />
+        <SkillModifier skillidentifier="helm" skillvalue="5" />
+        <SkillModifier skillidentifier="mechanical" skillvalue="5" />
+        <SkillModifier skillidentifier="electrical" skillvalue="5" />
+        <sprite name="Heavy Diving Mask Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="false" ignorelimbscale="true" scale="0.2" hidelimb="false" hideotherwearables="false" sourcerect="360,17,123,144" origin="0.38,0.42" hidewearablesoftype="moustache,beard" />
+        <StatusEffect type="OnWearing" target="Character" HideFace="true" SpeedMultiplier="0.9" setvalue="true" disabledeltatime="true" />
+        <StatusEffect type="OnWearing" target="Contained,Character" OxygenAvailable="1000.0" Condition="-0.5" comparison="Or">
+          <Conditional IsDead="false" />
+          <RequiredItem items="oxygensource" type="Contained" />
+        </StatusEffect>
+        <StatusEffect type="OnWearing" target="Contained,Character" OxygenAvailable="-100.0" Oxygen="-3.0" Condition="-3.0">
+          <Conditional IsDead="false" />
+          <RequiredItem items="weldingfueltank" type="Contained" />
+        </StatusEffect>
+        <StatusEffect type="OnWearing" target="Contained,Character" targetlimbs="Torso" OxygenAvailable="-100.0" Oxygen="-5.0" Condition="-3.0">
+          <RequiredItem items="incendiumfueltank" type="Contained" />
+          <Affliction identifier="burn" amount="3.0" />
+        </StatusEffect>
+      </Wearable>
+      <ItemContainer capacity="1" maxstacksize="1" hideitems="true" containedstateindicatorstyle="tank">
+        <SlotIcon slotindex="0" texture="Content/UI/StatusMonitorUI.png" sourcerect="64,448,64,64" origin="0.5,0.5" />
+        <Containable items="oxygensource,weldingtoolfuel" excludeditems="oxygenitetank" />
+        <Containable items="oxygenitetank">
+          <StatusEffect type="OnContaining" target="Character" SpeedMultiplier="1.2" setvalue="true" targetslot="0">
+            <Conditional IsDead="false" />
+          </StatusEffect>
+        </Containable>
+      </ItemContainer>
+    </Item>
+    <Item name="匿名者面具" identifier="anonymous_mask" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" cargocontaineridentifier="metalcrate" description="" impactsoundtag="impact_metal_heavy" scale="0.325">
+      <Price baseprice="800" canbespecial="false" sold="false">
+        <Price storeidentifier="merchantclown" minavailable="1" maxavailable="2" sold="true">
+          <Reputation faction="clowns" min="40" />
+        </Price>
+      </Price>
+      <Sprite name="anonymous mask" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" sourcerect="140,8,59,79" depth="0.6" origin="0.5,0.5" />
+      <Body radius="30" density="25" />
+      <Wearable slots="Any,Head" armorvalue="20.0" msg="ItemMsgPickUpSelect">
+        <damagemodifier afflictionidentifiers="blunttrauma" armorsector="0.0,360.0" damagemultiplier="0.50" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="lacerations" armorsector="0.0,360.0" damagemultiplier="0.20" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="bitewounds" armorsector="0.0,360.0" damagemultiplier="0.10" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="gunshotwound" armorsector="0.0,360.0" damagemultiplier="0.40" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="bleeding" armorsector="0.0,360.0" damagemultiplier="0.50" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="concussion" armorsector="0.0,360.0" damagemultiplier="0.50" damagesound="LimbArmor" deflectprojectiles="true" />
+        <SkillModifier skillidentifier="weapons" skillvalue="5" />
+        <sprite name="anonymous mask" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" hidelimb="false" inheritlimbdepth="true" inheritscale="false" ignorelimbscale="true" scale="0.27" sourcerect="140,8,59,79" origin="0.3,0.55" />
+      </Wearable>
+    </Item>
+    <Item name="贝雷帽" identifier="aw_beret" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" impactsoundtag="impact_metal_heavy" scale="0.4" cargocontaineridentifier="metalcrate">
+      <Price baseprice="187" soldeverywhere="true">
+        <Price locationtype="outpost" sold="true" />
+        <Price locationtype="city" sold="true" />
+        <Price locationtype="research" sold="true" />
+        <Price locationtype="military" multiplier="1.3" sold="true" />
+        <Price locationtype="mine" sold="true" />
+      </Price>
+      <Deconstruct time="10">
+        <Item identifier="plastic" />
+        <Item identifier="rubber" />
+      </Deconstruct>
+      <Fabricate suitablefabricators="fabricator" requiredtime="10">
+        <RequiredItem identifier="plastic" />
+        <RequiredItem identifier="rubber" />
+      </Fabricate>
+      <Sprite name="beret hat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="12,374,83,45" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <SkillModifier skillidentifier="weapons" skillvalue="10" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <sprite name="beret hat Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.6" hidelimb="false" sourcerect="12,374,83,45" origin="0.52,1.3" />
+      </Wearable>
+    </Item>
+    <Item name="贝雷帽" identifier="aw_beret_bule" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" impactsoundtag="impact_metal_heavy" scale="0.4" cargocontaineridentifier="metalcrate">
+      <Price baseprice="187" soldeverywhere="true">
+        <Price locationtype="outpost" sold="true" />
+        <Price locationtype="city" sold="true" />
+        <Price locationtype="research" sold="true" />
+        <Price locationtype="military" multiplier="1.3" sold="true" />
+        <Price locationtype="mine" sold="true" />
+      </Price>
+      <Deconstruct time="10">
+        <Item identifier="aw_beret" />
+      </Deconstruct>
+      <Fabricate suitablefabricators="fabricator" requiredtime="10">
+        <RequiredItem identifier="aw_beret" />
+        <RequiredItem identifier="bluepaint" />
+      </Fabricate>
+      <Sprite name="beret hat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="12,199,83,45" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <SkillModifier skillidentifier="weapons" skillvalue="10" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <sprite name="beret hat Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.6" hidelimb="false" sourcerect="12,199,83,45" origin="0.52,1.3" />
+      </Wearable>
+    </Item>
+    <Item name="贝雷帽" identifier="aw_beret_red" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" impactsoundtag="impact_metal_heavy" scale="0.4" cargocontaineridentifier="metalcrate">
+      <Price baseprice="187" soldeverywhere="true">
+        <Price locationtype="outpost" sold="true" />
+        <Price locationtype="city" sold="true" />
+        <Price locationtype="research" sold="true" />
+        <Price locationtype="military" multiplier="1.3" sold="true" />
+        <Price locationtype="mine" sold="true" />
+      </Price>
+      <Deconstruct time="10">
+        <Item identifier="aw_beret" />
+      </Deconstruct>
+      <Fabricate suitablefabricators="fabricator" requiredtime="10">
+        <RequiredItem identifier="aw_beret" />
+        <RequiredItem identifier="redpaint" />
+      </Fabricate>
+      <Sprite name="beret hat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="12,255,83,45" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <SkillModifier skillidentifier="weapons" skillvalue="10" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <sprite name="beret hat Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.6" hidelimb="false" sourcerect="12,255,83,45" origin="0.52,1.3" />
+      </Wearable>
+    </Item>
+    <Item name="贝雷帽" identifier="aw_beret_black" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing" impactsoundtag="impact_metal_heavy" scale="0.4" cargocontaineridentifier="metalcrate">
+      <Price baseprice="187" soldeverywhere="true">
+        <Price locationtype="outpost" sold="true" />
+        <Price locationtype="city" sold="true" />
+        <Price locationtype="research" sold="true" />
+        <Price locationtype="military" multiplier="1.3" sold="true" />
+        <Price locationtype="mine" sold="true" />
+      </Price>
+      <Deconstruct time="10">
+        <Item identifier="aw_beret" />
+      </Deconstruct>
+      <Fabricate suitablefabricators="fabricator" requiredtime="10">
+        <RequiredItem identifier="aw_beret" />
+        <RequiredItem identifier="blackpaint" />
+      </Fabricate>
+      <Sprite name="beret hat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" depth="0.6" sourcerect="12,315,83,45" origin="0.5,0.5" />
+      <Body width="75" height="50" density="30" />
+      <Wearable limbtype="Head" slots="Any,Head" msg="ItemMsgPickUpSelect">
+        <SkillModifier skillidentifier="weapons" skillvalue="10" />
+        <SkillModifier skillidentifier="helm" skillvalue="15" />
+        <sprite name="beret hat Wearable" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" inheritlimbdepth="true" inheritscale="true" ignorelimbscale="true" scale="0.6" hidelimb="false" sourcerect="12,315,83,45" origin="0.52,1.3" />
+      </Wearable>
+    </Item>
+    <!--clothes-->
+    <Item name="匿名者Anonymous" identifier="Anonymous" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="3" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="aluminium" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="1" />
+      </Deconstruct>
+      <InventoryIcon name="Anonymous Icon" texture="%ModDir%/Content/特殊衣服/Anonymous_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Anonymous" texture="%ModDir%/Content/特殊衣服/Anonymous_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Anonymous Torso" texture="Anonymous_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="false" inheritsourcerect="true" origin="0.105,0.32" />
+        <sprite name="Anonymous Right Hand" texture="Anonymous_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Left Hand" texture="Anonymous_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Right Lower Arm" texture="Anonymous_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Left Lower Arm" texture="Anonymous_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Right Upper Arm" texture="Anonymous_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Left Upper Arm" texture="Anonymous_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Waist" texture="Anonymous_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Right Thigh" texture="Anonymous_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Left Thigh" texture="Anonymous_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Right Leg" texture="Anonymous_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Left Leg" texture="Anonymous_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Left Shoe" texture="Anonymous_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Anonymous Right Shoe" texture="Anonymous_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="acidburn" damagemultiplier="0.85" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="radiationsickness" damagemultiplier="0.70" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="explosiondamage" damagemultiplier="0.70" />
+        <SkillModifier skillidentifier="weapons" skillvalue="15" />
+      </Wearable>
+      <ItemContainer capacity="1">
+        <Containable items="chem,medical" excludeditems="toolbox,toolbelt" />
+      </ItemContainer>
+    </Item>
+    <Item name="小丑贵族" identifier="Clown_Aristocrats" subcategory="abysswaifu" category="Equipment" tags="smallitem,clothing,clownmask" cargocontaineridentifier="metalcrate" description="" impactsoundtag="impact_metal_heavy" scale="0.325">
+      <Price baseprice="800" canbespecial="false" sold="false">
+        <Price storeidentifier="merchantclown" minavailable="1" maxavailable="2" sold="true">
+          <Reputation faction="clowns" min="40" />
+        </Price>
+      </Price>
+      <Sprite name="Clown Aristocrat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" sourcerect="222,30,117,130" depth="0.6" origin="0.5,0.5" />
+      <Body radius="30" density="25" />
+      <Wearable slots="Any,Head" armorvalue="20.0" msg="ItemMsgPickUpSelect">
+        <damagemodifier afflictionidentifiers="blunttrauma,lacerations" armorsector="0.0,360.0" damagemultiplier="0.4" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="bitewounds" armorsector="0.0,360.0" damagemultiplier="0.2" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="gunshotwound" armorsector="0.0,360.0" damagemultiplier="0.3" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictiontypes="bleeding" armorsector="0.0,360.0" damagemultiplier="0.3" damagesound="LimbArmor" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="concussion" armorsector="0.0,360.0" damagemultiplier="0.0" damagesound="" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="acidburn" armorsector="0.0,360.0" damagemultiplier="0.9" damagesound="" deflectprojectiles="true" />
+        <damagemodifier afflictionidentifiers="stun" armorsector="0.0,360.0" damagemultiplier="0.9" damagesound="" deflectprojectiles="true" />
+        <SkillModifier skillidentifier="weapons" skillvalue="5" />
+        <SkillModifier skillidentifier="medical" skillvalue="-10" />
+        <sprite name="Clown Aristocrat" texture="%ModDir%/Content/特殊衣服/Extra-hat.png" limb="Head" hidewearablesoftype="Hair" hidelimb="false" inheritlimbdepth="true" inheritscale="false" ignorelimbscale="true" scale="0.29" sourcerect="222,30,117,130" origin="0.47,0.65" />
+        <StatusEffect tags="clown" type="OnWearing" target="Character" HideFace="true" duration="0.1" stackable="false" />
+      </Wearable>
+    </Item>
+    <Item name="战斗工程师Combat-Engineer" identifier="Combat_Engineer" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="orangejumpsuit1" amount="1" />
+        <RequiredItem identifier="ballisticfiber" amount="2" />
+        <RequiredItem identifier="organicfiber" amount="1" />
+        <RequiredItem identifier="steel" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="1" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="iron" amount="1" />
+      </Deconstruct>
+      <InventoryIcon name="Combat-Engineer Icon" texture="%ModDir%/Content/特殊衣服/Combat-Engineer_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Combat-Engineer" texture="%ModDir%/Content/特殊衣服/Combat-Engineer_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Combat-Engineer Torso" texture="Combat-Engineer_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Right Hand" texture="Combat-Engineer_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Left Hand" texture="Combat-Engineer_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Right Lower Arm" texture="Combat-Engineer_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Left Lower Arm" texture="Combat-Engineer_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Right Upper Arm" texture="Combat-Engineer_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Left Upper Arm" texture="Combat-Engineer_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Waist" texture="Combat-Engineer_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Right Thigh" texture="Combat-Engineer_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Left Thigh" texture="Combat-Engineer_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Right Leg" texture="Combat-Engineer_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Left Leg" texture="Combat-Engineer_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Left Shoe" texture="Combat-Engineer_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Combat-Engineer Right Shoe" texture="Combat-Engineer_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.85" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn" damagemultiplier="0.20" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="acidburn" damagemultiplier="0.95" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="radiationsickness" damagemultiplier="0.20" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="stun" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="mechanical" skillvalue="10" />
+        <SkillModifier skillidentifier="electrical" skillvalue="10" />
+      </Wearable>
+    </Item>
+    <Item name="Frontline-medical" identifier="Frontline-medical" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="4" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="rubber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Frontline-medical Icon" texture="%ModDir%/Content/特殊衣服/Frontline-medical_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Frontline-medical" texture="%ModDir%/Content/特殊衣服/Frontline-medical_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Frontline-medical Torso" texture="Frontline-medical_[GENDER].png" limb="Torso" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Right Hand" texture="Frontline-medical_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Left Hand" texture="Frontline-medical_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Right Lower Arm" texture="Frontline-medical_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Left Lower Arm" texture="Frontline-medical_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Right Upper Arm" texture="Frontline-medical_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Left Upper Arm" texture="Frontline-medical_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Waist" texture="Frontline-medical_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Right Thigh" texture="Frontline-medical_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Left Thigh" texture="Frontline-medical_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Right Leg" texture="Frontline-medical_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Left Leg" texture="Frontline-medical_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Left Shoe" texture="Frontline-medical_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-medical Right Shoe" texture="Frontline-medical_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.70" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="burn" damagemultiplier="0.50" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="explosiondamage" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="medical" skillvalue="15" />
+      </Wearable>
+      <ItemContainer capacity="2">
+        <Containable items="chem,medical" excludeditems="toolbox,toolbelt" />
+      </ItemContainer>
+    </Item>
+    <Item name="Frontline-officerUniforms" identifier="Frontline-officerUniforms" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="4" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="3" />
+      </Deconstruct>
+      <InventoryIcon name="Frontline-officerUniforms Icon" texture="%ModDir%/Content/特殊衣服/Frontline-officerUniforms_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Frontline-officerUniforms" texture="%ModDir%/Content/特殊衣服/Frontline-officerUniforms_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Frontline-officerUniforms Torso" texture="Frontline-officerUniforms_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="false" origin="0.45,0.41" inheritsourcerect="false" sourcerect="172,18,102,193" />
+        <sprite name="Frontline-officerUniforms Right Hand" texture="Frontline-officerUniforms_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Left Hand" texture="Frontline-officerUniforms_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Right Lower Arm" texture="Frontline-officerUniforms_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Left Lower Arm" texture="Frontline-officerUniforms_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Right Upper Arm" texture="Frontline-officerUniforms_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Left Upper Arm" texture="Frontline-officerUniforms_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Waist" texture="空白.png" limb="Waist" hideotherwearables="false" hidelimb="true" inherittexturescale="false" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Right Thigh" texture="Frontline-officerUniforms_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Left Thigh" texture="Frontline-officerUniforms_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Right Leg" texture="Frontline-officerUniforms_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Left Leg" texture="Frontline-officerUniforms_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Left Shoe" texture="Frontline-officerUniforms_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Frontline-officerUniforms Right Shoe" texture="Frontline-officerUniforms_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.95" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="burn" damagemultiplier="0.50" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="acidburn" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="helm" skillvalue="10" />
+        <SkillModifier skillidentifier="weapons" skillvalue="3" />
+      </Wearable>
+    </Item>
+    <Item name="仪仗队guard-of-honour" identifier="guard_of_honour" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="3" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="guard-of-honour Icon" texture="%ModDir%/Content/特殊衣服/guard-of-honour_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="guard-of-honour" texture="%ModDir%/Content/特殊衣服/guard-of-honour_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="guard-of-honour Torso" texture="guard-of-honour_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Right Hand" texture="guard-of-honour_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Left Hand" texture="guard-of-honour_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Right Lower Arm" texture="guard-of-honour_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Left Lower Arm" texture="guard-of-honour_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Right Upper Arm" texture="guard-of-honour_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Left Upper Arm" texture="guard-of-honour_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Waist" texture="guard-of-honour_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Right Thigh" texture="guard-of-honour_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Left Thigh" texture="guard-of-honour_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Right Leg" texture="guard-of-honour_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Left Leg" texture="guard-of-honour_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Left Shoe" texture="guard-of-honour_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="guard-of-honour Right Shoe" texture="guard-of-honour_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="stun" damagemultiplier="0.95" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="explosiondamage" damagemultiplier="0.95" />
+        <SkillModifier skillidentifier="helm" skillvalue="5" />
+        <SkillModifier skillidentifier="weapons" skillvalue="5" />
+      </Wearable>
+    </Item>
+    <Item name="轻便战术装Light-tactical" identifier="Light_tactical" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="4" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Light-tactical Icon" texture="%ModDir%/Content/特殊衣服/Light-tactical_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Light-tactical" texture="%ModDir%/Content/特殊衣服/Light-tactical_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Light-tactical Torso" texture="Light-tactical_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Right Hand" texture="Light-tactical_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Left Hand" texture="Light-tactical_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Right Lower Arm" texture="Light-tactical_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Left Lower Arm" texture="Light-tactical_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Right Upper Arm" texture="Light-tactical_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Left Upper Arm" texture="Light-tactical_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Waist" texture="Light-tactical_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Right Thigh" texture="Light-tactical_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Left Thigh" texture="Light-tactical_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Right Leg" texture="Light-tactical_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Left Leg" texture="Light-tactical_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Left Shoe" texture="Light-tactical_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical Right Shoe" texture="Light-tactical_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.9" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="weapons" skillvalue="2" />
+      </Wearable>
+    </Item>
+    <Item name="轻便战术服_盔甲Light-tactical_armor" identifier="Light-tactical_armor" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="4" />
+        <RequiredItem identifier="steel" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+        <RequiredItem identifier="iron" amount="1" />
+      </Deconstruct>
+      <InventoryIcon name="Light-tactical_armor Icon" texture="%ModDir%/Content/特殊衣服/Light-tactical_armor_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Light-tactical_armor" texture="%ModDir%/Content/特殊衣服/Light-tactical_armor_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Light-tactical_armor Torso" texture="Light-tactical_armor_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="false" origin="0.48,0.42" inheritsourcerect="false" sourcerect="172,18,102,193" />
+        <sprite name="Light-tactical_armor Right Hand" texture="Light-tactical_armor_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Left Hand" texture="Light-tactical_armor_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Right Lower Arm" texture="Light-tactical_armor_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Left Lower Arm" texture="Light-tactical_armor_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Right Upper Arm" texture="Light-tactical_armor_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Left Upper Arm" texture="Light-tactical_armor_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Waist" texture="空白.png" limb="Waist" hideotherwearables="false" hidelimb="true" inherittexturescale="false" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Right Thigh" texture="Light-tactical_armor_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Left Thigh" texture="Light-tactical_armor_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Right Leg" texture="Light-tactical_armor_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Left Leg" texture="Light-tactical_armor_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Left Shoe" texture="Light-tactical_armor_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_armor Right Shoe" texture="Light-tactical_armor_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.7" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.7" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.7" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn" damagemultiplier="0.40" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="bleeding" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="acidburn" damagemultiplier="0.85" />
+        <SkillModifier skillidentifier="weapons" skillvalue="2" />
+      </Wearable>
+    </Item>
+    <Item name="轻便战术服_短裤Light-tactical_shorts" identifier="Light-tactical_shorts" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="4" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Light-tactical_shorts Icon" texture="%ModDir%/Content/特殊衣服/Light-tactical_shorts_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Light-tactical_shorts" texture="%ModDir%/Content/特殊衣服/Light-tactical_shorts_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Light-tactics Torso" texture="Light-tactical_shorts_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Right Hand" texture="Light-tactical_shorts_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Left Hand" texture="Light-tactical_shorts_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Right Lower Arm" texture="Light-tactical_shorts_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Left Lower Arm" texture="Light-tactical_shorts_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Right Upper Arm" texture="Light-tactical_shorts_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Left Upper Arm" texture="Light-tactical_shorts_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Waist" texture="Light-tactical_shorts_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Right Thigh" texture="Light-tactical_shorts_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Left Thigh" texture="Light-tactical_shorts_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Right Leg" texture="Light-tactical_shorts_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Left Leg" texture="Light-tactical_shorts_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Left Shoe" texture="Light-tactical_shorts_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical_shorts Right Shoe" texture="Light-tactical_shorts_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn,bleeding" damagemultiplier="0.85" />
+        <SkillModifier skillidentifier="weapons" skillvalue="2" />
+      </Wearable>
+    </Item>
+    <Item name="轻便战术装Light-tactical-2" identifier="Light_tactical2" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="4" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Light-tactical-2 Icon" texture="%ModDir%/Content/特殊衣服/Light-tactical-2_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Light-tactical-2" texture="%ModDir%/Content/特殊衣服/Light-tactical-2_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Light-tactical-2 Torso" texture="Light-tactical-2_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Right Hand" texture="Light-tactical-2_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Left Hand" texture="Light-tactical-2_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Right Lower Arm" texture="Light-tactical-2_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Left Lower Arm" texture="Light-tactical-2_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Right Upper Arm" texture="Light-tactical-2_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Left Upper Arm" texture="Light-tactical-2_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Waist" texture="Light-tactical-2_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Right Thigh" texture="Light-tactical-2_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Left Thigh" texture="Light-tactical-2_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Right Leg" texture="Light-tactical-2_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Left Leg" texture="Light-tactical-2_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Left Shoe" texture="Light-tactical-2_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactical-2 Right Shoe" texture="Light-tactical-2_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="weapons" skillvalue="2" />
+      </Wearable>
+    </Item>
+    <Item name="轻战术Light-tactics" identifier="Light_tactics" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="4" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Light-tactics Icon" texture="%ModDir%/Content/特殊衣服/Light-tactics_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Light-tactics" texture="%ModDir%/Content/特殊衣服/Light-tactics_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Light-tactics Torso" texture="Light-tactics_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Right Hand" texture="Light-tactics_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Left Hand" texture="Light-tactics_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Right Lower Arm" texture="Light-tactics_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Left Lower Arm" texture="Light-tactics_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Right Upper Arm" texture="Light-tactics_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Left Upper Arm" texture="Light-tactics_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Waist" texture="Light-tactics_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Right Thigh" texture="Light-tactics_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Left Thigh" texture="Light-tactics_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Right Leg" texture="Light-tactics_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Left Leg" texture="Light-tactics_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Left Shoe" texture="Light-tactics_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Light-tactics Right Shoe" texture="Light-tactics_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="weapons" skillvalue="2" />
+      </Wearable>
+    </Item>
+    <Item name="军大衣Military-coat" identifier="Military_coat" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="4" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Military-coat Icon" texture="%ModDir%/Content/特殊衣服/Military-coat_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Military-coat" texture="%ModDir%/Content/特殊衣服/Military-coat_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Military-coat Torso" texture="Military-coat_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="false" origin="0.48,0.42" inheritsourcerect="false" sourcerect="169,15,88,183" />
+        <sprite name="Military-coat Right Hand" texture="Military-coat_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Left Hand" texture="Military-coat_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Right Lower Arm" texture="Military-coat_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Left Lower Arm" texture="Military-coat_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Right Upper Arm" texture="Military-coat_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Left Upper Arm" texture="Military-coat_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Waist" texture="Military-coat_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Right Thigh" texture="Military-coat_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Left Thigh" texture="Military-coat_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Right Leg" texture="Military-coat_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Left Leg" texture="Military-coat_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Left Shoe" texture="Military-coat_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Military-coat Right Shoe" texture="Military-coat_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.85" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn" damagemultiplier="0.50" />
+        <SkillModifier skillidentifier="weapons" skillvalue="5" />
+      </Wearable>
+    </Item>
+    <Item name="工程助手Project-Assistant" identifier="Project_Assistant" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="2" />
+        <RequiredItem identifier="rubber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Project-Assistant Icon" texture="%ModDir%/Content/特殊衣服/Project-Assistant_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Project-Assistant" texture="%ModDir%/Content/特殊衣服/Project-Assistant_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Project-Assistant Torso" texture="Project-Assistant_[gender].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Right Hand" texture="Project-Assistant_[gender].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Left Hand" texture="Project-Assistant_[gender].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Right Lower Arm" texture="Project-Assistant_[gender].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Left Lower Arm" texture="Project-Assistant_[gender].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Right Upper Arm" texture="Project-Assistant_[gender].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Left Upper Arm" texture="Project-Assistant_[gender].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Waist" texture="Project-Assistant_[gender].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Right Thigh" texture="Project-Assistant_[gender].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Left Thigh" texture="Project-Assistant_[gender].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Right Leg" texture="Project-Assistant_[gender].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Left Leg" texture="Project-Assistant_[gender].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Left Shoe" texture="Project-Assistant_[gender].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Project-Assistant Right Shoe" texture="Project-Assistant_[gender].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.85" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="burn" damagemultiplier="0.4" />
+        <damagemodifier armorsector="0.0,360.0" afflictiontypes="radiationsickness" damagemultiplier="0.85" />
+        <SkillModifier skillidentifier="mechanical" skillvalue="5" />
+        <SkillModifier skillidentifier="electrical" skillvalue="3" />
+      </Wearable>
+    </Item>
+    <Item name="特工Secret-service" identifier="Secret_service" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="3" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Secret-service Icon" texture="%ModDir%/Content/特殊衣服/Secret-service_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Secret-service" texture="%ModDir%/Content/特殊衣服/Secret-service_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Secret-service Torso" texture="Secret-service_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Right Hand" texture="Secret-service_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Left Hand" texture="Secret-service_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Right Lower Arm" texture="Secret-service_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Left Lower Arm" texture="Secret-service_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Right Upper Arm" texture="Secret-service_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Left Upper Arm" texture="Secret-service_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Waist" texture="Secret-service_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Right Thigh" texture="Secret-service_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Left Thigh" texture="Secret-service_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Right Leg" texture="Secret-service_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Left Leg" texture="Secret-service_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Left Shoe" texture="Secret-service_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Secret-service Right Shoe" texture="Secret-service_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="acidburn" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="explosiondamage" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="medical" skillvalue="2" />
+        <SkillModifier skillidentifier="helm" skillvalue="2" />
+        <SkillModifier skillidentifier="weapons" skillvalue="3" />
+      </Wearable>
+    </Item>
+    <Item name="tactical-police" identifier="tactical-police" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="3" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="tactical-police Icon" texture="%ModDir%/Content/特殊衣服/tactical-police_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="tactical-police" texture="%ModDir%/Content/特殊衣服/tactical-police_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="tactical-police Torso" texture="tactical-police_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Right Hand" texture="tactical-police_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Left Hand" texture="tactical-police_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Right Lower Arm" texture="tactical-police_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Left Lower Arm" texture="tactical-police_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Right Upper Arm" texture="tactical-police_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Left Upper Arm" texture="tactical-police_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Waist" texture="tactical-police_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Right Thigh" texture="tactical-police_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Left Thigh" texture="tactical-police_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Right Leg" texture="tactical-police_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Left Leg" texture="tactical-police_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Left Shoe" texture="tactical-police_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="tactical-police Right Shoe" texture="tactical-police_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.85" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="burn" damagemultiplier="0.50" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="acidburn" damagemultiplier="0.92" />
+        <SkillModifier skillidentifier="medical" skillvalue="2" />
+        <SkillModifier skillidentifier="helm" skillvalue="1" />
+        <SkillModifier skillidentifier="weapons" skillvalue="5" />
+      </Wearable>
+    </Item>
+    <Item name="战术背心Tactical-vest" identifier="Tactical_vest" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="3" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Tactical-vest Icon" texture="%ModDir%/Content/特殊衣服/Tactical-vest_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Tactical-vest" texture="%ModDir%/Content/特殊衣服/Tactical-vest_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Tactical-vest Torso" texture="Tactical-vest_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Right Hand" texture="Tactical-vest_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Left Hand" texture="Tactical-vest_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Right Lower Arm" texture="Tactical-vest_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Left Lower Arm" texture="Tactical-vest_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Right Upper Arm" texture="Tactical-vest_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Left Upper Arm" texture="Tactical-vest_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Waist" texture="Tactical-vest_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Right Thigh" texture="Tactical-vest_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Left Thigh" texture="Tactical-vest_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Right Leg" texture="Tactical-vest_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Left Leg" texture="Tactical-vest_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Left Shoe" texture="Tactical-vest_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tactical-vest Right Shoe" texture="Tactical-vest_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="acidburn" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="explosiondamage" damagemultiplier="0.90" />
+        <SkillModifier skillidentifier="medical" skillvalue="2" />
+        <SkillModifier skillidentifier="helm" skillvalue="2" />
+        <SkillModifier skillidentifier="weapons" skillvalue="3" />
+      </Wearable>
+    </Item>
+    <Item name="紧身战术毛衣Tight-tactical-sweater" identifier="Tight_tactical_sweater" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="4" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="organicfiber" amount="3" />
+      </Deconstruct>
+      <InventoryIcon name="Tight-tactical-sweater Icon" texture="%ModDir%/Content/特殊衣服/Tight-tactical-sweater_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Tight-tactical-sweater" texture="%ModDir%/Content/特殊衣服/Tight-tactical-sweater_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Tight-tactical-sweater Torso" texture="Tight-tactical-sweater_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Right Hand" texture="Tight-tactical-sweater_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Left Hand" texture="Tight-tactical-sweater_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Right Lower Arm" texture="Tight-tactical-sweater_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Left Lower Arm" texture="Tight-tactical-sweater_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Right Upper Arm" texture="Tight-tactical-sweater_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Left Upper Arm" texture="Tight-tactical-sweater_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Waist" texture="Tight-tactical-sweater_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Right Thigh" texture="Tight-tactical-sweater_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Left Thigh" texture="Tight-tactical-sweater_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Right Leg" texture="Tight-tactical-sweater_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Left Leg" texture="Tight-tactical-sweater_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Left Shoe" texture="Tight-tactical-sweater_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Tight-tactical-sweater Right Shoe" texture="Tight-tactical-sweater_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.70" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.75" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="radiationsickness" damagemultiplier="0.80" />
+        <SkillModifier skillidentifier="weapons" skillvalue="3" />
+      </Wearable>
+    </Item>
+    <Item name="防风安全外套Wind-proof" identifier="Wind_proof" subcategory="abysswaifu" aliases="orangejumpsuit" category="Equipment" tags="smallitem,clothing" fireproof="true" cargocontaineridentifier="metalcrate" description="" scale="0.5" impactsoundtag="impact_soft">
+      <Fabricate suitablefabricators="fabricator" requiredtime="20">
+        <RequiredItem identifier="organicfiber" amount="3" />
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="rubber" amount="1" />
+      </Fabricate>
+      <Deconstruct time="10">
+        <RequiredItem identifier="ballisticfiber" amount="1" />
+        <RequiredItem identifier="organicfiber" amount="2" />
+      </Deconstruct>
+      <InventoryIcon name="Wind-proof Icon" texture="%ModDir%/Content/特殊衣服/Wind-proof_female.png" sourcerect="423,8,89,49" origin="0.5,0.5" />
+      <Sprite name="Wind-proof" texture="%ModDir%/Content/特殊衣服/Wind-proof_female.png" sourcerect="423,8,89,49" depth="0.6" origin="0.5,0.5" />
+      <Body width="180" height="50" density="30" friction="0.8" restitution="0.01" />
+      <Wearable slots="Any,InnerClothes" msg="ItemMsgPickUpSelect">
+        <sprite name="Wind-proof Torso" texture="Wind-proof_[GENDER].png" limb="Torso" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Right Hand" texture="Wind-proof_[GENDER].png" limb="RightHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Left Hand" texture="Wind-proof_[GENDER].png" limb="LeftHand" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Right Lower Arm" texture="Wind-proof_[GENDER].png" limb="RightArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Left Lower Arm" texture="Wind-proof_[GENDER].png" limb="LeftArm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Right Upper Arm" texture="Wind-proof_[GENDER].png" limb="RightForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Left Upper Arm" texture="Wind-proof_[GENDER].png" limb="LeftForearm" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Waist" texture="Wind-proof_[GENDER].png" limb="Waist" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Right Thigh" texture="Wind-proof_[GENDER].png" limb="RightThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Left Thigh" texture="Wind-proof_[GENDER].png" limb="LeftThigh" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Right Leg" texture="Wind-proof_[GENDER].png" limb="RightLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Left Leg" texture="Wind-proof_[GENDER].png" limb="LeftLeg" hidelimb="false" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Left Shoe" texture="Wind-proof_[GENDER].png" limb="LeftFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <sprite name="Wind-proof Right Shoe" texture="Wind-proof_[GENDER].png" limb="RightFoot" hidelimb="true" inherittexturescale="true" inheritorigin="true" inheritsourcerect="true" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="blunttrauma" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="lacerations" damagemultiplier="0.70" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bitewounds" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="gunshotwound" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="bleeding" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="burn" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="acidburn" damagemultiplier="0.90" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="radiationsickness" damagemultiplier="0.80" />
+        <damagemodifier armorsector="0.0,360.0" afflictionidentifiers="explosiondamage" damagemultiplier="0.80" />
+        <SkillModifier skillidentifier="mechanical" skillvalue="5" />
+      </Wearable>
+    </Item>
+  </Items>
+</Override>

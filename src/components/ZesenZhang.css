@@ -1,0 +1,35 @@
+.zesen-zhang-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100%;
+}
+
+.zesen-zhang-container img {
+    width: 200px;
+    height: auto;
+}
+
+.zesen-zhang-name {
+    color: #000000;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.zesen-zhang-info {
+    font-size: 16px;
+    text-align: center;
+}
+
+.zesen-zhang-link {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.zesen-zhang-link:hover {
+    color: #185dff;
+    text-decoration: underline;
+}
