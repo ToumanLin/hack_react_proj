@@ -10,6 +10,11 @@
 .daniel-murillo-container img {
     width: 200px;
     height: auto;
+    border-radius:5%
+}
+
+.daniel-murillo-container img:hover {
+    border: 3px solid #d0d5ff;
 
 }
 
@@ -18,11 +23,18 @@
     font-size: 24px;
     font-weight: bold;
     text-align: center;
+    transition: transform 0.3s ease
+}
+
+.daniel-murillo-name:hover {
+    color: #c00808;
+    transform: scale(1.2)
 }
 
 .daniel-murillo-info {
     font-size: 16px;
     text-align: center;
+    
 }
 
 .daniel-murillo-link {
