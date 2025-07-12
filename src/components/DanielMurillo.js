@@ -30,7 +30,7 @@ const DanielMurillo = () => {
         <h2>Mechanical Engineer</h2>
         <h3><i>UCLA</i></h3>
         <h4>Email: danielmurillo@g.ucla.edu</h4>
-        <h4>Github: <a className="daniel-murillo-link" href="https://github.com/ToumanLin">zixianz</a></h4>
+        <h4>Github: <a className="daniel-murillo-link" href="https://github.com/danielmurillo11">danielmurillo</a></h4>
       </div>
     </Panel>
   );
