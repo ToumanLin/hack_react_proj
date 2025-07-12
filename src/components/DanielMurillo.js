@@ -4,25 +4,25 @@ import "./DanielMurillo.css";
 
 const DanielMurillo = () => {
 
-  const [hue, setHue] = useState(0);
+//const [hue, setHue] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHue(prevHue => (prevHue + 1) % 360);
-    }, 30);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setHue(prevHue => (prevHue + 1) % 360);
+  //   }, 30);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
-  const nameStyle = {
-    color: `hsl(${hue}, 100%, 50%)`,
-    transition: 'color 0.1s linear'
-  };
+  // const nameStyle = {
+  //   color: `hsl(${hue}, 100%, 50%)`,
+  //   transition: 'color 0.1s linear'
+  // };
 
   return (
     <Panel title="Contact Info" isOpenInitially={true} position={{ x: 905, y: 550 }}>
       <div className="daniel-murillo-container">
-        <h1 className="daniel-murillo-name" style={nameStyle}>Daniel Murillo</h1>
+        <h1 className="daniel-murillo-name" >Daniel Murillo</h1>
         <br />
         <img src="/DanielMurillo.jpg" alt="Daniel Murillo" />
       </div>

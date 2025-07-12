@@ -10,10 +10,11 @@
 .daniel-murillo-container img {
     width: 200px;
     height: auto;
+
 }
 
 .daniel-murillo-name {
-    color: #000000;
+    color: #a13d3d;
     font-size: 24px;
     font-weight: bold;
     text-align: center;
@@ -25,7 +26,7 @@
 }
 
 .daniel-murillo-link {
-    color: #ffffff;
+    color: #bbc0ff;
     text-decoration: none;
 }
 
