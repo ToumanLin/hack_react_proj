@@ -1,4 +1,4 @@
-import React, {useEffect, UseState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Panel from './Panel';
 import "./DanielMurillo.css";
 
@@ -20,9 +20,9 @@ const DanielMurillo = () => {
   };
 
   return (
-    <Panel title="Contact Info" isOpenInitially={true} position={{ x: 220, y: 550 }}>
+    <Panel title="Contact Info" isOpenInitially={true} position={{ x: 905, y: 550 }}>
       <div className="daniel-murillo-container">
-        <h1 className="daniel-murillo-name" style={nameStyle}>Zesen Zhang</h1>
+        <h1 className="daniel-murillo-name" style={nameStyle}>Daniel Murillo</h1>
         <br />
         <img src="/DanielMurillo.jpg" alt="Daniel Murillo" />
       </div>

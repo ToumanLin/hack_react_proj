@@ -12,7 +12,9 @@ import ClothSheetViewer from './ClothSheetViewer';
 import useCharacterStore from '../store/characterStore';
 import { convertTexturePath } from '../utils/textureUtils';
 import { logInfo, logError } from '../utils/logger';
-import AbrilZapata from '../utils/abrilZapato';
+import AbrilZapata from './AbrilZapata';
+import DanielMurillo from './DanielMurillo';
+
 const Editor = () => {
   const {
     limbs,
@@ -136,6 +138,8 @@ const Editor = () => {
       <ClothingManager />
       <ClothSheetViewer />
       <ZesenZhang />
+      <AbrilZapata />
+      <DanielMurillo />
     </div>
   );
 };

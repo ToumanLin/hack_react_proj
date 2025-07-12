@@ -12,8 +12,8 @@
 }
 
 .abril-zapata-container img {
-  width: 150px;
-  height: 150px;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #ccc;
@@ -27,7 +27,7 @@
 
 .abril-zapata-info {
   padding: 15px;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(227, 227, 227, 0.712);
   border-radius: 8px;
   margin-top: 10px;
 }
