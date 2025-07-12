@@ -1,0 +1,35 @@
+.daniel-murillo-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100%;
+}
+
+.daniel-murillo-container img {
+    width: 200px;
+    height: auto;
+}
+
+.daniel-murillo-name {
+    color: #000000;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.daniel-murillo-info {
+    font-size: 16px;
+    text-align: center;
+}
+
+.daniel-murillo-link {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.daniel-murillo-link:hover {
+    color: #185dff;
+    text-decoration: underline;
+}
