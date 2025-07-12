@@ -1,0 +1,62 @@
+
+.abril-zapata-container {
+  text-align: center;
+  padding: 10px;
+}
+
+.abril-zapata-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.abril-zapata-container img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.abril-zapata-container img:hover {
+  transform: scale(1.1);
+}
+
+.abril-zapata-info {
+  padding: 15px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.abril-zapata-info h2 {
+  color: #333;
+  margin: 5px 0;
+  font-size: 18px;
+}
+
+.abril-zapata-info h3 {
+  color: #666;
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.abril-zapata-info h4 {
+  color: #555;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.abril-zapata-link {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.abril-zapata-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
